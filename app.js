@@ -1,31 +1,31 @@
-// 간단한 SPA 네비게이션
+// 페이지 전환(SPA)
 const pages = document.querySelectorAll('.page');
 const navButtons = document.querySelectorAll('.nav-btn');
 const loginBtn = document.getElementById('loginBtn');
 
 function showPage(pageId) {
   pages.forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + pageId).classList.add('active');
+  const target = document.getElementById('page-' + pageId);
+  if (target) target.classList.add('active');
+
   navButtons.forEach(btn => {
     btn.classList.toggle('active', btn.dataset.page === pageId);
   });
 }
 
-// 상단 메뉴 클릭
 navButtons.forEach(btn => {
   btn.addEventListener('click', () => {
     showPage(btn.dataset.page);
   });
 });
 
-// 홈에서 버튼으로 페이지 이동
 document.querySelectorAll('[data-page-jump]').forEach(btn => {
   btn.addEventListener('click', () => {
     showPage(btn.dataset.pageJump);
   });
 });
 
-// 예시 데이터 (지급률/수수료 등 포함)
+// 매물/임대/펜션 예시 데이터 (지급률 포함)
 const saleItems = [
   {
     id: 1,
@@ -33,11 +33,11 @@ const saleItems = [
     region: "서울",
     price: "1,200,000,000",
     yield: "3.5",
-    payoutRate: "70",      // 투자자 지급률(배당률)
-    platformFee: "10",     // 플랫폼 수수료
-    reserveRate: "20",     // 유지보수·세금 등
+    payoutRate: "70",
+    platformFee: "10",
+    reserveRate: "20",
     tokenized: "onchain",
-    tokenInfo: "FractionToken (테스트넷)"
+    tokenInfo: "FractionToken (예시)"
   },
   {
     id: 2,
@@ -61,7 +61,7 @@ const saleItems = [
     platformFee: "10",
     reserveRate: "20",
     tokenized: "onchain",
-    tokenInfo: "NFT + RevenueSharingVault"
+    tokenInfo: "NFT + 수익 분배 금고"
   }
 ];
 
@@ -71,7 +71,7 @@ const rentItems = [
     title: "서울 도심 오피스텔 월세",
     deposit: "20,000,000",
     monthly: "1,000,000",
-    payoutRate: "70", // 임대 수익 지급률 (예시)
+    payoutRate: "70",
     availableFrom: "2025-02-01"
   },
   {
@@ -101,7 +101,6 @@ const pensionItems = [
   }
 ];
 
-// 대표 매물, 매매/임대/펜션 목록 표시
 function renderSaleList() {
   const list = document.getElementById('saleList');
   const regionFilter = document.getElementById('saleFilterRegion').value;
@@ -174,6 +173,7 @@ function renderPensionList() {
 
 function renderFeatured() {
   const list = document.getElementById('featuredList');
+  if (!list) return;
   list.innerHTML = "";
   saleItems.slice(0, 3).forEach(item => {
     const card = document.createElement('div');
@@ -181,29 +181,32 @@ function renderFeatured() {
     card.innerHTML = `
       <h3>${item.title}</h3>
       <p>매매가: ${item.price}원 / 예상 수익률: ${item.yield}%</p>
-      <p>투자자 지급률(배당률): ${item.payoutRate}% / 플랫폼 수수료: ${item.platformFee}%</p>
+      <p>투자자 지급률: ${item.payoutRate}% / 플랫폼 수수료: ${item.platformFee}%</p>
     `;
     list.appendChild(card);
   });
 }
 
-// 마이페이지 예시
 function renderMyPage() {
   const myTokens = document.getElementById('myTokens');
   const myTrades = document.getElementById('myTrades');
 
-  myTokens.innerHTML = `
-    <li>예시) 강원 펜션 지분 토큰 150개 보유 (지급률 70%)</li>
-    <li>예시) 서울 아파트 FractionToken 20개 보유 (지급률 70%)</li>
-  `;
+  const currentUser = JSON.parse(localStorage.getItem('re_currentUser') || 'null');
 
-  myTrades.innerHTML = `
-    <li>2025-01-10 서울 아파트 지분 10개 매수 (테스트넷)</li>
-    <li>2025-01-15 강원 펜션 예약(2박) 결제 (테스트넷)</li>
-  `;
+  if (myTokens) {
+    myTokens.innerHTML = currentUser
+      ? `<li>${currentUser.email} 님 보유 지분 예시</li><li>서울 아파트 지분 20개</li><li>강원 펜션 지분 150개</li>`
+      : `<li>로그인 후 보유 지분을 확인합니다.</li>`;
+  }
+
+  if (myTrades) {
+    myTrades.innerHTML = currentUser
+      ? `<li>예시) 2025-01-10 서울 아파트 지분 10개 매수</li><li>예시) 2025-01-15 강원 펜션 2박 예약</li>`
+      : `<li>로그인 후 거래 내역을 확인합니다.</li>`;
+  }
 }
 
-// 토큰화 신청 폼 (현재는 브라우저 메모리에만 저장)
+// 자산화 신청 폼 (브라우저 메모리 저장)
 const tokenizationForm = document.getElementById('tokenizationForm');
 const localApplications = [];
 
@@ -213,22 +216,16 @@ if (tokenizationForm) {
     const formData = new FormData(tokenizationForm);
     const data = Object.fromEntries(formData.entries());
     localApplications.push(data);
-    alert(
-      '신청 내용이 이 브라우저 메모리에만 저장되었습니다.\n' +
-      '실제 서비스에서는 서버/DB 및 법률 검토 프로세스가 필요합니다.'
-    );
+    alert('자산화 신청서가 이 브라우저에 저장되었습니다. (예시)');
     tokenizationForm.reset();
   });
 }
 
-// 지갑 연결(실제 블록체인 연동은 추후 구현, 데모용)
+// 지갑 연결 (예시)
 if (loginBtn) {
   loginBtn.addEventListener('click', async () => {
     if (!window.ethereum) {
-      alert(
-        'Metamask와 같은 이더리움 지갑이 필요합니다.\n' +
-        '데모에서는 지갑 주소만 표시하며, 실제 자산 이동은 일어나지 않습니다.'
-      );
+      alert('Metamask 등 이더리움 지갑이 필요합니다. (예시 안내)');
       return;
     }
     try {
@@ -238,11 +235,49 @@ if (loginBtn) {
       if (walletInfo) {
         walletInfo.textContent = '지갑 주소: ' + account;
       }
-      alert('지갑이 연결되었습니다. (데모용 표시만 합니다)');
+      alert('지갑이 연결되었습니다.');
     } catch (err) {
       console.error(err);
       alert('지갑 연결이 취소되었거나 실패했습니다.');
     }
+  });
+}
+
+// 회원 가입 / 로그인 (브라우저 localStorage 사용 – 구조용 예시)
+const signupForm = document.getElementById('signupForm');
+const loginForm = document.getElementById('loginForm');
+
+if (signupForm) {
+  signupForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const formData = new FormData(signupForm);
+    const user = Object.fromEntries(formData.entries());
+    localStorage.setItem('re_user_' + user.email, JSON.stringify(user));
+    alert('회원 가입이 완료되었습니다. (브라우저에만 저장)');
+    signupForm.reset();
+  });
+}
+
+if (loginForm) {
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const formData = new FormData(loginForm);
+    const email = formData.get('email');
+    const password = formData.get('password');
+    const saved = localStorage.getItem('re_user_' + email);
+    if (!saved) {
+      alert('해당 이메일로 가입된 사용자가 없습니다.');
+      return;
+    }
+    const user = JSON.parse(saved);
+    if (user.password !== password) {
+      alert('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+    localStorage.setItem('re_currentUser', JSON.stringify(user));
+    alert('로그인 되었습니다.');
+    renderMyPage();
+    showPage('mypage');
   });
 }
 
