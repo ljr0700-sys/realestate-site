@@ -1,4 +1,4 @@
-// 페이지 전환(SPA)
+// ====== SPA 페이지 전환 ======
 const pages = document.querySelectorAll('.page');
 const navButtons = document.querySelectorAll('.nav-btn');
 const loginBtn = document.getElementById('loginBtn');
@@ -25,7 +25,7 @@ document.querySelectorAll('[data-page-jump]').forEach(btn => {
   });
 });
 
-// 매물/임대/펜션 예시 데이터 (지급률 포함)
+// ====== 예시 데이터 (매매/임대/펜션) ======
 const saleItems = [
   {
     id: 1,
@@ -101,8 +101,11 @@ const pensionItems = [
   }
 ];
 
+// ====== 매매/임대/펜션 렌더링 ======
 function renderSaleList() {
   const list = document.getElementById('saleList');
+  if (!list) return;
+
   const regionFilter = document.getElementById('saleFilterRegion').value;
   const tokenFilter = document.getElementById('saleFilterTokenized').value;
 
@@ -134,6 +137,8 @@ function renderSaleList() {
 
 function renderRentList() {
   const list = document.getElementById('rentList');
+  if (!list) return;
+
   list.innerHTML = "";
   rentItems.forEach(item => {
     const card = document.createElement('div');
@@ -152,28 +157,10 @@ function renderRentList() {
   });
 }
 
-function renderPensionList() {
-  const list = document.getElementById('pensionList');
-  list.innerHTML = "";
-  pensionItems.forEach(item => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      <h3>${item.title}</h3>
-      <p>1박 기준: ${item.nightly}원</p>
-      <p>펜션 수익 지급률(예시): ${item.payoutRate}%</p>
-      <p>토큰 혜택: ${item.tokenBenefit}</p>
-      <div class="card-footer">
-        <button>예약(예시)</button>
-      </div>
-    `;
-    list.appendChild(card);
-  });
-}
-
 function renderFeatured() {
   const list = document.getElementById('featuredList');
   if (!list) return;
+
   list.innerHTML = "";
   saleItems.slice(0, 3).forEach(item => {
     const card = document.createElement('div');
@@ -187,6 +174,7 @@ function renderFeatured() {
   });
 }
 
+// ====== 마이페이지 (로그인 정보 표시) ======
 function renderMyPage() {
   const myTokens = document.getElementById('myTokens');
   const myTrades = document.getElementById('myTrades');
@@ -195,18 +183,21 @@ function renderMyPage() {
 
   if (myTokens) {
     myTokens.innerHTML = currentUser
-      ? `<li>${currentUser.email} 님 보유 지분 예시</li><li>서울 아파트 지분 20개</li><li>강원 펜션 지분 150개</li>`
+      ? `<li>${currentUser.email} 님 보유 지분 예시</li>
+         <li>서울 아파트 지분 20개</li>
+         <li>강원 펜션 지분 150개</li>`
       : `<li>로그인 후 보유 지분을 확인합니다.</li>`;
   }
 
   if (myTrades) {
     myTrades.innerHTML = currentUser
-      ? `<li>예시) 2025-01-10 서울 아파트 지분 10개 매수</li><li>예시) 2025-01-15 강원 펜션 2박 예약</li>`
+      ? `<li>예시) 2025-01-10 서울 아파트 지분 10개 매수</li>
+         <li>예시) 2025-01-15 강원 펜션 2박 예약</li>`
       : `<li>로그인 후 거래 내역을 확인합니다.</li>`;
   }
 }
 
-// 자산화 신청 폼 (브라우저 메모리 저장)
+// ====== 자산화 신청 폼 (현재는 브라우저 메모리만 사용) ======
 const tokenizationForm = document.getElementById('tokenizationForm');
 const localApplications = [];
 
@@ -216,12 +207,12 @@ if (tokenizationForm) {
     const formData = new FormData(tokenizationForm);
     const data = Object.fromEntries(formData.entries());
     localApplications.push(data);
-    alert('자산화 신청서가 이 브라우저에 저장되었습니다. (예시)');
+    alert('자산화 신청서가 브라우저에 저장되었습니다. (예시)');
     tokenizationForm.reset();
   });
 }
 
-// 지갑 연결 (예시)
+// ====== 지갑 연결 (예시) ======
 if (loginBtn) {
   loginBtn.addEventListener('click', async () => {
     if (!window.ethereum) {
@@ -243,7 +234,7 @@ if (loginBtn) {
   });
 }
 
-// 회원 가입 / 로그인 (브라우저 localStorage 사용 – 구조용 예시)
+// ====== 회원 가입 / 로그인 (localStorage 사용) ======
 const signupForm = document.getElementById('signupForm');
 const loginForm = document.getElementById('loginForm');
 
@@ -253,7 +244,7 @@ if (signupForm) {
     const formData = new FormData(signupForm);
     const user = Object.fromEntries(formData.entries());
     localStorage.setItem('re_user_' + user.email, JSON.stringify(user));
-    alert('회원 가입이 완료되었습니다. (브라우저에만 저장)');
+    alert('회원 가입이 완료되었습니다. (이 브라우저에 저장)');
     signupForm.reset();
   });
 }
@@ -281,12 +272,76 @@ if (loginForm) {
   });
 }
 
-// 초기 렌더링
+// ====== 토큰·코인 발생률 관리 (마이페이지 + 홈 연동) ======
+const tokenRateForm = document.getElementById('tokenRateForm');
+const tokenRateTableAdmin = document.getElementById('tokenRateTableAdmin');
+const tokenRateTableHome = document.getElementById('tokenRateTableHome');
+
+function getTokenRates() {
+  const raw = localStorage.getItem('re_tokenRates');
+  if (raw) return JSON.parse(raw);
+  // 기본 예시 데이터 하나 넣어두기
+  return [
+    { tokenName: '강원 펜션 수익 토큰', rate: '연 5.0%', note: '임대 수익 70% 배당' }
+  ];
+}
+
+function saveTokenRates(list) {
+  localStorage.setItem('re_tokenRates', JSON.stringify(list));
+}
+
+function renderTokenRates() {
+  const list = getTokenRates();
+
+  if (tokenRateTableAdmin) {
+    const tbody = tokenRateTableAdmin.querySelector('tbody');
+    tbody.innerHTML = "";
+    list.forEach(item => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${item.tokenName}</td>
+        <td>${item.rate}</td>
+        <td>${item.note || ''}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  if (tokenRateTableHome) {
+    const tbodyHome = tokenRateTableHome.querySelector('tbody');
+    tbodyHome.innerHTML = "";
+    list.forEach(item => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${item.tokenName}</td>
+        <td>${item.rate}</td>
+        <td>${item.note || ''}</td>
+      `;
+      tbodyHome.appendChild(tr);
+    });
+  }
+}
+
+if (tokenRateForm) {
+  tokenRateForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const formData = new FormData(tokenRateForm);
+    const entry = Object.fromEntries(formData.entries());
+    const list = getTokenRates();
+    list.push(entry);
+    saveTokenRates(list);
+    renderTokenRates();
+    alert('토큰/코인 발생률이 저장되었습니다.');
+    tokenRateForm.reset();
+  });
+}
+
+// ====== 초기 렌더링 ======
 renderFeatured();
 renderSaleList();
 renderRentList();
-renderPensionList();
 renderMyPage();
+renderTokenRates();
 
 const saleFilterRegion = document.getElementById('saleFilterRegion');
 const saleFilterTokenized = document.getElementById('saleFilterTokenized');
