@@ -1,348 +1,1303 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>부동산 자산 디지털 플랫폼 (Real8)</title>
+  <meta charset="UTF-8" />
+  <title>부동산 자산 디지털 플랫폼 (real8)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    :root{
-      --bg:#0b0f16;
-      --panel:#0f1724;
-      --text:#e9eef7;
-      --muted:#b8c3d9;
-      --line:rgba(255,255,255,.10);
-      --blue:#2f61ff;
-      --blue2:#2b4fe6;
-      --btn:#2f61ff;
-      --btn2:#1d3fbf;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #101820;
+      color: #f5f5f5;
+      line-height: 1.5;
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Apple SD Gothic Neo, Noto Sans KR, sans-serif;
-      background: radial-gradient(1200px 600px at 40% 0%, rgba(47,97,255,.25), transparent 60%),
-                  radial-gradient(900px 500px at 90% 30%, rgba(47,97,255,.18), transparent 55%),
-                  var(--bg);
-      color:var(--text);
+    a { color: #8bd3ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    header {
+      background: linear-gradient(135deg, #0044ff, #26a5ff);
+      padding: 16px 20px;
+      border-bottom: 2px solid #0b274c;
+    }
+    header h1 { font-size: 20px; margin-bottom: 6px; }
+    header p { font-size: 13px; opacity: 0.9; }
+
+    nav { background: #0b1a27; border-bottom: 1px solid #1d3044; }
+    #main-nav { display: flex; flex-wrap: wrap; list-style: none; }
+    #main-nav li a {
+      display: block; padding: 12px 14px; font-size: 13px; cursor: pointer;
+    }
+    #main-nav li a.active {
+      background: #ffd54a; color: #10243a; font-weight: 700;
     }
 
-    /* Top header */
-    .topbar{
-      background: linear-gradient(90deg, #2f61ff, #3a7bff);
-      padding:18px 16px;
-      border-bottom:1px solid rgba(255,255,255,.18);
+    main { max-width: 1100px; margin: 18px auto 40px; padding: 0 12px; }
+    section.page-section {
+      display: none;
+      background: #151f2b;
+      border: 1px solid #263447;
+      border-radius: 10px;
+      padding: 18px 16px 22px;
+      margin-bottom: 20px;
     }
-    .wrap{max-width:1100px; margin:0 auto; padding:0 16px;}
-    .brand{
-      font-weight:800;
-      font-size:22px;
-      letter-spacing:.2px;
-    }
-    .subtitle{
-      margin-top:6px;
-      font-size:14px;
-      opacity:.92;
+    section.page-section.visible { display: block; }
+
+    h2 { font-size: 18px; margin-bottom: 10px; border-bottom: 1px solid #263b4f; padding-bottom: 6px; }
+    h3 { font-size: 15px; margin: 14px 0 6px; }
+    h4 { font-size: 14px; margin-bottom: 6px; }
+    p { font-size: 13px; margin-bottom: 6px; }
+
+    .info-box {
+      background: #1b2a3a;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      font-size: 12px;
     }
 
-    /* Nav */
-    .nav{
-      background: rgba(0,0,0,.28);
-      border-bottom:1px solid rgba(255,255,255,.08);
-      backdrop-filter: blur(8px);
+    label { font-size: 13px; display: block; margin: 8px 0 3px; }
+    input[type="text"], input[type="password"], input[type="number"], textarea, select {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #34475c;
+      background: #0f1823;
+      color: #f5f5f5;
+      font-size: 13px;
     }
-    .nav ul{
-      list-style:none;
-      padding:10px 0;
-      margin:0;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-    .nav a{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:10px;
-      color:var(--text);
-      text-decoration:none;
-      font-size:13px;
-      opacity:.95;
-      background: rgba(255,255,255,.03);
-    }
-    .nav a:hover{border-color: rgba(255,255,255,.35)}
-    .nav a.active{border-color: rgba(47,97,255,.9); box-shadow: 0 0 0 2px rgba(47,97,255,.15) inset;}
+    textarea { min-height: 70px; resize: vertical; }
 
-    /* Content */
-    main{padding:22px 0 60px}
-    .card{
-      background: rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:16px;
-      padding:18px;
-      margin:14px 0;
+    button {
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      margin-top: 8px;
     }
-    h2{
-      margin:0 0 10px;
-      font-size:18px;
-    }
-    p, li{color:var(--muted); line-height:1.6}
-    .grid{
-      display:grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap:14px;
-    }
-    @media (max-width: 900px){
-      .grid{grid-template-columns: 1fr;}
-    }
+    .btn-primary { background: #26a5ff; color: #0b1926; font-weight: 700; }
+    .btn-secondary { background: #37495c; color: #f5f5f5; }
+    .btn-warning { background: #ffd54a; color: #10243a; font-weight: 800; }
+    .btn-sm { padding: 4px 10px; font-size: 12px; border-radius: 999px; margin-top: 0; }
 
-    /* Forms */
-    .formrow{display:grid; grid-template-columns: 1fr; gap:10px; margin-top:10px}
-    label{font-size:12px; color:var(--muted)}
-    input{
-      width:100%;
-      padding:12px 12px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.25);
-      color:var(--text);
-      outline:none;
-    }
-    input:focus{border-color: rgba(47,97,255,.85); box-shadow: 0 0 0 3px rgba(47,97,255,.15)}
-    .btn{
-      width:100%;
-      padding:12px 12px;
-      border:0;
-      border-radius:12px;
-      background: linear-gradient(180deg, var(--btn), var(--btn2));
-      color:white;
-      font-weight:700;
-      cursor:pointer;
-    }
-    .btn:active{transform: translateY(1px);}
-    .hint{font-size:12px; color:rgba(233,238,247,.75); margin-top:10px}
-    .small{font-size:12px; color:rgba(233,238,247,.70)}
-    .two{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-    }
-    @media (max-width: 650px){
-      .two{grid-template-columns:1fr}
-    }
+    .flex-row { display: flex; flex-wrap: wrap; gap: 12px; }
+    .flex-2 { flex: 1 1 260px; min-width: 0; }
 
-    /* Footer */
-    footer{
-      padding:22px 0;
-      border-top:1px solid rgba(255,255,255,.10);
-      color:rgba(233,238,247,.65);
-      font-size:12px;
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+    th, td { border: 1px solid #29394c; padding: 6px 5px; text-align: left; vertical-align: top; }
+    th { background: #1d2c3f; font-weight: 700; }
+    tr:nth-child(even) td { background: #141d28; }
+
+    .badge { display: inline-block; font-size: 11px; padding: 2px 6px; border-radius: 999px; background: #263b4f; margin-left: 6px; }
+    .badge-green { background: #2e7d32; }
+    .badge-gray  { background: #424242; }
+    .badge-blue  { background: #1e88e5; }
+    .badge-red   { background: #c62828; }
+
+    .text-right { text-align: right; }
+    .mt-6 { margin-top: 6px; }
+    .mt-10 { margin-top: 10px; }
+    .mb-6 { margin-bottom: 6px; }
+    .small { font-size: 11px; opacity: 0.95; }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      z-index: 9999;
     }
-    .pill{
-      display:inline-block;
-      padding:4px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.03);
-      font-size:12px;
-      color:rgba(233,238,247,.85);
-      margin-right:6px;
+    .modal {
+      width: min(820px, 100%);
+      background: #151f2b;
+      border: 1px solid #2a3a4f;
+      border-radius: 12px;
+      padding: 14px 14px 10px;
+    }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; border-bottom: 1px solid #263b4f; padding-bottom: 8px; margin-bottom: 10px;
+    }
+    .modal-title { font-weight: 800; font-size: 15px; }
+    .modal-close { background: #37495c; color: #fff; border-radius: 999px; padding: 5px 10px; font-size: 12px; }
+
+    .img-thumb { max-width: 180px; border: 1px solid #2a3a4f; border-radius: 8px; margin-top: 6px; display: block; }
+    .hr { height:1px; background:#263b4f; margin:10px 0; }
+
+    @media (max-width: 700px) {
+      header h1 { font-size: 17px; }
+      #main-nav li a { font-size: 12px; padding: 9px 8px; }
     }
   </style>
 </head>
-
 <body>
-  <header class="topbar">
-    <div class="wrap">
-      <div class="brand">부동산 자산 디지털 플랫폼 (Real8)</div>
-      <div class="subtitle">건축·거주·매매·임대·가상건축을 통합하고 블록체인 기록(데모)으로 연결합니다.</div>
-    </div>
-  </header>
+<header>
+  <h1>부동산 자산 디지털 플랫폼 (real8)</h1>
+  <p>건축·거주·매매·임대·가상건축 기록을 기반으로 토큰을 코인으로 발행하고 블록체인 해시값을 남기기 위한 사업용 시범 사이트입니다.</p>
+</header>
 
-  <nav class="nav">
-    <div class="wrap">
-      <ul>
-        <li><a href="#home" class="navlink active">홈·회원가입/로그인·자산 안내</a></li>
-        <li><a href="#manage" class="navlink">블록체인·토큰·코인관리(관리자)</a></li>
-        <li><a href="#asset" class="navlink">건축·매매·임대·바꿔살기(정보 등록)</a></li>
-        <li><a href="#virtual" class="navlink">가상건축 제안·참여</a></li>
-        <li><a href="#culture" class="navlink">문화·정보 공유</a></li>
-        <li><a href="#ad" class="navlink">광고·홍보 계정</a></li>
-        <li><a href="#mypage" class="navlink">마이페이지</a></li>
+<nav>
+  <ul id="main-nav">
+    <li><a href="#" data-target="home-section" class="active">홈·회원가입·로그인·자산 안내</a></li>
+    <li><a href="#" data-target="blockchain-section">블록체인·토큰코인관리 (관리자)</a></li>
+    <li><a href="#" data-target="trade-section">건축·매매·임대·바꿔살기 (정보 등록)</a></li>
+    <li><a href="#" data-target="virtual-section">가상건축 제안·참여</a></li>
+    <li><a href="#" data-target="culture-section">문화 (정보 공유)</a></li>
+    <li><a href="#" data-target="ads-section">광고·홍보 계정</a></li>
+    <li><a href="#" data-target="mypage-section">마이페이지</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- 홈 -->
+  <section id="home-section" class="page-section visible">
+    <h2>홈 · 회원가입 · 로그인 · 자산 안내</h2>
+
+    <div class="info-box">
+      <h3>사이트 구성 및 각 페이지 사용 설명</h3>
+      <ul style="margin-left:14px; font-size:12px; margin-top:4px;">
+        <li>① <strong>블록체인·토큰코인관리</strong> : 관리자만 분야별 토큰 증가율(%) / 코인 변환율(%) / 회원 간 거래 시 배율을 설정합니다.</li>
+        <li>② <strong>건축·매매·임대·바꿔살기</strong> : 한쪽만 입력해도 “정보”로 저장됩니다. 양쪽이 모두 회원이면 “완료” 처리되며 토큰·코인이 자동 지급됩니다.</li>
+        <li>③ <strong>가상건축</strong> : 제목 클릭으로 내용 열람, 참여/의견/사진 업로드가 가능하며 참여 시 토큰이 지급됩니다.</li>
+        <li>④ <strong>문화</strong> : 인테리어/집수리/건축기술/거주아이디어/정원가꾸기 섹션에 글을 올리고 댓글 참여가 가능하며 토큰이 지급됩니다.</li>
+        <li>⑤ <strong>마이페이지</strong> : 회원별 토큰/코인 누적 및 활동(거래/참여/문화활동) 기록을 보여줍니다.</li>
       </ul>
+      <p class="small mt-6">※ 현재 버전은 브라우저(LocalStorage)에만 저장됩니다. 실제 서비스는 서버·DB·보안·규제 검토가 필요합니다.</p>
     </div>
-  </nav>
 
-  <main class="wrap">
+    <div class="flex-row">
+      <div class="flex-2">
+        <h3>회원가입 및 로그인</h3>
+        <p class="small mb-6">이 브라우저 안에서만 사용되는 간단한 회원 시스템입니다.</p>
 
-    <section id="home" class="card">
-      <h2>홈 · 회원가입 · 로그인 · 자산 안내</h2>
+        <div class="flex-row">
+          <div class="flex-2">
+            <h4>로그인</h4>
+            <label for="login-id">아이디</label>
+            <input id="login-id" type="text" placeholder="예: jung" />
+            <label for="login-pw">비밀번호</label>
+            <input id="login-pw" type="password" />
+            <button class="btn-primary" onclick="handleLogin()">로그인</button>
+            <p class="small mt-6" id="login-status">현재 로그인: (없음)</p>
+            <button class="btn-secondary btn-sm mt-6" onclick="handleLogout()">로그아웃</button>
+          </div>
+
+          <div class="flex-2">
+            <h4>회원가입</h4>
+            <label for="signup-id">아이디</label>
+            <input id="signup-id" type="text" placeholder="예: hong" />
+            <label for="signup-pw">비밀번호</label>
+            <input id="signup-pw" type="password" />
+            <button class="btn-primary" onclick="handleSignup()">회원가입</button>
+            <p class="small mt-6">※ 아이디는 거래/참여/문화 활동 토큰 지급에 사용됩니다.</p>
+          </div>
+        </div>
+
+        <div class="info-box mt-10">
+          <p class="small">
+            ※ 현재 버전에서는 아이디 <strong>jung</strong> 계정을 <strong>관리자</strong>로 간주합니다.<br/>
+            jung 로그인 시 “블록체인·토큰코인관리”에서 비율을 수정할 수 있고, 다른 회원은 읽기만 가능합니다.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 블록체인 -->
+  <section id="blockchain-section" class="page-section">
+    <h2>블록체인 통합 · 토큰/코인 발행 기준 관리 (관리자)</h2>
+
+    <div class="info-box">
       <p class="small">
-        <span class="pill">데모</span>
-        이 사이트는 “사업 설명/시연용(데모)” 화면입니다. (모바일/PC 모두 열림)
+        <strong>토큰 증가율(%)</strong> = 기본 토큰 수량(내부 기준)에 대해 몇 %를 더 발행할지<br/>
+        <strong>코인 변환율(%)</strong> = 최종 토큰에서 몇 %를 코인으로 산출할지<br/>
+        <strong>회원 간 거래 배율</strong> = 양쪽이 모두 회원이고 “완료”되면 토큰을 2배 등으로 발행
       </p>
-
-      <div class="grid">
-        <div class="card" style="margin:0">
-          <h2 style="font-size:16px">사이트 구성 및 각 페이지 사용 설명</h2>
-          <ul>
-            <li><b>블록체인·토큰·코인관리</b>: 관리자 화면(데모) — 발행/정산 흐름 설명</li>
-            <li><b>정보 등록</b>: 건축·매매·임대·바꿔살기 등 자산 정보를 등록(데모 폼)</li>
-            <li><b>가상건축</b>: 제안/참여 방식 소개(데모)</li>
-            <li><b>문화·정보 공유</b>: 커뮤니티·자료 공유 섹션(데모)</li>
-            <li><b>광고·홍보 계정</b>: 사업 제휴/광고주 안내(데모)</li>
-            <li><b>마이페이지</b>: 보유 내역/등록 내역/설정(데모)</li>
-          </ul>
-          <p class="small">※ 현재는 “웹에서 바로 열리는 데모” 버전입니다. (실서비스는 DB/보안/인증 연동 필요)</p>
-        </div>
-
-        <div class="card" style="margin:0">
-          <h2 style="font-size:16px">회원가입 및 로그인 (데모)</h2>
-          <div class="two">
-            <div>
-              <div class="small" style="font-weight:700; margin-bottom:6px;">로그인</div>
-              <div class="formrow">
-                <div>
-                  <label>아이디</label>
-                  <input id="loginId" placeholder="예: jung" />
-                </div>
-                <div>
-                  <label>비밀번호</label>
-                  <input id="loginPw" type="password" placeholder="비밀번호" />
-                </div>
-                <button class="btn" id="btnLogin">로그인</button>
-                <div class="hint" id="loginMsg"></div>
-              </div>
-            </div>
-
-            <div>
-              <div class="small" style="font-weight:700; margin-bottom:6px;">회원가입</div>
-              <div class="formrow">
-                <div>
-                  <label>아이디</label>
-                  <input id="joinId" placeholder="예: hong" />
-                </div>
-                <div>
-                  <label>비밀번호</label>
-                  <input id="joinPw" type="password" placeholder="비밀번호" />
-                </div>
-                <button class="btn" id="btnJoin">회원가입</button>
-                <div class="hint" id="joinMsg"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="small" style="margin-top:10px; opacity:.85">
-            * 데모용이라 실제 계정/DB는 연결하지 않았습니다. (클릭/화면 이동은 정상 작동)
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="manage" class="card">
-      <h2>블록체인 · 토큰 · 코인관리 (관리자)</h2>
-      <p>관리자 기능(데모): 발행 정책, 거래 기록(해시), 정산 흐름을 설명하는 화면입니다.</p>
-      <ul>
-        <li>발행 원칙: 자산 등록/거래/참여 활동에 따라 보상 토큰 지급(데모)</li>
-        <li>기록: 거래 이벤트를 해시로 기록(개념 시연)</li>
-        <li>정산: 수익 배분/수수료 구조(사업용 설명)</li>
-      </ul>
-    </section>
-
-    <section id="asset" class="card">
-      <h2>건축 · 매매 · 임대 · 바꿔살기 (정보 등록)</h2>
-      <p>자산 정보를 등록하는 데모 폼입니다. (실서비스는 DB 저장/검증 필요)</p>
-      <div class="formrow">
-        <div class="two">
-          <div><label>자산명</label><input placeholder="예: 부천 ○○빌라" /></div>
-          <div><label>유형</label><input placeholder="예: 매매 / 임대 / 바꿔살기" /></div>
-        </div>
-        <div class="two">
-          <div><label>주소(개략)</label><input placeholder="예: 경기 부천시…" /></div>
-          <div><label>가격/월세</label><input placeholder="예: 3억 / 월 120" /></div>
-        </div>
-        <button class="btn" onclick="alert('데모: 저장되었습니다(실제 저장은 아직).')">등록(데모)</button>
-      </div>
-    </section>
-
-    <section id="virtual" class="card">
-      <h2>가상건축 제안 · 참여</h2>
-      <p>가상건축(메타버스/디지털 트윈) 제안서 등록 및 참여 방식 소개(데모).</p>
-    </section>
-
-    <section id="culture" class="card">
-      <h2>문화 · 정보 공유</h2>
-      <p>자료/노하우/사례 공유 영역(데모). 추후 게시판/업로드 연동 가능.</p>
-    </section>
-
-    <section id="ad" class="card">
-      <h2>광고 · 홍보 계정</h2>
-      <p>광고주/제휴 문의, 상품 등록, 노출 위치 안내(데모).</p>
-    </section>
-
-    <section id="mypage" class="card">
-      <h2>마이페이지</h2>
-      <p>보유 내역/등록 내역/설정(데모). 로그인 성공 시 안내 문구가 표시됩니다.</p>
-      <div class="small" id="myStatus">현재 로그인: 없음</div>
-    </section>
-
-  </main>
-
-  <footer>
-    <div class="wrap">
-      ⓒ Real8 Demo · 모바일/PC 공개용. (실서비스는 인증/DB/보안 연결 후 운영)
     </div>
-  </footer>
 
-  <script>
-    // ✅ 메뉴 클릭이 안 되는 문제 방지용: 해시 이동 + 부드러운 스크롤 + active 표시
-    const links = document.querySelectorAll('.navlink');
-    function setActive(hash){
-      links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === hash));
+    <p class="small mb-6">
+      현재 로그인: <span id="bc-current-user">(로그인 필요)</span>
+      <span id="bc-admin-badge" class="badge badge-green" style="display:none;">관리자</span>
+      <span id="bc-readonly-badge" class="badge badge-gray" style="display:none;">읽기 전용</span>
+    </p>
+
+    <div id="bc-settings-form">
+      <h3>분야별 비율 설정</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>분야</th>
+            <th>토큰 증가율 (%)</th>
+            <th>코인 변환율 (%)</th>
+          </tr>
+        </thead>
+        <tbody id="bc-rate-rows"></tbody>
+      </table>
+
+      <label class="mt-10">회원 간 거래 시 토큰 배율 (예: 2 = 두 배)</label>
+      <input type="number" id="member-multiplier-input" value="2" min="1" />
+
+      <button class="btn-primary mt-6" onclick="saveRateSettings()">비율 저장</button>
+    </div>
+
+    <div id="bc-readonly-box" class="info-box" style="display:none; margin-top:12px;">
+      <h3 style="font-size:14px; margin-bottom:6px;">현재 적용 비율 (읽기 전용)</h3>
+      <div id="bc-readonly-content" class="small"></div>
+    </div>
+  </section>
+
+  <!-- 거래(정보 등록) -->
+  <section id="trade-section" class="page-section">
+    <h2>건축·매매·임대·바꿔살기 (등록된 정보)</h2>
+
+    <div class="info-box">
+      <p class="small">
+        ✅ 이제 “한쪽만 입력”해도 저장됩니다. (대기중)<br/>
+        ✅ 나중에 상대방(갑/을)이 들어와서 “상대 입력으로 완료”하면, 그 순간에만 토큰·코인이 발행됩니다.<br/>
+        ✅ “양쪽 모두 회원”이어야 완료가 가능합니다.
+      </p>
+    </div>
+
+    <div class="flex-row">
+      <div class="flex-2">
+        <h3>정보 등록(한쪽만도 가능)</h3>
+
+        <label for="trade-type">거래 종류</label>
+        <select id="trade-type" onchange="updateGapEulLabels()">
+          <option value="build">건축</option>
+          <option value="sale">매매</option>
+          <option value="rent">임대</option>
+          <option value="swap">바꿔살기</option>
+        </select>
+
+        <label id="gap-label" for="trade-gap-id">갑</label>
+        <input id="trade-gap-id" type="text" placeholder="예: (건축주/매도인/임대인/빌릴 사람)" />
+
+        <label id="eul-label" for="trade-eul-id">을</label>
+        <input id="trade-eul-id" type="text" placeholder="예: (시공사/매수인/임차인/빌려 줄 사람)" />
+
+        <label for="trade-amount">거래 금액 (원)</label>
+        <input id="trade-amount" type="number" placeholder="예: 300000000" min="0" />
+
+        <label for="trade-address">주소 / 위치</label>
+        <input id="trade-address" type="text" placeholder="예: 서울시 ○○구 ○○동 ..." />
+
+        <label for="trade-desc">상세 설명</label>
+        <textarea id="trade-desc" placeholder="평수/특이사항/연락처 등"></textarea>
+
+        <button class="btn-primary" onclick="registerInfo()">정보 저장(대기/완료 자동)</button>
+        <p class="small mt-6" id="trade-message"></p>
+
+        <div class="info-box mt-10">
+          <p class="small">
+            ※ 한쪽만 입력 시 “대기중”으로 저장됩니다.<br/>
+            ※ 양쪽이 모두 회원이고 금액/주소가 있으면 “완료”가 가능해지고, 완료 시 토큰·코인이 지급됩니다.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex-2">
+        <h3>등록된 정보 목록</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>종류</th>
+              <th>갑</th>
+              <th>을</th>
+              <th>금액</th>
+              <th>상태</th>
+              <th>처리</th>
+            </tr>
+          </thead>
+          <tbody id="trade-list-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 가상건축 -->
+  <section id="virtual-section" class="page-section">
+    <h2>가상건축 제안 · 참여</h2>
+
+    <div class="info-box">
+      <p class="small">
+        - 제목 클릭으로 내용 열람 가능<br/>
+        - 회원은 참여(의견/사진 업로드) 가능<br/>
+        - 참여/의견 작성 시 토큰 지급
+      </p>
+    </div>
+
+    <div class="flex-row">
+      <div class="flex-2">
+        <h3>가상건축 제안 등록</h3>
+        <label for="va-title">제목</label>
+        <input id="va-title" type="text" placeholder="예: 공용 옥상 정원 리모델링" />
+        <label for="va-content">내용</label>
+        <textarea id="va-content" placeholder="제안 내용, 예상 비용, 필요한 기술 등"></textarea>
+        <button class="btn-primary" onclick="saveVirtualProposal()">제안 등록</button>
+        <p class="small mt-6" id="va-message"></p>
+      </div>
+
+      <div class="flex-2">
+        <h3>등록된 가상건축 리스트 (제목 클릭)</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>제목</th>
+              <th>제안자</th>
+              <th>참여수</th>
+            </tr>
+          </thead>
+          <tbody id="va-list-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 문화 -->
+  <section id="culture-section" class="page-section">
+    <h2>문화 · 정보 공유</h2>
+
+    <div class="info-box">
+      <p class="small">
+        인테리어/집수리/건축기술/거주아이디어/정원가꾸기 섹션으로 나누어 글을 기록합니다.<br/>
+        글 작성/댓글 참여 시 토큰이 지급됩니다. (로컬 저장)
+      </p>
+    </div>
+
+    <div class="flex-row">
+      <div class="flex-2">
+        <h3>새 글 등록</h3>
+        <label>섹션</label>
+        <select id="cul-section">
+          <option value="interior">인테리어</option>
+          <option value="repair">집 수리</option>
+          <option value="tech">건축기술</option>
+          <option value="living">거주 아이디어</option>
+          <option value="garden">정원 가꾸기</option>
+        </select>
+
+        <label>제목</label>
+        <input id="cul-title" type="text" placeholder="예: 타일 줄눈 셀프 보수 방법" />
+
+        <label>내용</label>
+        <textarea id="cul-content" placeholder="노하우/사진 링크/주의사항 등을 기록하세요."></textarea>
+
+        <label>사진(선택)</label>
+        <input id="cul-photo" type="file" accept="image/*" />
+
+        <button class="btn-primary" onclick="createCulturePost()">글 등록(토큰 지급)</button>
+        <p class="small mt-6" id="cul-message"></p>
+      </div>
+
+      <div class="flex-2">
+        <h3>게시글 목록 (제목 클릭)</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>섹션</th>
+              <th>제목</th>
+              <th>작성자</th>
+              <th>댓글</th>
+            </tr>
+          </thead>
+          <tbody id="cul-list-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 광고 -->
+  <section id="ads-section" class="page-section">
+    <h2>광고·홍보 계정 (기본 구조)</h2>
+    <div class="info-box">
+      <p class="small">향후 광고/조회수/보너스 토큰 구조로 확장할 수 있는 기본 틀입니다.</p>
+    </div>
+
+    <label for="ad-owner">광고주 이름 / 아이디</label>
+    <input id="ad-owner" type="text" placeholder="예: 광고주001" />
+    <label for="ad-desc">광고 내용 / 링크</label>
+    <textarea id="ad-desc" placeholder="광고 설명 및 링크"></textarea>
+    <button class="btn-secondary" onclick="alert('광고 기능은 추후 확장 예정입니다.')">임시 저장(예시)</button>
+  </section>
+
+  <!-- 마이페이지 -->
+  <section id="mypage-section" class="page-section">
+    <h2>마이페이지</h2>
+
+    <div class="info-box">
+      <p class="small">
+        로그인한 회원 기준으로<br/>
+        - 거래 완료(토큰/코인), 가상건축 참여(토큰), 문화 글/댓글(토큰) 누적을 보여줍니다.
+      </p>
+    </div>
+
+    <p class="small">현재 로그인: <span id="mypage-user">(로그인 필요)</span></p>
+
+    <div class="flex-row">
+      <div class="flex-2">
+        <h3>보유 요약</h3>
+        <p class="small" id="mypage-summary">로그인 후 확인 가능합니다.</p>
+
+        <div class="info-box mt-10">
+          <p class="small">
+            ✅ “관심 메모”는 이제 <strong>문화 페이지</strong>에서 섹션별로 글/댓글로 기록합니다.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex-2">
+        <h3>내 활동 기록(최근 30개)</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>구분</th>
+              <th>토큰</th>
+              <th>코인</th>
+              <th>해시/기록</th>
+            </tr>
+          </thead>
+          <tbody id="mypage-ledger-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Modal -->
+<div id="modal-backdrop" class="modal-backdrop">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">제목</div>
+      <button class="modal-close" onclick="closeModal()">닫기</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+  // ===== LocalStorage Keys =====
+  const USERS_KEY = "real8_users";
+  const CURRENT_USER_KEY = "real8_current_user";
+  const SETTINGS_KEY = "real8_rate_settings";
+  const INFOS_KEY = "real8_infos";               // 거래/정보 목록 (대기/완료)
+  const VIRTUAL_KEY = "real8_virtual_projects";  // 가상건축
+  const CULTURE_KEY = "real8_culture_posts";     // 문화 글
+  const LEDGER_KEY = "real8_ledger";             // 토큰/코인 활동기록(원장)
+
+  // ===== Admin =====
+  const ADMIN_ID = "jung";
+
+  // ===== Base =====
+  const BASE_TOKEN_PER_COMPLETE = 10;   // 거래 완료 기본 토큰(기준)
+  const TOKEN_REWARD_VIRTUAL = 3;       // 가상건축 참여/의견 토큰
+  const TOKEN_REWARD_CULTURE_POST = 5;  // 문화 글 작성 토큰
+  const TOKEN_REWARD_CULTURE_COMMENT = 2; // 문화 댓글 토큰
+
+  // ===== Utils =====
+  function loadFromStorage(key, defVal) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return defVal;
+      return JSON.parse(raw);
+    } catch { return defVal; }
+  }
+  function saveToStorage(key, val) {
+    localStorage.setItem(key, JSON.stringify(val));
+  }
+  function nowISO() {
+    return new Date().toISOString();
+  }
+
+  // ===== Modal =====
+  function openModal(title, bodyHtml) {
+    document.getElementById("modal-title").textContent = title;
+    document.getElementById("modal-body").innerHTML = bodyHtml;
+    document.getElementById("modal-backdrop").style.display = "flex";
+  }
+  function closeModal() {
+    document.getElementById("modal-backdrop").style.display = "none";
+    document.getElementById("modal-body").innerHTML = "";
+  }
+
+  // ===== Users =====
+  function getUsers() { return loadFromStorage(USERS_KEY, []); }
+  function saveUsers(users) { saveToStorage(USERS_KEY, users); }
+  function getCurrentUser() { return loadFromStorage(CURRENT_USER_KEY, null); }
+  function setCurrentUser(u) { saveToStorage(CURRENT_USER_KEY, u); }
+  function isMember(id) { return getUsers().some(u => u.id === id); }
+  function isAdmin() { const u = getCurrentUser(); return u && u.id === ADMIN_ID; }
+
+  function ensureUserFields() {
+    const users = getUsers();
+    let changed = false;
+    for (const u of users) {
+      if (typeof u.tokenBalance !== "number") { u.tokenBalance = 0; changed = true; }
+      if (typeof u.coinBalance !== "number") { u.coinBalance = 0; changed = true; }
     }
-    links.forEach(a=>{
-      a.addEventListener('click', (e)=>{
-        const hash = a.getAttribute('href');
-        const target = document.querySelector(hash);
-        if(target){
-          e.preventDefault();
-          target.scrollIntoView({behavior:'smooth', block:'start'});
-          history.replaceState(null, '', hash); // URL 끝에 # 붙는 건 정상입니다(섹션 이동 표시)
-          setActive(hash);
-        }
+    if (changed) saveUsers(users);
+  }
+
+  // ===== Ledger =====
+  function getLedger() { return loadFromStorage(LEDGER_KEY, []); }
+  function saveLedger(list) { saveToStorage(LEDGER_KEY, list); }
+
+  function addLedgerEntry({ userId, kind, tokens, coins, refText, hash }) {
+    const list = getLedger();
+    list.unshift({
+      id: Date.now() + Math.random(),
+      ts: nowISO(),
+      userId,
+      kind,
+      tokens: tokens || 0,
+      coins: coins || 0,
+      refText: refText || "",
+      hash: hash || ""
+    });
+    saveLedger(list.slice(0, 500));
+  }
+
+  function applyBalance(userId, tokens, coins) {
+    const users = getUsers();
+    const u = users.find(x => x.id === userId);
+    if (!u) return;
+    u.tokenBalance = (u.tokenBalance || 0) + (tokens || 0);
+    u.coinBalance  = (u.coinBalance  || 0) + (coins  || 0);
+    saveUsers(users);
+  }
+
+  // ===== Auth =====
+  function handleSignup() {
+    const id = document.getElementById("signup-id").value.trim();
+    const pw = document.getElementById("signup-pw").value;
+    if (!id || !pw) return alert("아이디/비밀번호를 입력해 주세요.");
+    const users = getUsers();
+    if (users.some(u => u.id === id)) return alert("이미 존재하는 아이디입니다.");
+    users.push({ id, pw, tokenBalance: 0, coinBalance: 0 });
+    saveUsers(users);
+    alert("회원가입 완료. 로그인해 주세요.");
+  }
+
+  function handleLogin() {
+    const id = document.getElementById("login-id").value.trim();
+    const pw = document.getElementById("login-pw").value;
+    const users = getUsers();
+    const found = users.find(u => u.id === id && u.pw === pw);
+    if (!found) return alert("아이디 또는 비밀번호가 올바르지 않습니다.");
+    setCurrentUser({ id: found.id });
+    updateLoginStatus();
+    initBlockchainSection();
+    renderInfoList();
+    renderVirtualList();
+    renderCultureList();
+    refreshMypage();
+    alert("로그인 되었습니다.");
+  }
+
+  function handleLogout() {
+    setCurrentUser(null);
+    updateLoginStatus();
+    initBlockchainSection();
+    refreshMypage();
+    alert("로그아웃 되었습니다.");
+  }
+
+  function updateLoginStatus() {
+    const el = document.getElementById("login-status");
+    const u = getCurrentUser();
+    el.textContent = u ? `현재 로그인: ${u.id}` : "현재 로그인: (없음)";
+  }
+
+  // ===== Navigation =====
+  document.querySelectorAll("#main-nav a").forEach(link => {
+    link.addEventListener("click", e => {
+      e.preventDefault();
+      const targetId = link.getAttribute("data-target");
+      document.querySelectorAll("#main-nav a").forEach(a => a.classList.remove("active"));
+      link.classList.add("active");
+      document.querySelectorAll("section.page-section").forEach(sec => sec.classList.remove("visible"));
+      document.getElementById(targetId).classList.add("visible");
+
+      if (targetId === "blockchain-section") initBlockchainSection();
+      if (targetId === "trade-section") renderInfoList();
+      if (targetId === "virtual-section") renderVirtualList();
+      if (targetId === "culture-section") renderCultureList();
+      if (targetId === "mypage-section") refreshMypage();
+    });
+  });
+
+  // ===== Blockchain Settings =====
+  const DEFAULT_RATE_SETTINGS = {
+    categories: {
+      build:  { token: 10, coin: 10 },
+      sale:   { token: 10, coin: 10 },
+      rent:   { token: 10, coin: 10 },
+      swap:   { token: 10, coin: 10 }
+    },
+    memberMultiplier: 2
+  };
+
+  function loadRateSettings() {
+    const s = loadFromStorage(SETTINGS_KEY, null);
+    if (!s) { saveToStorage(SETTINGS_KEY, DEFAULT_RATE_SETTINGS); return DEFAULT_RATE_SETTINGS; }
+    return {
+      categories: Object.assign({}, DEFAULT_RATE_SETTINGS.categories, s.categories || {}),
+      memberMultiplier: s.memberMultiplier || DEFAULT_RATE_SETTINGS.memberMultiplier
+    };
+  }
+
+  function initBlockchainSection() {
+    const u = getCurrentUser();
+    document.getElementById("bc-current-user").textContent = u ? u.id : "(로그인 필요)";
+    const adminBadge = document.getElementById("bc-admin-badge");
+    const roBadge = document.getElementById("bc-readonly-badge");
+    const form = document.getElementById("bc-settings-form");
+    const roBox = document.getElementById("bc-readonly-box");
+    const roContent = document.getElementById("bc-readonly-content");
+    const tbody = document.getElementById("bc-rate-rows");
+
+    const settings = loadRateSettings();
+    const labels = { build: "건축", sale: "매매", rent: "임대", swap: "바꿔살기" };
+
+    if (isAdmin()) {
+      adminBadge.style.display = "inline-block";
+      roBadge.style.display = "none";
+      form.style.display = "block";
+      roBox.style.display = "none";
+
+      tbody.innerHTML = "";
+      Object.keys(settings.categories).forEach(k => {
+        const row = document.createElement("tr");
+        row.setAttribute("data-rate-row", k);
+        row.innerHTML = `
+          <td>${labels[k] || k}</td>
+          <td><input type="number" class="token-rate" value="${settings.categories[k].token}" /></td>
+          <td><input type="number" class="coin-rate" value="${settings.categories[k].coin}" /></td>
+        `;
+        tbody.appendChild(row);
       });
+      document.getElementById("member-multiplier-input").value = settings.memberMultiplier;
+
+    } else {
+      adminBadge.style.display = "none";
+      roBadge.style.display = "inline-block";
+      form.style.display = "none";
+      roBox.style.display = "block";
+
+      let html = "";
+      Object.keys(settings.categories).forEach(k => {
+        html += `<div>${labels[k] || k}: 토큰 증가율 ${settings.categories[k].token}%, 코인 변환율 ${settings.categories[k].coin}%</div>`;
+      });
+      html += `<div class="mt-6">회원 간 거래 배율: ${settings.memberMultiplier}배</div>`;
+      roContent.innerHTML = html;
+    }
+  }
+
+  function saveRateSettings() {
+    if (!isAdmin()) return alert("관리자만 변경할 수 있습니다.");
+    const settings = loadRateSettings();
+    document.querySelectorAll("[data-rate-row]").forEach(row => {
+      const key = row.getAttribute("data-rate-row");
+      settings.categories[key].token = Number(row.querySelector(".token-rate").value) || 0;
+      settings.categories[key].coin  = Number(row.querySelector(".coin-rate").value) || 0;
     });
-    window.addEventListener('load', ()=>{
-      const hash = location.hash || '#home';
-      setActive(hash);
+    settings.memberMultiplier = Number(document.getElementById("member-multiplier-input").value) || 1;
+    saveToStorage(SETTINGS_KEY, settings);
+    alert("비율 저장 완료");
+    initBlockchainSection();
+  }
+
+  // ===== Trade Info (Draft/Complete) =====
+  function getInfos() { return loadFromStorage(INFOS_KEY, []); }
+  function saveInfos(list) { saveToStorage(INFOS_KEY, list); }
+
+  function tradeLabels(type) {
+    if (type === "build") return { typeText: "건축", gap: "건축주", eul: "시공사" };
+    if (type === "sale")  return { typeText: "매매", gap: "매도인", eul: "매수인" };
+    if (type === "rent")  return { typeText: "임대", gap: "임대인", eul: "임차인" };
+    if (type === "swap")  return { typeText: "바꿔살기", gap: "빌릴 사람", eul: "빌려 줄 사람" };
+    return { typeText: type, gap: "갑", eul: "을" };
+  }
+
+  function updateGapEulLabels() {
+    const type = document.getElementById("trade-type").value;
+    const L = tradeLabels(type);
+    document.getElementById("gap-label").textContent = L.gap;
+    document.getElementById("eul-label").textContent = L.eul;
+  }
+
+  function createHash(text) {
+    const base = text + "|" + Date.now() + "|" + Math.random();
+    return "HASH-" + btoa(unescape(encodeURIComponent(base))).substring(0, 18);
+  }
+
+  function canCompleteInfo(info) {
+    // 완료 조건: gap, eul 모두 존재 + 둘 다 회원 + amount/address 존재 + 아직 미완료
+    if (info.status === "완료") return false;
+    if (!info.gapId || !info.eulId) return false;
+    if (!info.amount || !info.address) return false;
+    if (!isMember(info.gapId) || !isMember(info.eulId)) return false;
+    return true;
+  }
+
+  function issueForCompletion(info) {
+    const settings = loadRateSettings();
+    const cat = settings.categories[info.type] || { token: 10, coin: 10 };
+
+    let tokens = Math.round(BASE_TOKEN_PER_COMPLETE * (1 + (cat.token || 0)/100));
+    tokens = tokens * (settings.memberMultiplier || 1);
+    const coins = Math.round(tokens * (cat.coin || 0)/100);
+    const hash = createHash(`${info.type}|${info.gapId}|${info.eulId}|${info.amount}|${info.address}|${tokens}|${coins}`);
+
+    // 지급: 양쪽 모두에게 동일 지급(원하시면 나중에 갑/을 차등도 가능)
+    applyBalance(info.gapId, tokens, coins);
+    addLedgerEntry({ userId: info.gapId, kind: "거래완료(갑)", tokens, coins, refText: `${tradeLabels(info.type).typeText} 완료`, hash });
+
+    applyBalance(info.eulId, tokens, coins);
+    addLedgerEntry({ userId: info.eulId, kind: "거래완료(을)", tokens, coins, refText: `${tradeLabels(info.type).typeText} 완료`, hash });
+
+    info.status = "완료";
+    info.issued = { tokens, coins, hash };
+  }
+
+  function registerInfo() {
+    const msgEl = document.getElementById("trade-message");
+    msgEl.textContent = "";
+
+    const type = document.getElementById("trade-type").value;
+    let gapId = document.getElementById("trade-gap-id").value.trim();
+    let eulId = document.getElementById("trade-eul-id").value.trim();
+    const amount = Number(document.getElementById("trade-amount").value) || 0;
+    const address = document.getElementById("trade-address").value.trim();
+    const desc = document.getElementById("trade-desc").value.trim();
+
+    const me = getCurrentUser();
+    if (!me) return alert("로그인 후 저장할 수 있습니다.");
+
+    // 한쪽만 입력 허용: 둘 다 비면 안 됨
+    if (!gapId && !eulId) {
+      // 입력이 없으면 로그인 사용자를 갑으로 자동 채움(가장 안전)
+      gapId = me.id;
+    }
+
+    // 완전 빈 핵심(주소/설명도 비면 의미 없음) - 그래도 저장은 가능하나 최소한 주소나 설명 하나는 권장
+    if (!address && !desc) {
+      if (!confirm("주소/상세설명이 비어 있습니다. 그래도 저장할까요?")) return;
+    }
+
+    const list = getInfos();
+    const info = {
+      id: Date.now(),
+      type,
+      gapId: gapId || "",
+      eulId: eulId || "",
+      amount,
+      address,
+      desc,
+      createdBy: me.id,
+      status: "대기중",
+      issued: null
+    };
+
+    // 중복 방지(완전히 같은 핵심 입력이면)
+    const dup = list.some(x => x.type===info.type && x.gapId===info.gapId && x.eulId===info.eulId && x.amount===info.amount && x.address===info.address && x.status!=="삭제");
+    if (dup) return alert("이미 유사한 정보가 등록되어 있습니다.");
+
+    // 저장 후 완료 조건이면 즉시 완료 처리
+    if (canCompleteInfo(info)) {
+      issueForCompletion(info);
+      msgEl.textContent = `저장 및 완료 처리되었습니다. 토큰/코인 지급 완료 (해시: ${info.issued.hash})`;
+    } else {
+      msgEl.textContent = "정보가 저장되었습니다. (대기중)";
+    }
+
+    list.unshift(info);
+    saveInfos(list);
+    renderInfoList();
+    refreshMypage();
+  }
+
+  function renderInfoList() {
+    const tbody = document.getElementById("trade-list-body");
+    const list = getInfos();
+    tbody.innerHTML = "";
+
+    list.forEach(info => {
+      const L = tradeLabels(info.type);
+      const gapTxt = info.gapId ? `${L.gap}: ${info.gapId}` : `${L.gap}: (미입력)`;
+      const eulTxt = info.eulId ? `${L.eul}: ${info.eulId}` : `${L.eul}: (미입력)`;
+      const amountTxt = info.amount ? info.amount.toLocaleString()+"원" : "-";
+      const statusBadge = info.status === "완료"
+        ? `<span class="badge badge-green">완료</span>`
+        : `<span class="badge badge-gray">대기중</span>`;
+
+      let actionHtml = "";
+      if (info.status !== "완료") {
+        actionHtml = `<button class="btn-warning btn-sm" onclick="openCompleteInfo(${info.id})">상대 입력/완료</button>`;
+      } else {
+        actionHtml = `<span class="small">토큰/코인 지급됨</span>`;
+      }
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${L.typeText}</td>
+        <td>${gapTxt}</td>
+        <td>${eulTxt}</td>
+        <td class="text-right">${amountTxt}</td>
+        <td>${statusBadge}</td>
+        <td>${actionHtml}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function openCompleteInfo(infoId) {
+    const me = getCurrentUser();
+    if (!me) return alert("로그인 후 진행하세요.");
+
+    const list = getInfos();
+    const info = list.find(x => x.id === infoId);
+    if (!info) return;
+
+    const L = tradeLabels(info.type);
+
+    const body = `
+      <div class="info-box">
+        <div class="small">이 정보는 현재 <strong>${info.status}</strong> 상태입니다.</div>
+        <div class="small">완료 조건: 갑/을 모두 회원 + 금액/주소 입력</div>
+      </div>
+
+      <div class="flex-row">
+        <div class="flex-2">
+          <label>${L.gap} (갑)</label>
+          <input id="m-gap" type="text" value="${escapeHtml(info.gapId||"")}" placeholder="${L.gap} 아이디" />
+          <label>${L.eul} (을)</label>
+          <input id="m-eul" type="text" value="${escapeHtml(info.eulId||"")}" placeholder="${L.eul} 아이디" />
+          <label>거래 금액(원)</label>
+          <input id="m-amt" type="number" value="${info.amount||0}" />
+          <label>주소/위치</label>
+          <input id="m-addr" type="text" value="${escapeHtml(info.address||"")}" />
+          <label>상세 설명</label>
+          <textarea id="m-desc">${escapeHtml(info.desc||"")}</textarea>
+
+          <button class="btn-primary" onclick="completeInfo(${info.id})">저장 & 완료 시도</button>
+          <button class="btn-secondary" onclick="closeModal()">닫기</button>
+          <p class="small mt-6" id="m-msg"></p>
+        </div>
+
+        <div class="flex-2">
+          <h4>현재 정보</h4>
+          <div class="info-box small">
+            <div>종류: ${L.typeText}</div>
+            <div>${L.gap}: ${info.gapId || "(미입력)"}</div>
+            <div>${L.eul}: ${info.eulId || "(미입력)"}</div>
+            <div>금액: ${info.amount ? info.amount.toLocaleString()+"원" : "-"}</div>
+            <div>주소: ${info.address || "-"}</div>
+          </div>
+        </div>
+      </div>
+    `;
+    openModal(`${L.typeText} - 상대 입력/완료`, body);
+  }
+
+  function completeInfo(infoId) {
+    const list = getInfos();
+    const info = list.find(x => x.id === infoId);
+    if (!info) return;
+
+    info.gapId = document.getElementById("m-gap").value.trim();
+    info.eulId = document.getElementById("m-eul").value.trim();
+    info.amount = Number(document.getElementById("m-amt").value) || 0;
+    info.address = document.getElementById("m-addr").value.trim();
+    info.desc = document.getElementById("m-desc").value.trim();
+
+    const msg = document.getElementById("m-msg");
+
+    if (canCompleteInfo(info)) {
+      issueForCompletion(info);
+      msg.textContent = `완료 처리되었습니다. 해시: ${info.issued.hash}`;
+    } else {
+      // 대기 유지, 왜 안되는지 안내
+      const reasons = [];
+      if (!info.gapId || !info.eulId) reasons.push("갑/을이 모두 필요");
+      if (!info.amount) reasons.push("금액 필요");
+      if (!info.address) reasons.push("주소 필요");
+      if (info.gapId && !isMember(info.gapId)) reasons.push(`갑(${info.gapId})은 회원 아님`);
+      if (info.eulId && !isMember(info.eulId)) reasons.push(`을(${info.eulId})은 회원 아님`);
+      msg.textContent = "아직 완료 불가: " + reasons.join(", ");
+    }
+
+    saveInfos(list);
+    renderInfoList();
+    refreshMypage();
+  }
+
+  // ===== Virtual =====
+  function getVirtualProposals() { return loadFromStorage(VIRTUAL_KEY, []); }
+  function saveVirtualProposals(list) { saveToStorage(VIRTUAL_KEY, list); }
+
+  function saveVirtualProposal() {
+    const me = getCurrentUser();
+    if (!me) return alert("로그인 후 제안할 수 있습니다.");
+    const title = document.getElementById("va-title").value.trim();
+    const content = document.getElementById("va-content").value.trim();
+    if (!title || !content) return alert("제목/내용을 입력해 주세요.");
+
+    const list = getVirtualProposals();
+    list.unshift({
+      id: Date.now(),
+      title, content,
+      proposerId: me.id,
+      participants: [],          // 참여자 ID
+      comments: []               // {userId, text, photoDataUrl, ts}
+    });
+    saveVirtualProposals(list);
+
+    document.getElementById("va-title").value = "";
+    document.getElementById("va-content").value = "";
+    document.getElementById("va-message").textContent = "제안이 등록되었습니다.";
+    renderVirtualList();
+  }
+
+  function renderVirtualList() {
+    const tbody = document.getElementById("va-list-body");
+    const list = getVirtualProposals();
+    tbody.innerHTML = "";
+    list.forEach(p => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><a href="#" onclick="openVirtual(${p.id}); return false;">${escapeHtml(p.title)}</a></td>
+        <td>${escapeHtml(p.proposerId)}</td>
+        <td class="text-right">${p.participants.length}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function openVirtual(id) {
+    const list = getVirtualProposals();
+    const p = list.find(x => x.id === id);
+    if (!p) return;
+
+    const me = getCurrentUser();
+    const joined = me ? p.participants.includes(me.id) : false;
+
+    let commentsHtml = "";
+    p.comments.forEach(c => {
+      commentsHtml += `
+        <div class="info-box small">
+          <div><strong>${escapeHtml(c.userId)}</strong> <span class="badge badge-blue">의견</span> <span class="small">${escapeHtml(c.ts)}</span></div>
+          <div class="mt-6">${escapeHtml(c.text || "")}</div>
+          ${c.photoDataUrl ? `<img class="img-thumb" src="${c.photoDataUrl}" />` : ""}
+        </div>
+      `;
     });
 
-    // ✅ 데모 로그인/회원가입(브라우저 저장)
-    const $ = (id)=>document.getElementById(id);
-    const key = 'real8_demo_user';
-    function refreshStatus(){
-      const u = localStorage.getItem(key);
-      $('myStatus').textContent = '현재 로그인: ' + (u ? u : '없음');
+    const body = `
+      <div class="info-box">
+        <div class="small"><strong>제안자:</strong> ${escapeHtml(p.proposerId)} / <strong>참여자:</strong> ${p.participants.join(", ") || "(없음)"}</div>
+      </div>
+
+      <h4>내용</h4>
+      <div class="info-box">${escapeHtml(p.content).replace(/\n/g,"<br/>")}</div>
+
+      <div class="hr"></div>
+
+      <h4>참여/의견 등록</h4>
+      <div class="info-box small">
+        - 회원만 참여/의견 등록 가능<br/>
+        - 의견 등록 시 토큰 ${TOKEN_REWARD_VIRTUAL} 지급
+      </div>
+
+      ${me ? `
+        <button class="${joined ? "btn-secondary" : "btn-warning"} btn-sm" onclick="toggleVirtualJoin(${p.id})">
+          ${joined ? "참여 취소" : "참여하기"}
+        </button>
+
+        <label class="mt-10">의견</label>
+        <textarea id="v-cmt" placeholder="의견을 적어 주세요."></textarea>
+        <label>사진(선택)</label>
+        <input id="v-photo" type="file" accept="image/*" />
+        <button class="btn-primary" onclick="addVirtualComment(${p.id})">의견 저장(토큰 지급)</button>
+        <p class="small mt-6" id="v-msg"></p>
+      ` : `
+        <div class="info-box small"><strong>로그인 후</strong> 참여/의견 작성이 가능합니다.</div>
+      `}
+
+      <div class="hr"></div>
+      <h4>의견 목록</h4>
+      ${commentsHtml || '<p class="small">아직 의견이 없습니다.</p>'}
+    `;
+    openModal(p.title, body);
+  }
+
+  function toggleVirtualJoin(id) {
+    const me = getCurrentUser();
+    if (!me) return alert("로그인 후 가능합니다.");
+    const list = getVirtualProposals();
+    const p = list.find(x => x.id === id);
+    if (!p) return;
+
+    const idx = p.participants.indexOf(me.id);
+    if (idx >= 0) p.participants.splice(idx, 1);
+    else p.participants.push(me.id);
+
+    saveVirtualProposals(list);
+    renderVirtualList();
+    openVirtual(id);
+  }
+
+  async function fileToDataUrl(file) {
+    return new Promise((resolve) => {
+      if (!file) return resolve("");
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result || "");
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function addVirtualComment(id) {
+    const me = getCurrentUser();
+    if (!me) return alert("로그인 후 가능합니다.");
+    const list = getVirtualProposals();
+    const p = list.find(x => x.id === id);
+    if (!p) return;
+
+    const text = (document.getElementById("v-cmt").value || "").trim();
+    const file = document.getElementById("v-photo").files[0];
+    if (!text && !file) return alert("의견 또는 사진 중 하나는 필요합니다.");
+
+    const photoDataUrl = await fileToDataUrl(file);
+
+    p.comments.unshift({
+      userId: me.id,
+      text,
+      photoDataUrl,
+      ts: new Date().toLocaleString()
+    });
+
+    // 토큰 지급
+    applyBalance(me.id, TOKEN_REWARD_VIRTUAL, 0);
+    addLedgerEntry({ userId: me.id, kind: "가상건축 의견", tokens: TOKEN_REWARD_VIRTUAL, coins: 0, refText: p.title, hash: "" });
+
+    saveVirtualProposals(list);
+    renderVirtualList();
+    refreshMypage();
+
+    openVirtual(id);
+  }
+
+  // ===== Culture =====
+  function getCulturePosts() { return loadFromStorage(CULTURE_KEY, []); }
+  function saveCulturePosts(list) { saveToStorage(CULTURE_KEY, list); }
+
+  function sectionLabel(code) {
+    return ({
+      interior: "인테리어",
+      repair: "집 수리",
+      tech: "건축기술",
+      living: "거주 아이디어",
+      garden: "정원 가꾸기"
+    })[code] || code;
+  }
+
+  async function createCulturePost() {
+    const me = getCurrentUser();
+    if (!me) return alert("로그인 후 글을 등록할 수 있습니다.");
+
+    const sec = document.getElementById("cul-section").value;
+    const title = document.getElementById("cul-title").value.trim();
+    const content = document.getElementById("cul-content").value.trim();
+    const file = document.getElementById("cul-photo").files[0];
+
+    if (!title || !content) return alert("제목/내용을 입력해 주세요.");
+
+    const photoDataUrl = await fileToDataUrl(file);
+
+    const list = getCulturePosts();
+    const post = {
+      id: Date.now(),
+      section: sec,
+      title, content,
+      authorId: me.id,
+      photoDataUrl,
+      comments: [], // {userId, text, photoDataUrl, ts}
+      ts: new Date().toLocaleString()
+    };
+    list.unshift(post);
+    saveCulturePosts(list);
+
+    // 토큰 지급(글 작성)
+    applyBalance(me.id, TOKEN_REWARD_CULTURE_POST, 0);
+    addLedgerEntry({ userId: me.id, kind: "문화 글작성", tokens: TOKEN_REWARD_CULTURE_POST, coins: 0, refText: `${sectionLabel(sec)}: ${title}`, hash: "" });
+
+    document.getElementById("cul-title").value = "";
+    document.getElementById("cul-content").value = "";
+    document.getElementById("cul-photo").value = "";
+    document.getElementById("cul-message").textContent = "글이 등록되었습니다. (토큰 지급)";
+
+    renderCultureList();
+    refreshMypage();
+  }
+
+  function renderCultureList() {
+    const tbody = document.getElementById("cul-list-body");
+    const list = getCulturePosts();
+    tbody.innerHTML = "";
+    list.forEach(p => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${sectionLabel(p.section)}</td>
+        <td><a href="#" onclick="openCulture(${p.id}); return false;">${escapeHtml(p.title)}</a></td>
+        <td>${escapeHtml(p.authorId)}</td>
+        <td class="text-right">${p.comments.length}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function openCulture(id) {
+    const list = getCulturePosts();
+    const p = list.find(x => x.id === id);
+    if (!p) return;
+
+    let commentsHtml = "";
+    p.comments.forEach(c => {
+      commentsHtml += `
+        <div class="info-box small">
+          <div><strong>${escapeHtml(c.userId)}</strong> <span class="badge badge-blue">댓글</span> <span class="small">${escapeHtml(c.ts)}</span></div>
+          <div class="mt-6">${escapeHtml(c.text || "")}</div>
+          ${c.photoDataUrl ? `<img class="img-thumb" src="${c.photoDataUrl}" />` : ""}
+        </div>
+      `;
+    });
+
+    const me = getCurrentUser();
+
+    const body = `
+      <div class="info-box small">
+        <div><strong>섹션:</strong> ${sectionLabel(p.section)} <span class="badge badge-gray">작성자 ${escapeHtml(p.authorId)}</span></div>
+        <div class="mt-6">${escapeHtml(p.ts)}</div>
+      </div>
+
+      ${p.photoDataUrl ? `<img class="img-thumb" src="${p.photoDataUrl}" />` : ""}
+
+      <div class="info-box">${escapeHtml(p.content).replace(/\n/g,"<br/>")}</div>
+
+      <div class="hr"></div>
+
+      <h4>댓글(참여) 등록</h4>
+      <div class="info-box small">댓글 작성 시 토큰 ${TOKEN_REWARD_CULTURE_COMMENT} 지급</div>
+
+      ${me ? `
+        <label>댓글</label>
+        <textarea id="c-cmt" placeholder="의견/노하우/추가정보를 적어주세요."></textarea>
+        <label>사진(선택)</label>
+        <input id="c-photo" type="file" accept="image/*" />
+        <button class="btn-primary" onclick="addCultureComment(${p.id})">댓글 저장(토큰 지급)</button>
+        <p class="small mt-6" id="c-msg"></p>
+      ` : `
+        <div class="info-box small"><strong>로그인 후</strong> 댓글 등록이 가능합니다.</div>
+      `}
+
+      <div class="hr"></div>
+      <h4>댓글 목록</h4>
+      ${commentsHtml || '<p class="small">아직 댓글이 없습니다.</p>'}
+    `;
+    openModal(p.title, body);
+  }
+
+  async function addCultureComment(id) {
+    const me = getCurrentUser();
+    if (!me) return alert("로그인 후 가능합니다.");
+
+    const list = getCulturePosts();
+    const p = list.find(x => x.id === id);
+    if (!p) return;
+
+    const text = (document.getElementById("c-cmt").value || "").trim();
+    const file = document.getElementById("c-photo").files[0];
+    if (!text && !file) return alert("댓글 또는 사진 중 하나는 필요합니다.");
+
+    const photoDataUrl = await fileToDataUrl(file);
+
+    p.comments.unshift({
+      userId: me.id,
+      text,
+      photoDataUrl,
+      ts: new Date().toLocaleString()
+    });
+
+    // 토큰 지급(댓글)
+    applyBalance(me.id, TOKEN_REWARD_CULTURE_COMMENT, 0);
+    addLedgerEntry({ userId: me.id, kind: "문화 댓글", tokens: TOKEN_REWARD_CULTURE_COMMENT, coins: 0, refText: p.title, hash: "" });
+
+    saveCulturePosts(list);
+    renderCultureList();
+    refreshMypage();
+    openCulture(id);
+  }
+
+  // ===== MyPage =====
+  function refreshMypage() {
+    const u = getCurrentUser();
+    document.getElementById("mypage-user").textContent = u ? u.id : "(로그인 필요)";
+
+    const summaryEl = document.getElementById("mypage-summary");
+    const tbody = document.getElementById("mypage-ledger-body");
+
+    if (!u) {
+      summaryEl.textContent = "로그인 후 확인 가능합니다.";
+      tbody.innerHTML = "";
+      return;
     }
-    $('btnJoin').addEventListener('click', ()=>{
-      const id = $('joinId').value.trim();
-      const pw = $('joinPw').value.trim();
-      if(!id || !pw){ $('joinMsg').textContent='아이디/비밀번호를 입력하세요.'; return; }
-      localStorage.setItem(key, id);
-      $('joinMsg').textContent='회원가입(데모) 완료! 로그인 상태로 전환되었습니다.';
-      refreshStatus();
+
+    const users = getUsers();
+    const me = users.find(x => x.id === u.id);
+    summaryEl.textContent = `보유 토큰: ${(me?.tokenBalance||0)}개, 보유 코인: ${(me?.coinBalance||0)}개`;
+
+    const ledger = getLedger().filter(x => x.userId === u.id).slice(0, 30);
+    tbody.innerHTML = "";
+    ledger.forEach(e => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${escapeHtml(e.kind)}<div class="small">${escapeHtml(e.ts)}</div></td>
+        <td class="text-right">${e.tokens}</td>
+        <td class="text-right">${e.coins}</td>
+        <td>${escapeHtml(e.hash || e.refText || "")}</td>
+      `;
+      tbody.appendChild(tr);
     });
-    $('btnLogin').addEventListener('click', ()=>{
-      const id = $('loginId').value.trim();
-      const pw = $('loginPw').value.trim();
-      if(!id || !pw){ $('loginMsg').textContent='아이디/비밀번호를 입력하세요.'; return; }
-      localStorage.setItem(key, id);
-      $('loginMsg').textContent='로그인(데모) 성공! 아래 “마이페이지”에서 확인하세요.';
-      refreshStatus();
-    });
-    refreshStatus();
-  </script>
+  }
+
+  // ===== escape =====
+  function escapeHtml(s) {
+    return String(s || "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  // ===== Init =====
+  window.addEventListener("DOMContentLoaded", () => {
+    ensureUserFields();
+    updateLoginStatus();
+    updateGapEulLabels();
+    initBlockchainSection();
+    renderInfoList();
+    renderVirtualList();
+    renderCultureList();
+    refreshMypage();
+  });
+</script>
 </body>
 </html>
+
