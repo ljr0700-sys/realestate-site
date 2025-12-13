@@ -1,267 +1,127 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <title>블록체인 부동산 디지털화 플랫폼</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>부동산 자산 디지털 플랫폼 (Real8)</title>
+<style>
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #0f172a;
+  color: #e5e7eb;
+}
+header {
+  background: linear-gradient(90deg, #2563eb, #1e40af);
+  padding: 20px;
+}
+header h1 {
+  margin: 0;
+  font-size: 22px;
+}
+nav {
+  background: #020617;
+  padding: 10px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+nav a {
+  color: #93c5fd;
+  text-decoration: none;
+  font-size: 14px;
+}
+.container {
+  max-width: 1100px;
+  margin: 20px auto;
+  padding: 20px;
+}
+.card {
+  background: #020617;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+h2 {
+  color: #60a5fa;
+}
+input, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border-radius: 5px;
+  border: none;
+}
+button {
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+}
+button:hover {
+  background: #1e40af;
+}
+footer {
+  text-align: center;
+  color: #64748b;
+  padding: 20px;
+  font-size: 12px;
+}
+</style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="logo">RealEstateChain</div>
-    <nav class="main-nav">
-      <button data-page="home" class="nav-btn active">홈</button>
-      <button data-page="architecture" class="nav-btn">건축</button>
-      <button data-page="sale" class="nav-btn">매매</button>
-      <button data-page="rent" class="nav-btn">임대</button>
-      <button data-page="swap" class="nav-btn">바꿔살기</button>
-      <button data-page="virtual" class="nav-btn">가상 건축</button>
-      <button data-page="blockchain" class="nav-btn">블록체인</button>
-      <button data-page="mypage" class="nav-btn">마이페이지</button>
-    </nav>
-    <div class="auth-area">
-      <button id="loginBtn">지갑 연결</button>
-    </div>
-  </header>
 
-  <main>
-    <!-- 홈 -->
-    <section id="page-home" class="page active">
-      <h1>블록체인 기반 부동산 디지털화 플랫폼</h1>
-      <p>
-        부동산 건축·매매·임대·바꿔살기·가상 건축을 하나의 플랫폼 안에서 운영하고,
-        블록체인을 통해 지분·수익을 투명하게 관리하는 것을 목표로 합니다.
-      </p>
+<header>
+  <h1>부동산 자산 디지털 플랫폼 (Real8)</h1>
+  <p>부동산 · 건축 · 임대 · 가상건축을 블록체인으로 연결합니다</p>
+</header>
 
-      <section class="info-block">
-        <h2>플랫폼의 7개 핵심 영역</h2>
-        <dl>
-          <dt>건축</dt>
-          <dd>신축·리모델링·개발 사업의 기본 정보를 등록하고, 사업성·지급 구조를 설계하는 페이지입니다.</dd>
+<nav>
+  <a href="#">홈</a>
+  <a href="#">회원가입/로그인</a>
+  <a href="#">자산 등록</a>
+  <a href="#">블록체인·토큰 관리</a>
+  <a href="#">가상건축</a>
+  <a href="#">문화·정보 공유</a>
+  <a href="#">광고·홍보</a>
+  <a href="#">마이페이지</a>
+</nav>
 
-          <dt>매매</dt>
-          <dd>완성된 부동산 또는 개발이 끝난 자산을 매매·지분 투자 형태로 소개하는 페이지입니다.</dd>
+<div class="container">
 
-          <dt>임대</dt>
-          <dd>월세·전세·장기 임대 상품을 등록하고, 임대 수익 지급률 구조를 적용하는 페이지입니다.</dd>
+  <div class="card">
+    <h2>플랫폼 개요</h2>
+    <p>
+      본 사이트는 부동산 자산을 디지털화하여 블록체인으로 기록·검증하는
+      사업용 시범 플랫폼입니다. (모바일·PC 모두 지원)
+    </p>
+  </div>
 
-          <dt>바꿔살기</dt>
-          <dd>보유 주택·펜션 등을 서로 교환 거주(홈 스와핑)하거나, 기간별로 바꿔 사는 상품을 다루는 페이지입니다.</dd>
+  <div class="card">
+    <h2>회원가입 · 로그인</h2>
+    <input type="text" placeholder="아이디">
+    <input type="password" placeholder="비밀번호">
+    <button>로그인</button>
+    <button style="margin-top:10px; background:#334155;">회원가입</button>
+  </div>
 
-          <dt>가상 건축</dt>
-          <dd>메타버스·3D 모델·디지털 트윈 형태의 가상 건축물을 설계·전시하는 페이지입니다.</dd>
+  <div class="card">
+    <h2>7대 핵심 영역</h2>
+    <ul>
+      <li>건축 · 개발</li>
+      <li>매매 · 지분 투자</li>
+      <li>임대 · 수익 분배</li>
+      <li>바꿔살기</li>
+      <li>가상 건축 (메타버스)</li>
+      <li>블록체인 · 토큰</li>
+      <li>마이페이지</li>
+    </ul>
+  </div>
 
-          <dt>블록체인</dt>
-          <dd>부동산 자산을 연결하는 스마트컨트랙트, 토큰 구조, 수익 분배 로직 등을 설명하는 기술 페이지입니다.</dd>
+</div>
 
-          <dt>마이페이지</dt>
-          <dd>회원별 보유 지분, 거래 내역, 지갑 정보, 토큰·코인 발생률 관리(관리자용)를 확인하는 페이지입니다.</dd>
-        </dl>
-      </section>
+<footer>
+  © 2025 Real8 · Blockchain Real Estate Platform
+</footer>
 
-      <section class="info-block">
-        <h2>대표 매물 (매매 탭 연계 예시)</h2>
-        <div id="featuredList" class="card-list"></div>
-      </section>
-
-      <section class="info-block">
-        <h2>토큰·코인 발생률 현황</h2>
-        <p>관리자가 마이페이지에서 등록한 토큰/코인별 발생률을 요약해 보여줍니다.</p>
-        <table id="tokenRateTableHome">
-          <thead>
-            <tr>
-              <th>토큰/코인 이름</th>
-              <th>발생률(예: 연 수익률 %)</th>
-              <th>비고</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- 자바스크립트에서 채워 넣음 -->
-          </tbody>
-        </table>
-      </section>
-
-      <section class="info-block" id="home-auth">
-        <h2>로그인 / 회원가입</h2>
-        <div class="mypage-grid">
-          <section>
-            <h3>로그인</h3>
-            <form id="loginForm" class="form">
-              <label>이메일
-                <input type="email" name="email" required />
-              </label>
-              <label>비밀번호
-                <input type="password" name="password" required />
-              </label>
-              <button type="submit" class="primary">로그인</button>
-            </form>
-          </section>
-          <section>
-            <h3>회원 가입</h3>
-            <form id="signupForm" class="form">
-              <label>이메일
-                <input type="email" name="email" required />
-              </label>
-              <label>비밀번호
-                <input type="password" name="password" required />
-              </label>
-              <label>이름
-                <input type="text" name="name" required />
-              </label>
-              <button type="submit" class="primary">회원 가입</button>
-            </form>
-          </section>
-        </div>
-      </section>
-    </section>
-
-    <!-- 건축 -->
-    <section id="page-architecture" class="page">
-      <h1>건축</h1>
-      <p>
-        신축·증축·리모델링·개발 사업의 기본 구조를 설계하는 공간입니다.
-        부지 정보, 용도지역, 연면적, 예상 공사비, 예상 분양가, 투자 구조 등을 정리합니다.
-      </p>
-      <ul>
-        <li>개발 후보지 등록</li>
-        <li>사업성 분석 요약</li>
-        <li>지분 구조 및 지급률 설계</li>
-      </ul>
-    </section>
-
-    <!-- 매매 -->
-    <section id="page-sale" class="page">
-      <h1>부동산 매매 (지분 투자 연계)</h1>
-      <div class="filters">
-        <label>지역
-          <select id="saleFilterRegion">
-            <option value="">전체</option>
-            <option value="서울">서울</option>
-            <option value="부산">부산</option>
-            <option value="강원">강원</option>
-          </select>
-        </label>
-        <label>토큰화 상태
-          <select id="saleFilterTokenized">
-            <option value="">전체</option>
-            <option value="ready">준비 중</option>
-            <option value="onchain">온체인</option>
-          </select>
-        </label>
-      </div>
-      <div id="saleList" class="card-list"></div>
-    </section>
-
-    <!-- 임대 -->
-    <section id="page-rent" class="page">
-      <h1>부동산 임대</h1>
-      <p>월세·전세 임대 상품과 임대 수익 지급 구조를 관리합니다.</p>
-      <div id="rentList" class="card-list"></div>
-    </section>
-
-    <!-- 바꿔살기 -->
-    <section id="page-swap" class="page">
-      <h1>바꿔살기 (홈 스와핑)</h1>
-      <p>
-        서로 다른 지역의 주택·펜션을 일정 기간 교환해서 거주하는 모델입니다.
-        장기 임대와 관광 숙박의 장점을 결합한 형태로 설계할 수 있습니다.
-      </p>
-      <ul>
-        <li>서울 &lt;-&gt; 강원 펜션 바꿔살기 1개월</li>
-        <li>도심 아파트 &lt;-&gt; 제주 펜션 3개월 교환</li>
-        <li>토큰 보유자 전용 바꿔살기 프로그램 설계</li>
-      </ul>
-    </section>
-
-    <!-- 가상 건축 -->
-    <section id="page-virtual" class="page">
-      <h1>가상 건축</h1>
-      <p>
-        메타버스·3D 모델·디지털 트윈 등 가상 공간에서의 건축물을 설계·전시하는 공간입니다.
-        실제 부동산과 연동된 디지털 자산(NFT) 발행도 연결할 수 있습니다.
-      </p>
-      <ul>
-        <li>가상 부동산(메타버스 토지) 설계</li>
-        <li>실물 건축물의 3D 모델 등록</li>
-        <li>가상 건축 NFT 전시·판매 구조</li>
-      </ul>
-    </section>
-
-    <!-- 블록체인 -->
-    <section id="page-blockchain" class="page">
-      <h1>블록체인 구조 설명</h1>
-      <p>
-        부동산 자산을 디지털 토큰으로 만들고, 수익을 자동 분배하기 위한
-        스마트컨트랙트 구조를 설명하는 페이지입니다.
-      </p>
-      <ul>
-        <li>RealEstateRegistry : 실물 부동산와 온체인 자산 연결</li>
-        <li>RealEstateNFT : 전체 소유권 혹은 호실 단위 NFT</li>
-        <li>FractionToken : 지분형 투자 토큰</li>
-        <li>Marketplace : 지분 매수/매도 마켓</li>
-        <li>RevenueSharingVault : 임대·펜션 수익 분배 금고</li>
-      </ul>
-      <p>
-        토큰·코인 발생률, 배당 주기, 관리자(멀티시그/DAO) 구조는
-        마이페이지의 관리 도구와 연동하여 운영할 수 있습니다.
-      </p>
-    </section>
-
-    <!-- 마이페이지 -->
-    <section id="page-mypage" class="page">
-      <h1>마이페이지</h1>
-      <p>로그인 후 내 지분, 거래 내역, 지갑 정보, 토큰·코인 발생률을 확인·관리합니다.</p>
-      <div class="mypage-grid">
-        <section>
-          <h2>보유 토큰/지분</h2>
-          <ul id="myTokens"></ul>
-        </section>
-        <section>
-          <h2>거래 내역</h2>
-          <ul id="myTrades"></ul>
-        </section>
-        <section>
-          <h2>지갑 정보</h2>
-          <pre id="walletInfo">(지갑이 연결되지 않았습니다)</pre>
-        </section>
-      </div>
-
-      <section class="info-block">
-        <h2>토큰·코인 발생률 관리 (관리자용)</h2>
-        <p>여기에서 입력한 내용은 브라우저에 저장되며, 홈 화면의 “발생률 현황”에도 표시됩니다.</p>
-        <form id="tokenRateForm" class="form">
-          <label>토큰/코인 이름
-            <input type="text" name="tokenName" required />
-          </label>
-          <label>발생률 (예: 연 5.0%)
-            <input type="text" name="rate" placeholder="예: 연 5.0%" required />
-          </label>
-          <label>비고
-            <input type="text" name="note" placeholder="예: 강원 펜션 수익 토큰" />
-          </label>
-          <button type="submit" class="primary">발생률 추가/저장</button>
-        </form>
-
-        <table id="tokenRateTableAdmin">
-          <thead>
-            <tr>
-              <th>토큰/코인 이름</th>
-              <th>발생률</th>
-              <th>비고</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- 자바스크립트에서 채움 -->
-          </tbody>
-        </table>
-      </section>
-    </section>
-  </main>
-
-  <footer>
-    <p>© 2025 RealEstateChain. All rights reserved.</p>
-  </footer>
-
-  <script src="app.js"></script>
 </body>
 </html>
