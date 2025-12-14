@@ -1298,6 +1298,27 @@
     refreshMypage();
   });
 </script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "여기에_복사한_apiKey",
+    authDomain: "여기에_복사한_authDomain",
+    projectId: "여기에_복사한_projectId",
+    storageBucket: "여기에_복사한_storageBucket",
+    messagingSenderId: "여기에_복사한_messagingSenderId",
+    appId: "여기에_복사한_appId"
+    // measurementId 가 있어도 Firestore만 쓰면 없어도 됩니다
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window.db = db; // 다른 스크립트에서 db 쓰게 공개
+</script>
+
+  
 </body>
 </html>
 
