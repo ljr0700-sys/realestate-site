@@ -1,203 +1,153 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8" />
-<title>부동산 자산 디지털 플랫폼 (real8)</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<style>
-  *{box-sizing:border-box}
-  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-       background:#0f1820;color:#eaeef2}
-  header{background:linear-gradient(135deg,#0a4cff,#26a5ff);padding:14px 18px}
-  header h1{margin:0;font-size:20px}
-  nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
-  nav button{border:0;border-radius:6px;padding:8px 10px;cursor:pointer}
-  nav button.active{background:#ffd54f}
-  nav button:not(.active){background:#102a43;color:#eaeef2}
-  main{padding:16px}
-  .card{background:#0b2233;border:1px solid #163a57;border-radius:10px;padding:14px;margin-bottom:14px}
-  h2{margin-top:0}
-  label{display:block;margin:8px 0 4px}
-  input,textarea,select{width:100%;padding:8px;border-radius:6px;border:1px solid #1f4a6b;background:#071726;color:#eaeef2}
-  textarea{min-height:80px}
-  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .btn{background:#26a5ff;border:0;border-radius:6px;padding:8px 12px;cursor:pointer}
-  .btn.warn{background:#ff6f61}
-  .muted{opacity:.8;font-size:12px}
-  .list{margin:8px 0;padding:0;list-style:none}
-  .list li{border-bottom:1px dashed #1f4a6b;padding:8px 0}
-  .pill{display:inline-block;background:#163a57;border-radius:999px;padding:2px 8px;font-size:12px;margin-left:6px}
-</style>
-</head>
-<body>
+    document.getElementById("cul-title").value = "";
+    document.getElementById("cul-content").value = "";
+    document.getElementById("cul-photo").value = "";
+    document.getElementById("cul-message").textContent = "글이 등록되었습니다. (토큰 지급)";
 
-<header>
-  <h1>부동산 자산 디지털 플랫폼 (real8)</h1>
-  <nav>
-    <button data-tab="home" class="active">홈</button>
-    <button data-tab="trade">건축·매매·임대·바꿔살기</button>
-    <button data-tab="virtual">가상건축</button>
-    <button data-tab="culture">거주문화</button>
-    <button data-tab="mypage">마이페이지</button>
-  </nav>
-</header>
-
-<main>
-  <!-- 홈 -->
-  <section id="home" class="card">
-    <h2>회원가입 · 로그인</h2>
-    <div class="row">
-      <div>
-        <label>아이디</label><input id="uid">
-        <label>비밀번호</label><input id="upw" type="password">
-        <button class="btn" onclick="login()">로그인 / 회원가입</button>
-      </div>
-      <div>
-        <p class="muted">※ 현재 단계에서는 서버 없이 브라우저 저장소(LocalStorage)를 사용합니다.</p>
-        <p>현재 로그인: <b id="who">없음</b></p>
-        <button class="btn warn" onclick="logout()">로그아웃</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- 거래 -->
-  <section id="trade" class="card" hidden>
-    <h2>건축·매매·임대·바꿔살기 등록</h2>
-    <label>유형</label>
-    <select id="tradeType">
-      <option>건축</option><option>매매</option><option>임대</option><option>바꿔살기</option>
-    </select>
-    <label>부동산 주소</label><input id="addr">
-    <label>설명</label><textarea id="desc"></textarea>
-    <button class="btn" onclick="registerItem('trade')">등록</button>
-    <ul id="tradeList" class="list"></ul>
-  </section>
-
-  <!-- 가상건축 -->
-  <section id="virtual" class="card" hidden>
-    <h2>가상건축 제안</h2>
-    <label>제안 제목</label><input id="vtitle">
-    <label>부동산 주소</label><input id="vaddr">
-    <label>내용</label><textarea id="vdesc"></textarea>
-    <button class="btn" onclick="registerItem('virtual')">등록</button>
-    <ul id="virtualList" class="list"></ul>
-  </section>
-
-  <!-- 거주문화 -->
-  <section id="culture" class="card" hidden>
-    <h2>거주문화 (인정 시 토큰 발급)</h2>
-    <label>주제</label><input id="ctitle">
-    <label>부동산 주소</label><input id="caddr">
-    <label>내용</label><textarea id="cdesc"></textarea>
-    <button class="btn" onclick="registerItem('culture')">등록</button>
-    <ul id="cultureList" class="list"></ul>
-  </section>
-
-  <!-- 마이페이지 -->
-  <section id="mypage" class="card" hidden>
-    <h2>마이페이지</h2>
-    <p>보유 토큰: <b id="tokens">0</b></p>
-    <ul id="mylog" class="list"></ul>
-  </section>
-</main>
-
-<script>
-/* ===== 공통 유틸 ===== */
-const SITE = location.origin || 'local';
-const $ = id => document.getElementById(id);
-const db = JSON.parse(localStorage.getItem('db')||'{}');
-db.users = db.users||{};
-db.items = db.items||{};
-db.logs  = db.logs||[];
-db.tokens= db.tokens||{};
-localStorage.setItem('db', JSON.stringify(db));
-
-let current = localStorage.getItem('currentUser');
-
-function save(){ localStorage.setItem('db', JSON.stringify(db)); }
-
-/* SHA-256 */
-async function sha256(s){
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-
-/* ===== 로그인 ===== */
-function login(){
-  const u=$('uid').value.trim(), p=$('upw').value.trim();
-  if(!u||!p) return alert('입력하세요');
-  db.users[u]=db.users[u]||{pw:p};
-  if(db.users[u].pw!==p) return alert('비밀번호 오류');
-  current=u; localStorage.setItem('currentUser',u);
-  $('who').innerText=u; render();
-}
-function logout(){ current=null; localStorage.removeItem('currentUser'); $('who').innerText='없음'; render(); }
-
-/* ===== 등록 (중복 방지 + 해시) ===== */
-async function registerItem(kind){
-  if(!current) return alert('로그인 필요');
-  let addr, title, desc;
-  if(kind==='trade'){ addr=$('addr').value; title=$('tradeType').value; desc=$('desc').value; }
-  if(kind==='virtual'){ addr=$('vaddr').value; title=$('vtitle').value; desc=$('vdesc').value; }
-  if(kind==='culture'){ addr=$('caddr').value; title=$('ctitle').value; desc=$('cdesc').value; }
-  if(!addr||!title) return alert('필수 입력');
-
-  const key = kind+'|'+addr; // 동일 주소+유형 중복 방지
-  if(db.items[key]) return alert('이미 등록됨');
-
-  const issuedAt = new Date().toISOString();
-  const hash = await sha256(addr+'|'+SITE+'|'+issuedAt);
-
-  db.items[key]={kind,addr,title,desc,owner:current,issuedAt,hash,likes:[]};
-  db.logs.push(`등록: ${kind} / ${addr} / ${hash.slice(0,8)}…`);
-  save(); render();
-}
-
-/* ===== 인정(댓글) → 토큰 ===== */
-function like(key){
-  if(!current) return alert('로그인 필요');
-  const it=db.items[key];
-  if(it.owner===current) return alert('본인 인정 불가');
-  if(it.likes.includes(current)) return alert('이미 인정');
-  it.likes.push(current);
-  if(it.likes.length===1){ // 최초 인정 시 1토큰
-    db.tokens[it.owner]=(db.tokens[it.owner]||0)+1;
+    renderCultureList();
+    refreshMypage();
   }
-  save(); render();
-}
 
-/* ===== 화면 ===== */
-function render(){
-  // 탭
-  document.querySelectorAll('nav button').forEach(b=>{
-    b.onclick=()=>{document.querySelectorAll('section').forEach(s=>s.hidden=true);
-      $(b.dataset.tab).hidden=false;
-      document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-    }
-  });
-  $('who').innerText=current||'없음';
-  $('tokens').innerText=db.tokens[current]||0;
-  $('mylog').innerHTML=db.logs.slice(-10).map(x=>`<li>${x}</li>`).join('');
-
-  const renderList=(kind,ul)=>{
-    ul.innerHTML='';
-    Object.keys(db.items).filter(k=>db.items[k].kind===kind).forEach(k=>{
-      const it=db.items[k];
-      ul.innerHTML+=`<li>
-        <b>${it.title}</b> - ${it.addr}
-        <span class="pill">${it.hash.slice(0,8)}…</span>
-        ${kind==='culture'?`<button class="btn" onclick="like('${k}')">인정</button>`:''}
-        <div class="muted">인정 ${it.likes.length}</div>
-      </li>`;
+  function renderCultureList() {
+    const tbody = document.getElementById("cul-list-body");
+    const list = getCulturePosts();
+    tbody.innerHTML = "";
+    list.forEach(p => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${sectionLabel(p.section)}</td>
+        <td><a href="#" onclick="openCulture(${p.id}); return false;">${escapeHtml(p.title)}</a></td>
+        <td>${escapeHtml(p.authorId)}</td>
+        <td class="text-right">${p.comments.length}</td>
+      `;
+      tbody.appendChild(tr);
     });
-  };
-  renderList('trade',$('tradeList'));
-  renderList('virtual',$('virtualList'));
-  renderList('culture',$('cultureList'));
-}
-render();
-</script>
-</body>
-</html>
+  }
 
+  function openCulture(id) {
+    const list = getCulturePosts();
+    const p = list.find(x => x.id === id);
+    if (!p) return;
+
+    let commentsHtml = "";
+    p.comments.forEach(c => {
+      commentsHtml += `
+        <div class="info-box small">
+          <div><strong>${escapeHtml(c.userId)}</strong> <span class="badge badge-blue">댓글</span> <span class="small">${escapeHtml(c.ts)}</span></div>
+          <div class="mt-6">${escapeHtml(c.text || "")}</div>
+          ${c.photoDataUrl ? `<img class="img-thumb" src="${c.photoDataUrl}" />` : ""}
+        </div>
+      `;
+    });
+
+    const me = getCurrentUser();
+
+    const body = `
+      <div class="info-box small">
+        <div><strong>섹션:</strong> ${sectionLabel(p.section)} <span class="badge badge-gray">작성자 ${escapeHtml(p.authorId)}</span></div>
+        <div class="mt-6">${escapeHtml(p.ts)}</div>
+      </div>
+
+      ${p.photoDataUrl ? `<img class="img-thumb" src="${p.photoDataUrl}" />` : ""}
+
+      <div class="info-box">${escapeHtml(p.content).replace(/\n/g,"<br/>")}</div>
+
+      <div class="hr"></div>
+
+      <h4>댓글(참여) 등록</h4>
+      <div class="info-box small">댓글 작성 시 토큰 ${TOKEN_REWARD_CULTURE_COMMENT} 지급</div>
+
+      ${me ? `
+        <label>댓글</label>
+        <textarea id="c-cmt" placeholder="의견/노하우/추가정보를 적어주세요."></textarea>
+        <label>사진(선택)</label>
+        <input id="c-photo" type="file" accept="image/*" />
+        <button class="btn-primary" onclick="addCultureComment(${p.id})">댓글 저장(토큰 지급)</button>
+        <p class="small mt-6" id="c-msg"></p>
+      ` : `
+        <div class="info-box small"><strong>로그인 후</strong> 댓글 등록이 가능합니다.</div>
+      `}
+
+      <div class="hr"></div>
+      <h4>댓글 목록</h4>
+      ${commentsHtml || '<p class="small">아직 댓글이 없습니다.</p>'}
+    `;
+    openModal(p.title, body);
+  }
+
+  async function addCultureComment(id) {
+    const me = getCurrentUser();
+    if (!me) return alert("로그인 후 가능합니다.");
+
+    const list = getCulturePosts();
+    const p = list.find(x => x.id === id);
+    if (!p) return;
+
+    const text = (document.getElementById("c-cmt").value || "").trim();
+    const file = document.getElementById("c-photo").files[0];
+    if (!text && !file) return alert("댓글 또는 사진 중 하나는 필요합니다.");
+
+    const photoDataUrl = await fileToDataUrl(file);
+
+    p.comments.unshift({
+      userId: me.id,
+      text,
+      photoDataUrl,
+      ts: new Date().toLocaleString()
+    });
+
+    // 토큰 지급(댓글)
+    applyBalance(me.id, TOKEN_REWARD_CULTURE_COMMENT, 0);
+    addLedgerEntry({ userId: me.id, kind: "문화 댓글", tokens: TOKEN_REWARD_CULTURE_COMMENT, coins: 0, refText: p.title, hash: "" });
+
+    saveCulturePosts(list);
+    renderCultureList();
+    refreshMypage();
+    openCulture(id);
+  }
+
+  // ===== MyPage =====
+  function refreshMypage() {
+    const u = getCurrentUser();
+    document.getElementById("mypage-user").textContent = u ? u.id : "(로그인 필요)";
+
+    const summaryEl = document.getElementById("mypage-summary");
+    const tbody = document.getElementById("mypage-ledger-body");
+
+    if (!u) {
+      summaryEl.textContent = "로그인 후 확인 가능합니다.";
+      tbody.innerHTML = "";
+      return;
+    }
+
+    const users = getUsers();
+    const me = users.find(x => x.id === u.id);
+    summaryEl.textContent = `보유 토큰: ${(me?.tokenBalance||0)}개, 보유 코인: ${(me?.coinBalance||0)}개`;
+
+    const ledger = getLedger().filter(x => x.userId === u.id).slice(0, 30);
+    tbody.innerHTML = "";
+    ledger.forEach(e => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${escapeHtml(e.kind)}<div class="small">${escapeHtml(e.ts)}</div></td>
+        <td class="text-right">${e.tokens}</td>
+        <td class="text-right">${e.coins}</td>
+        <td>${escapeHtml(e.hash || e.refText || "")}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // ===== escape =====
+  function escapeHtml(s) {
+    return String(s || "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  // ===== Init =====
+  window.addEventListener("DOMContentLoaded", () => {
+    ensureUserFields();
+    updateLoginStatus();
