@@ -4,20 +4,156 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>부동산 자산 디지털 플랫폼</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; background:#0b1020; color:#e9eefc; }
+    header { background: linear-gradient(90deg, #2b59ff, #5f2bff); padding:18px 16px; font-weight:800; font-size:22px; text-align:center; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 14px 12px 40px; }
+    .bar { display:flex; gap:8px; flex-wrap:wrap; margin: 10px 0 14px; }
+    .bar button { border:0; border-radius:10px; padding:10px 12px; cursor:pointer; background:#1b2447; color:#e9eefc; font-weight:700; }
+    .bar button.on { background:#00d18f; color:#062016; }
+    .card { background:#121a33; border:1px solid #27305a; border-radius:14px; padding:14px; }
+    h2 { margin:0 0 10px; font-size:18px; }
+    label { display:block; margin:10px 0 6px; color:#b8c3ff; }
+    input, textarea { width:100%; box-sizing:border-box; padding:10px; border-radius:10px; border:1px solid #2a3566; background:#0c132b; color:#e9eefc; }
+    textarea { min-height:110px; }
+    .row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    @media (max-width:720px){ .row{grid-template-columns:1fr;} }
+    .msg { margin: 8px 0 14px; color:#9be7ff; font-weight:700; }
+    .list { margin-top:12px; display:grid; gap:10px; }
+    .item { background:#0c132b; border:1px solid #27305a; border-radius:12px; padding:12px; }
+    .item b { display:block; margin-bottom:6px; }
+    .small { color:#aab6ff; font-size:13px; }
+    .right { display:flex; gap:8px; justify-content:flex-end; margin-top:10px; }
+    .right button { background:#2b59ff; }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>부동산 자산 디지털 플랫폼</h1>
-  </header>
+  <header>부동산 자산 디지털 플랫폼</header>
+  <div class="wrap">
+    <div class="msg">✅ 페이지가 정상 로드되었습니다.</div>
 
-  <main>
-    <p>페이지가 정상 로드되었습니다.</p>
-    <div id="app"></div>
-  </main>
+    <div class="bar">
+      <button class="nav on" data-page="home">홈</button>
+      <button class="nav" data-page="register">부동산 등록</button>
+      <button class="nav" data-page="mypage">마이페이지</button>
+      <button class="nav" data-page="blockchain">블록체인</button>
+    </div>
 
-  <!-- 핵심: 자바스크립트는 index.html에 글자로 넣는 게 아니라 파일로 불러옵니다 -->
-  <script src="app.js" defer></script>
+    <section id="home" class="card">
+      <h2>홈</h2>
+      <p>이 화면이 보이면 “사이트 기본 동작”은 성공입니다. 이제 기능을 하나씩 추가하면 됩니다.</p>
+      <div class="small">※ 지금은 테스트용 단일 파일 버전입니다.</div>
+    </section>
+
+    <section id="register" class="card" style="display:none;">
+      <h2>부동산 등록</h2>
+      <div class="row">
+        <div>
+          <label>주소</label>
+          <input id="addr" placeholder="예) 서울시 강남구 ..." />
+        </div>
+        <div>
+          <label>가격(만원)</label>
+          <input id="price" type="number" placeholder="예) 50000" />
+        </div>
+      </div>
+      <label>설명</label>
+      <textarea id="desc" placeholder="특징을 적어주세요"></textarea>
+
+      <div class="right">
+        <button id="save">저장</button>
+      </div>
+
+      <div class="list" id="list"></div>
+    </section>
+
+    <section id="mypage" class="card" style="display:none;">
+      <h2>마이페이지</h2>
+      <p><b>내 등록 건수:</b> <span id="cnt">0</span> 건</p>
+      <p><b>테스트 토큰:</b> <span id="token">0</span> TOK</p>
+      <div class="small">저장 버튼을 누를 때마다 토큰이 1 증가합니다(테스트).</div>
+    </section>
+
+    <section id="blockchain" class="card" style="display:none;">
+      <h2>블록체인(테스트)</h2>
+      <p>아래는 “해시값 생성” 테스트입니다.</p>
+      <label>입력</label>
+      <input id="hashIn" placeholder="예) 부동산ID-123" />
+      <div class="right">
+        <button id="makeHash">해시 생성</button>
+      </div>
+      <div class="item" id="hashOut" style="margin-top:10px;">(여기에 결과 표시)</div>
+    </section>
+  </div>
+
+  <script>
+    // 페이지 전환
+    const navBtns = document.querySelectorAll(".nav");
+    const pages = ["home","register","mypage","blockchain"];
+    function show(page){
+      pages.forEach(id => document.getElementById(id).style.display = (id===page ? "block" : "none"));
+      navBtns.forEach(b => b.classList.toggle("on", b.dataset.page === page));
+    }
+    navBtns.forEach(b => b.addEventListener("click", () => show(b.dataset.page)));
+
+    // 데이터 저장(브라우저 LocalStorage)
+    const KEY="real8_demo_items";
+    const TOK="real8_demo_token";
+    const listEl = document.getElementById("list");
+    const cntEl  = document.getElementById("cnt");
+    const tokEl  = document.getElementById("token");
+
+    function loadItems(){
+      try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch(e){ return []; }
+    }
+    function render(){
+      const items = loadItems();
+      const token = Number(localStorage.getItem(TOK) || 0);
+      cntEl.textContent = items.length;
+      tokEl.textContent = token;
+
+      listEl.innerHTML = "";
+      items.slice().reverse().forEach(it=>{
+        const div=document.createElement("div");
+        div.className="item";
+        div.innerHTML = `<b>${it.addr}</b>
+          <div class="small">가격: ${it.price}만원</div>
+          <div style="margin-top:8px;">${it.desc || ""}</div>`;
+        listEl.appendChild(div);
+      });
+    }
+    render();
+
+    document.getElementById("save").addEventListener("click", ()=>{
+      const addr = document.getElementById("addr").value.trim();
+      const price = document.getElementById("price").value.trim();
+      const desc = document.getElementById("desc").value.trim();
+      if(!addr){ alert("주소를 입력하세요"); return; }
+      const items = loadItems();
+      items.push({addr, price: price || "0", desc});
+      localStorage.setItem(KEY, JSON.stringify(items));
+      localStorage.setItem(TOK, String(Number(localStorage.getItem(TOK)||0) + 1));
+      document.getElementById("addr").value="";
+      document.getElementById("price").value="";
+      document.getElementById("desc").value="";
+      render();
+      alert("저장되었습니다(테스트 토큰 +1)");
+    });
+
+    // 해시(간단 테스트)
+    async function sha256(text){
+      const enc = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", enc);
+      return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
+    }
+    document.getElementById("makeHash").addEventListener("click", async ()=>{
+      const v = document.getElementById("hashIn").value.trim();
+      if(!v){ alert("입력을 넣어주세요"); return; }
+      document.getElementById("hashOut").textContent = "생성중...";
+      const h = await sha256(v);
+      document.getElementById("hashOut").textContent = h;
+    });
+  </script>
 </body>
 </html>
 
