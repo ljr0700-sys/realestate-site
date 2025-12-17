@@ -5,154 +5,184 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>부동산 자산 디지털 플랫폼</title>
   <style>
-    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; background:#0b1020; color:#e9eefc; }
-    header { background: linear-gradient(90deg, #2b59ff, #5f2bff); padding:18px 16px; font-weight:800; font-size:22px; text-align:center; }
-    .wrap { max-width: 980px; margin: 0 auto; padding: 14px 12px 40px; }
-    .bar { display:flex; gap:8px; flex-wrap:wrap; margin: 10px 0 14px; }
-    .bar button { border:0; border-radius:10px; padding:10px 12px; cursor:pointer; background:#1b2447; color:#e9eefc; font-weight:700; }
-    .bar button.on { background:#00d18f; color:#062016; }
-    .card { background:#121a33; border:1px solid #27305a; border-radius:14px; padding:14px; }
-    h2 { margin:0 0 10px; font-size:18px; }
-    label { display:block; margin:10px 0 6px; color:#b8c3ff; }
-    input, textarea { width:100%; box-sizing:border-box; padding:10px; border-radius:10px; border:1px solid #2a3566; background:#0c132b; color:#e9eefc; }
-    textarea { min-height:110px; }
-    .row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-    @media (max-width:720px){ .row{grid-template-columns:1fr;} }
-    .msg { margin: 8px 0 14px; color:#9be7ff; font-weight:700; }
-    .list { margin-top:12px; display:grid; gap:10px; }
-    .item { background:#0c132b; border:1px solid #27305a; border-radius:12px; padding:12px; }
-    .item b { display:block; margin-bottom:6px; }
-    .small { color:#aab6ff; font-size:13px; }
-    .right { display:flex; gap:8px; justify-content:flex-end; margin-top:10px; }
-    .right button { background:#2b59ff; }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helveticaica,Arial;background:#0b1220;color:#eaf2ff}
+    header{background:linear-gradient(135deg,#1e3cff,#3b82f6);padding:18px 16px}
+    header h1{margin:0;text-align:center;font-size:22px;letter-spacing:-0.2px}
+    .wrap{max-width:980px;margin:0 auto;padding:14px 14px 40px}
+    .msg{margin:14px 0 10px;color:#cfe3ff;opacity:.9}
+    nav{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}
+    nav button{
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.06);
+      color:#eaf2ff;
+      padding:10px 12px;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:14px;
+    }
+    nav button.active{background:#3b82f6;border-color:#3b82f6}
+    .card{
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.05);
+      border-radius:14px;
+      padding:14px;
+      min-height:260px;
+    }
+    .title{font-size:18px;margin:0 0 10px}
+    .grid{display:grid;grid-template-columns:1fr;gap:10px}
+    @media (min-width:820px){.grid{grid-template-columns:1fr 1fr}}
+    label{font-size:13px;opacity:.9}
+    input,textarea{
+      width:100%;
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.18);
+      color:#eaf2ff;
+      outline:none;
+    }
+    textarea{min-height:90px;resize:vertical}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{
+      border:0;
+      background:#22c55e;
+      color:#05210f;
+      padding:10px 12px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:700;
+    }
+    .btn.gray{background:#93a4b8;color:#08101d}
+    .small{font-size:12px;opacity:.8;margin-top:8px}
+    .hide{display:none}
   </style>
 </head>
 <body>
-  <header>부동산 자산 디지털 플랫폼</header>
+  <header>
+    <h1>부동산 자산 디지털 플랫폼</h1>
+  </header>
+
   <div class="wrap">
-    <div class="msg">✅ 페이지가 정상 로드되었습니다.</div>
+    <div class="msg">✅ 페이지가 정상 로드되었습니다. 메뉴를 눌러 이동해보세요.</div>
 
-    <div class="bar">
-      <button class="nav on" data-page="home">홈</button>
+    <nav>
+      <button class="nav active" data-page="home">홈</button>
       <button class="nav" data-page="register">부동산 등록</button>
+      <button class="nav" data-page="token">토큰/코인</button>
       <button class="nav" data-page="mypage">마이페이지</button>
-      <button class="nav" data-page="blockchain">블록체인</button>
-    </div>
+      <button class="nav" data-page="help">도움말</button>
+    </nav>
 
-    <section id="home" class="card">
-      <h2>홈</h2>
-      <p>이 화면이 보이면 “사이트 기본 동작”은 성공입니다. 이제 기능을 하나씩 추가하면 됩니다.</p>
-      <div class="small">※ 지금은 테스트용 단일 파일 버전입니다.</div>
+    <section id="home" class="card page">
+      <h2 class="title">홈</h2>
+      <p>이 버전은 “단일 파일(index.html)”로 동작하는 최소 기능 데모입니다.</p>
+      <div class="small">다음 단계: 로그인/DB/블록체인 연동은 이후에 확장 가능합니다.</div>
     </section>
 
-    <section id="register" class="card" style="display:none;">
-      <h2>부동산 등록</h2>
-      <div class="row">
+    <section id="register" class="card page hide">
+      <h2 class="title">부동산 등록</h2>
+      <div class="grid">
         <div>
           <label>주소</label>
-          <input id="addr" placeholder="예) 서울시 강남구 ..." />
+          <input id="addr" placeholder="예: 서울 강남구 …" />
         </div>
         <div>
-          <label>가격(만원)</label>
-          <input id="price" type="number" placeholder="예) 50000" />
+          <label>유형</label>
+          <input id="type" placeholder="예: 아파트 / 상가 / 토지" />
+        </div>
+        <div>
+          <label>가격(매매/임대)</label>
+          <input id="price" placeholder="예: 10억 / 보증금 5천 월세 200" />
+        </div>
+        <div>
+          <label>설명</label>
+          <textarea id="desc" placeholder="특징/면적/층수 등"></textarea>
         </div>
       </div>
-      <label>설명</label>
-      <textarea id="desc" placeholder="특징을 적어주세요"></textarea>
-
-      <div class="right">
-        <button id="save">저장</button>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="saveBtn">저장(로컬)</button>
+        <button class="btn gray" id="clearBtn">초기화</button>
       </div>
-
-      <div class="list" id="list"></div>
+      <div class="small">※ 지금은 “내 PC 브라우저”에만 저장됩니다(로컬저장). 서버/DB는 추후.</div>
     </section>
 
-    <section id="mypage" class="card" style="display:none;">
-      <h2>마이페이지</h2>
-      <p><b>내 등록 건수:</b> <span id="cnt">0</span> 건</p>
-      <p><b>테스트 토큰:</b> <span id="token">0</span> TOK</p>
-      <div class="small">저장 버튼을 누를 때마다 토큰이 1 증가합니다(테스트).</div>
+    <section id="token" class="card page hide">
+      <h2 class="title">토큰/코인</h2>
+      <p>이 화면은 구조만 먼저 만들어둔 상태입니다.</p>
+      <ul>
+        <li>조회/등록 등 행동에 따라 토큰 지급 (추후 규칙 추가)</li>
+        <li>실거래 발생 시 코인 지급 (추후)</li>
+      </ul>
     </section>
 
-    <section id="blockchain" class="card" style="display:none;">
-      <h2>블록체인(테스트)</h2>
-      <p>아래는 “해시값 생성” 테스트입니다.</p>
-      <label>입력</label>
-      <input id="hashIn" placeholder="예) 부동산ID-123" />
-      <div class="right">
-        <button id="makeHash">해시 생성</button>
+    <section id="mypage" class="card page hide">
+      <h2 class="title">마이페이지</h2>
+      <p><b>저장된 부동산(로컬)</b></p>
+      <pre id="out" style="white-space:pre-wrap;background:rgba(0,0,0,.18);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.12)"></pre>
+      <div class="row" style="margin-top:10px">
+        <button class="btn gray" id="loadBtn">불러오기</button>
+        <button class="btn gray" id="removeBtn">삭제</button>
       </div>
-      <div class="item" id="hashOut" style="margin-top:10px;">(여기에 결과 표시)</div>
+    </section>
+
+    <section id="help" class="card page hide">
+      <h2 class="title">도움말</h2>
+      <ol>
+        <li>메뉴를 눌러 페이지가 바뀌면 정상입니다.</li>
+        <li>만약 또 “홈만” 보이면 Ctrl+F5로 강력 새로고침 하세요.</li>
+      </ol>
     </section>
   </div>
 
   <script>
-    // 페이지 전환
-    const navBtns = document.querySelectorAll(".nav");
-    const pages = ["home","register","mypage","blockchain"];
-    function show(page){
-      pages.forEach(id => document.getElementById(id).style.display = (id===page ? "block" : "none"));
-      navBtns.forEach(b => b.classList.toggle("on", b.dataset.page === page));
+    // 메뉴 전환
+    const navs = document.querySelectorAll('.nav');
+    const pages = document.querySelectorAll('.page');
+
+    function show(id){
+      pages.forEach(p => p.classList.toggle('hide', p.id !== id));
+      navs.forEach(b => b.classList.toggle('active', b.dataset.page === id));
     }
-    navBtns.forEach(b => b.addEventListener("click", () => show(b.dataset.page)));
+    navs.forEach(b => b.addEventListener('click', () => show(b.dataset.page)));
 
-    // 데이터 저장(브라우저 LocalStorage)
-    const KEY="real8_demo_items";
-    const TOK="real8_demo_token";
-    const listEl = document.getElementById("list");
-    const cntEl  = document.getElementById("cnt");
-    const tokEl  = document.getElementById("token");
+    // 로컬 저장(데모)
+    const KEY = 'realestate_demo_v1';
+    const $ = (id) => document.getElementById(id);
 
-    function loadItems(){
-      try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch(e){ return []; }
+    function readForm(){
+      return {
+        addr: $('addr').value.trim(),
+        type: $('type').value.trim(),
+        price: $('price').value.trim(),
+        desc: $('desc').value.trim(),
+        savedAt: new Date().toISOString()
+      };
     }
-    function render(){
-      const items = loadItems();
-      const token = Number(localStorage.getItem(TOK) || 0);
-      cntEl.textContent = items.length;
-      tokEl.textContent = token;
 
-      listEl.innerHTML = "";
-      items.slice().reverse().forEach(it=>{
-        const div=document.createElement("div");
-        div.className="item";
-        div.innerHTML = `<b>${it.addr}</b>
-          <div class="small">가격: ${it.price}만원</div>
-          <div style="margin-top:8px;">${it.desc || ""}</div>`;
-        listEl.appendChild(div);
-      });
-    }
-    render();
-
-    document.getElementById("save").addEventListener("click", ()=>{
-      const addr = document.getElementById("addr").value.trim();
-      const price = document.getElementById("price").value.trim();
-      const desc = document.getElementById("desc").value.trim();
-      if(!addr){ alert("주소를 입력하세요"); return; }
-      const items = loadItems();
-      items.push({addr, price: price || "0", desc});
-      localStorage.setItem(KEY, JSON.stringify(items));
-      localStorage.setItem(TOK, String(Number(localStorage.getItem(TOK)||0) + 1));
-      document.getElementById("addr").value="";
-      document.getElementById("price").value="";
-      document.getElementById("desc").value="";
-      render();
-      alert("저장되었습니다(테스트 토큰 +1)");
+    $('saveBtn').addEventListener('click', () => {
+      const data = readForm();
+      localStorage.setItem(KEY, JSON.stringify(data, null, 2));
+      alert('저장되었습니다(로컬). 마이페이지에서 확인하세요.');
+      show('mypage');
+      $('out').textContent = localStorage.getItem(KEY) || '(저장된 데이터 없음)';
     });
 
-    // 해시(간단 테스트)
-    async function sha256(text){
-      const enc = new TextEncoder().encode(text);
-      const buf = await crypto.subtle.digest("SHA-256", enc);
-      return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
-    }
-    document.getElementById("makeHash").addEventListener("click", async ()=>{
-      const v = document.getElementById("hashIn").value.trim();
-      if(!v){ alert("입력을 넣어주세요"); return; }
-      document.getElementById("hashOut").textContent = "생성중...";
-      const h = await sha256(v);
-      document.getElementById("hashOut").textContent = h;
+    $('clearBtn').addEventListener('click', () => {
+      ['addr','type','price','desc'].forEach(id => $(id).value='');
     });
+
+    $('loadBtn').addEventListener('click', () => {
+      $('out').textContent = localStorage.getItem(KEY) || '(저장된 데이터 없음)';
+    });
+
+    $('removeBtn').addEventListener('click', () => {
+      localStorage.removeItem(KEY);
+      $('out').textContent = '(삭제됨)';
+    });
+
+    // 처음 홈 표시
+    show('home');
   </script>
 </body>
 </html>
