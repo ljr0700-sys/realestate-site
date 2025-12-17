@@ -1,153 +1,23 @@
-    document.getElementById("cul-title").value = "";
-    document.getElementById("cul-content").value = "";
-    document.getElementById("cul-photo").value = "";
-    document.getElementById("cul-message").textContent = "글이 등록되었습니다. (토큰 지급)";
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>부동산 자산 디지털 플랫폼</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>부동산 자산 디지털 플랫폼</h1>
+  </header>
 
-    renderCultureList();
-    refreshMypage();
-  }
+  <main>
+    <p>페이지가 정상 로드되었습니다.</p>
+    <div id="app"></div>
+  </main>
 
-  function renderCultureList() {
-    const tbody = document.getElementById("cul-list-body");
-    const list = getCulturePosts();
-    tbody.innerHTML = "";
-    list.forEach(p => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${sectionLabel(p.section)}</td>
-        <td><a href="#" onclick="openCulture(${p.id}); return false;">${escapeHtml(p.title)}</a></td>
-        <td>${escapeHtml(p.authorId)}</td>
-        <td class="text-right">${p.comments.length}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
+  <!-- 핵심: 자바스크립트는 index.html에 글자로 넣는 게 아니라 파일로 불러옵니다 -->
+  <script src="app.js" defer></script>
+</body>
+</html>
 
-  function openCulture(id) {
-    const list = getCulturePosts();
-    const p = list.find(x => x.id === id);
-    if (!p) return;
-
-    let commentsHtml = "";
-    p.comments.forEach(c => {
-      commentsHtml += `
-        <div class="info-box small">
-          <div><strong>${escapeHtml(c.userId)}</strong> <span class="badge badge-blue">댓글</span> <span class="small">${escapeHtml(c.ts)}</span></div>
-          <div class="mt-6">${escapeHtml(c.text || "")}</div>
-          ${c.photoDataUrl ? `<img class="img-thumb" src="${c.photoDataUrl}" />` : ""}
-        </div>
-      `;
-    });
-
-    const me = getCurrentUser();
-
-    const body = `
-      <div class="info-box small">
-        <div><strong>섹션:</strong> ${sectionLabel(p.section)} <span class="badge badge-gray">작성자 ${escapeHtml(p.authorId)}</span></div>
-        <div class="mt-6">${escapeHtml(p.ts)}</div>
-      </div>
-
-      ${p.photoDataUrl ? `<img class="img-thumb" src="${p.photoDataUrl}" />` : ""}
-
-      <div class="info-box">${escapeHtml(p.content).replace(/\n/g,"<br/>")}</div>
-
-      <div class="hr"></div>
-
-      <h4>댓글(참여) 등록</h4>
-      <div class="info-box small">댓글 작성 시 토큰 ${TOKEN_REWARD_CULTURE_COMMENT} 지급</div>
-
-      ${me ? `
-        <label>댓글</label>
-        <textarea id="c-cmt" placeholder="의견/노하우/추가정보를 적어주세요."></textarea>
-        <label>사진(선택)</label>
-        <input id="c-photo" type="file" accept="image/*" />
-        <button class="btn-primary" onclick="addCultureComment(${p.id})">댓글 저장(토큰 지급)</button>
-        <p class="small mt-6" id="c-msg"></p>
-      ` : `
-        <div class="info-box small"><strong>로그인 후</strong> 댓글 등록이 가능합니다.</div>
-      `}
-
-      <div class="hr"></div>
-      <h4>댓글 목록</h4>
-      ${commentsHtml || '<p class="small">아직 댓글이 없습니다.</p>'}
-    `;
-    openModal(p.title, body);
-  }
-
-  async function addCultureComment(id) {
-    const me = getCurrentUser();
-    if (!me) return alert("로그인 후 가능합니다.");
-
-    const list = getCulturePosts();
-    const p = list.find(x => x.id === id);
-    if (!p) return;
-
-    const text = (document.getElementById("c-cmt").value || "").trim();
-    const file = document.getElementById("c-photo").files[0];
-    if (!text && !file) return alert("댓글 또는 사진 중 하나는 필요합니다.");
-
-    const photoDataUrl = await fileToDataUrl(file);
-
-    p.comments.unshift({
-      userId: me.id,
-      text,
-      photoDataUrl,
-      ts: new Date().toLocaleString()
-    });
-
-    // 토큰 지급(댓글)
-    applyBalance(me.id, TOKEN_REWARD_CULTURE_COMMENT, 0);
-    addLedgerEntry({ userId: me.id, kind: "문화 댓글", tokens: TOKEN_REWARD_CULTURE_COMMENT, coins: 0, refText: p.title, hash: "" });
-
-    saveCulturePosts(list);
-    renderCultureList();
-    refreshMypage();
-    openCulture(id);
-  }
-
-  // ===== MyPage =====
-  function refreshMypage() {
-    const u = getCurrentUser();
-    document.getElementById("mypage-user").textContent = u ? u.id : "(로그인 필요)";
-
-    const summaryEl = document.getElementById("mypage-summary");
-    const tbody = document.getElementById("mypage-ledger-body");
-
-    if (!u) {
-      summaryEl.textContent = "로그인 후 확인 가능합니다.";
-      tbody.innerHTML = "";
-      return;
-    }
-
-    const users = getUsers();
-    const me = users.find(x => x.id === u.id);
-    summaryEl.textContent = `보유 토큰: ${(me?.tokenBalance||0)}개, 보유 코인: ${(me?.coinBalance||0)}개`;
-
-    const ledger = getLedger().filter(x => x.userId === u.id).slice(0, 30);
-    tbody.innerHTML = "";
-    ledger.forEach(e => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${escapeHtml(e.kind)}<div class="small">${escapeHtml(e.ts)}</div></td>
-        <td class="text-right">${e.tokens}</td>
-        <td class="text-right">${e.coins}</td>
-        <td>${escapeHtml(e.hash || e.refText || "")}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
-
-  // ===== escape =====
-  function escapeHtml(s) {
-    return String(s || "")
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
-  }
-
-  // ===== Init =====
-  window.addEventListener("DOMContentLoaded", () => {
-    ensureUserFields();
-    updateLoginStatus();
