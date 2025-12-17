@@ -2,187 +2,578 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>부동산 자산 디지털 플랫폼</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>부동산 자산 디지털 플랫폼 (real8)</title>
+
   <style>
+    :root{
+      --bg:#070b14;
+      --panel:#0d1426;
+      --panel2:#0b1020;
+      --line:#1b2a52;
+      --text:#eaf0ff;
+      --muted:#a9b6de;
+      --blue:#2563eb;
+      --blue2:#1d4ed8;
+      --gold:#f5c542;
+      --shadow: 0 18px 55px rgba(0,0,0,.55);
+      --radius: 16px;
+    }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helveticaica,Arial;background:#0b1220;color:#eaf2ff}
-    header{background:linear-gradient(135deg,#1e3cff,#3b82f6);padding:18px 16px}
-    header h1{margin:0;text-align:center;font-size:22px;letter-spacing:-0.2px}
-    .wrap{max-width:980px;margin:0 auto;padding:14px 14px 40px}
-    .msg{margin:14px 0 10px;color:#cfe3ff;opacity:.9}
-    nav{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}
-    nav button{
-      border:1px solid rgba(255,255,255,.18);
-      background:rgba(255,255,255,.06);
-      color:#eaf2ff;
+    body{
+      margin:0; color:var(--text);
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(37,99,235,.18), transparent 60%),
+        radial-gradient(900px 500px at 80% 20%, rgba(245,197,66,.10), transparent 55%),
+        linear-gradient(180deg, #070b14, #050812);
+      min-height:100vh;
+    }
+
+    /* Top header */
+    header{
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      padding:22px 18px 18px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.35);
+    }
+    header .wrap{max-width:1100px;margin:0 auto}
+    header h1{
+      margin:0;
+      font-size:28px;
+      letter-spacing:-.3px;
+      font-weight:800;
+    }
+    header p{
+      margin:8px 0 0;
+      color: rgba(255,255,255,.85);
+      line-height:1.35;
+      font-size:13px;
+    }
+
+    /* Menu */
+    .menuBar{
+      background: rgba(10,14,26,.92);
+      border-bottom:1px solid rgba(255,255,255,.06);
+      backdrop-filter: blur(8px);
+    }
+    .menuBar .wrap{
+      max-width:1100px; margin:0 auto; padding:10px 10px;
+      display:flex; gap:10px; align-items:center; overflow:auto;
+    }
+    .tab{
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(17,28,58,.55);
+      color:var(--text);
       padding:10px 12px;
-      border-radius:10px;
+      border-radius: 999px;
       cursor:pointer;
-      font-size:14px;
+      white-space:nowrap;
+      font-size:13px;
+      transition:.15s;
     }
-    nav button.active{background:#3b82f6;border-color:#3b82f6}
+    .tab:hover{transform: translateY(-1px); border-color: rgba(255,255,255,.16)}
+    .tab.active{
+      background: linear-gradient(135deg, rgba(245,197,66,.95), rgba(245,197,66,.70));
+      color:#111;
+      border-color: rgba(245,197,66,.45);
+      font-weight:800;
+    }
+
+    main{max-width:1100px; margin:18px auto; padding:0 10px 30px;}
+    .grid{display:grid; grid-template-columns: 1.25fr .75fr; gap:14px;}
+    @media (max-width: 980px){ .grid{grid-template-columns:1fr;} }
+
     .card{
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
-      border-radius:14px;
-      padding:14px;
-      min-height:260px;
+      background: linear-gradient(180deg, rgba(13,20,38,.92), rgba(11,16,32,.92));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:16px;
     }
-    .title{font-size:18px;margin:0 0 10px}
-    .grid{display:grid;grid-template-columns:1fr;gap:10px}
-    @media (min-width:820px){.grid{grid-template-columns:1fr 1fr}}
-    label{font-size:13px;opacity:.9}
-    input,textarea{
+    .card h2{margin:0 0 10px;font-size:18px}
+    .muted{color:var(--muted); font-size:13px; line-height:1.5}
+    .bullet{margin:10px 0 0; padding-left:18px}
+    .bullet li{margin:6px 0; color:var(--muted); font-size:13px}
+    .badge{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:6px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.20);
+      font-size:12px; color:rgba(255,255,255,.85)
+    }
+    .row{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+
+    /* Forms */
+    label{display:block; margin:10px 0 6px; color:rgba(255,255,255,.85); font-size:12px}
+    input, select, textarea{
       width:100%;
-      padding:10px 12px;
-      border-radius:10px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.18);
-      color:#eaf2ff;
+      padding:11px 12px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(5,8,18,.65);
+      color: var(--text);
       outline:none;
     }
-    textarea{min-height:90px;resize:vertical}
-    .row{display:flex;gap:10px;flex-wrap:wrap}
+    textarea{min-height:92px; resize:vertical}
     .btn{
-      border:0;
-      background:#22c55e;
-      color:#05210f;
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:8px;
       padding:10px 12px;
-      border-radius:10px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(17,28,58,.55);
+      color: var(--text);
       cursor:pointer;
       font-weight:700;
     }
-    .btn.gray{background:#93a4b8;color:#08101d}
-    .small{font-size:12px;opacity:.8;margin-top:8px}
-    .hide{display:none}
+    .btn.primary{
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      border-color: rgba(37,99,235,.35);
+    }
+    .btn.gold{
+      background: linear-gradient(135deg, rgba(245,197,66,.95), rgba(245,197,66,.70));
+      border-color: rgba(245,197,66,.45);
+      color:#111;
+      font-weight:900;
+    }
+    .twoCol{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    @media (max-width: 980px){ .twoCol{grid-template-columns:1fr;} }
+
+    .hr{height:1px; background:rgba(255,255,255,.08); margin:14px 0}
+    .note{font-size:12px; color:rgba(255,255,255,.75)}
+    .success{color:#7CFFB2; font-weight:800}
+    .warn{color:#ffd88a; font-weight:800}
+
+    /* Page hide/show */
+    .page{display:none}
+    .page.active{display:block}
   </style>
 </head>
+
 <body>
   <header>
-    <h1>부동산 자산 디지털 플랫폼</h1>
+    <div class="wrap">
+      <h1>부동산 자산 디지털 플랫폼 (real8)</h1>
+      <p>
+        조회·회원 활동·기술공유 기록을 기반으로 토큰/코인을 발생시키고, 블록체인(개념) 해시값을 남기기 위한
+        사업용 시범 사이트입니다.
+      </p>
+    </div>
   </header>
 
-  <div class="wrap">
-    <div class="msg">✅ 페이지가 정상 로드되었습니다. 메뉴를 눌러 이동해보세요.</div>
-
-    <nav>
-      <button class="nav active" data-page="home">홈</button>
-      <button class="nav" data-page="register">부동산 등록</button>
-      <button class="nav" data-page="token">토큰/코인</button>
-      <button class="nav" data-page="mypage">마이페이지</button>
-      <button class="nav" data-page="help">도움말</button>
-    </nav>
-
-    <section id="home" class="card page">
-      <h2 class="title">홈</h2>
-      <p>이 버전은 “단일 파일(index.html)”로 동작하는 최소 기능 데모입니다.</p>
-      <div class="small">다음 단계: 로그인/DB/블록체인 연동은 이후에 확장 가능합니다.</div>
-    </section>
-
-    <section id="register" class="card page hide">
-      <h2 class="title">부동산 등록</h2>
-      <div class="grid">
-        <div>
-          <label>주소</label>
-          <input id="addr" placeholder="예: 서울 강남구 …" />
-        </div>
-        <div>
-          <label>유형</label>
-          <input id="type" placeholder="예: 아파트 / 상가 / 토지" />
-        </div>
-        <div>
-          <label>가격(매매/임대)</label>
-          <input id="price" placeholder="예: 10억 / 보증금 5천 월세 200" />
-        </div>
-        <div>
-          <label>설명</label>
-          <textarea id="desc" placeholder="특징/면적/층수 등"></textarea>
-        </div>
-      </div>
-      <div class="row" style="margin-top:10px">
-        <button class="btn" id="saveBtn">저장(로컬)</button>
-        <button class="btn gray" id="clearBtn">초기화</button>
-      </div>
-      <div class="small">※ 지금은 “내 PC 브라우저”에만 저장됩니다(로컬저장). 서버/DB는 추후.</div>
-    </section>
-
-    <section id="token" class="card page hide">
-      <h2 class="title">토큰/코인</h2>
-      <p>이 화면은 구조만 먼저 만들어둔 상태입니다.</p>
-      <ul>
-        <li>조회/등록 등 행동에 따라 토큰 지급 (추후 규칙 추가)</li>
-        <li>실거래 발생 시 코인 지급 (추후)</li>
-      </ul>
-    </section>
-
-    <section id="mypage" class="card page hide">
-      <h2 class="title">마이페이지</h2>
-      <p><b>저장된 부동산(로컬)</b></p>
-      <pre id="out" style="white-space:pre-wrap;background:rgba(0,0,0,.18);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.12)"></pre>
-      <div class="row" style="margin-top:10px">
-        <button class="btn gray" id="loadBtn">불러오기</button>
-        <button class="btn gray" id="removeBtn">삭제</button>
-      </div>
-    </section>
-
-    <section id="help" class="card page hide">
-      <h2 class="title">도움말</h2>
-      <ol>
-        <li>메뉴를 눌러 페이지가 바뀌면 정상입니다.</li>
-        <li>만약 또 “홈만” 보이면 Ctrl+F5로 강력 새로고침 하세요.</li>
-      </ol>
-    </section>
+  <div class="menuBar">
+    <div class="wrap" id="tabs">
+      <button class="tab active" data-page="home">회원가입·로그인·자산 안내</button>
+      <button class="tab" data-page="admin">블록체인·코인관리(관리자)</button>
+      <button class="tab" data-page="trade">건축·매매·임대·바꿔살기(정보 등록)</button>
+      <button class="tab" data-page="virtual">가상건축 제안·살이</button>
+      <button class="tab" data-page="talk">대화(정보 공유)</button>
+      <button class="tab" data-page="ads">광고·홍보 계정</button>
+    </div>
   </div>
 
+  <main>
+    <!-- HOME -->
+    <section id="home" class="page active">
+      <div class="grid">
+        <div class="card">
+          <div class="row">
+            <span class="badge">🏠 홈 · 회원가입 · 로그인 · 자산 안내</span>
+            <span class="badge">🔒 저장: 브라우저(LocalStorage) 데모</span>
+          </div>
+
+          <h2 style="margin-top:12px">사이트 구성 및 각 페이지 사용 설명</h2>
+          <ul class="bullet">
+            <li><b>블록체인·코인관리(관리자)</b>: 관리자가 토큰/코인 지급 기준(%)을 설정하고 데모 해시를 생성합니다.</li>
+            <li><b>건축·매매·임대·바꿔살기</b>: 회원이 입력한 정보를 “저장”하면(연습) 코인/토큰이 자동 계산됩니다.</li>
+            <li><b>가상건축 제안</b>: 글/사진(선택)을 올리는 형태의 제안 게시판(데모)입니다.</li>
+            <li><b>대화(정보 공유)</b>: 간단한 대화/댓글 형태(데모)입니다.</li>
+            <li><b>광고·홍보 계정</b>: 광고주 계정/등록 구조(데모)입니다.</li>
+          </ul>
+          <div class="hr"></div>
+          <p class="note">
+            ※ 현재 버전은 <b>브라우저(LocalStorage)</b>에만 저장됩니다. 실서비스는 서버·DB·보안·법적 검토가 필요합니다.
+          </p>
+        </div>
+
+        <div class="card">
+          <h2>회원가입 및 로그인</h2>
+          <p class="muted">이 블록은 “화면을 사업용처럼 보이게 하는” 기본 회원 UI입니다(데모).</p>
+
+          <div class="twoCol">
+            <div>
+              <h3 style="margin:6px 0 8px;font-size:14px">로그인</h3>
+              <label>아이디</label>
+              <input id="loginId" placeholder="예: jung" />
+              <label>비밀번호</label>
+              <input id="loginPw" type="password" placeholder="••••••••" />
+              <div class="row">
+                <button class="btn primary" id="btnLogin">로그인</button>
+                <button class="btn" id="btnLogout">로그아웃</button>
+              </div>
+              <p id="loginMsg" class="note"></p>
+            </div>
+
+            <div>
+              <h3 style="margin:6px 0 8px;font-size:14px">회원가입</h3>
+              <label>아이디</label>
+              <input id="regId" placeholder="예: hong" />
+              <label>비밀번호</label>
+              <input id="regPw" type="password" placeholder="••••••••" />
+              <div class="row">
+                <button class="btn gold" id="btnReg">회원가입</button>
+              </div>
+              <p id="regMsg" class="note"></p>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+          <p class="muted">현재 로그인: <b id="who" class="warn">없음</b></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADMIN -->
+    <section id="admin" class="page">
+      <div class="grid">
+        <div class="card">
+          <h2>블록체인·코인관리(관리자) — 데모</h2>
+          <p class="muted">관리자가 지급 기준을 정하고, 해시를 생성해 “기록”을 남기는 형태(개념)입니다.</p>
+
+          <div class="twoCol">
+            <div>
+              <label>토큰 지급(예: 조회/댓글 등) 기본값</label>
+              <input id="ruleToken" type="number" min="0" value="5" />
+              <label>코인 지급(예: 거래/등록 완료) 기본값</label>
+              <input id="ruleCoin" type="number" min="0" value="10" />
+              <div class="row">
+                <button class="btn primary" id="saveRules">기준 저장</button>
+              </div>
+              <p id="ruleMsg" class="note"></p>
+            </div>
+
+            <div>
+              <label>해시 생성(데모)</label>
+              <input id="hashSeed" placeholder="예: admin|timestamp|data" />
+              <div class="row">
+                <button class="btn" id="makeHash">해시 생성</button>
+              </div>
+              <p class="muted">해시: <b id="hashOut">-</b></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>관리자 요약</h2>
+          <p class="muted">저장된 기준:</p>
+          <ul class="bullet">
+            <li>토큰 기준: <b id="sumToken">-</b></li>
+            <li>코인 기준: <b id="sumCoin">-</b></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRADE -->
+    <section id="trade" class="page">
+      <div class="card">
+        <h2>건축·매매·임대·바꿔살기 (정보 등록) — 연습</h2>
+        <p class="muted">주소/가격 등을 입력하고 “저장”하면, 관리자 기준에 따라 토큰/코인을 계산해 보여줍니다(데모).</p>
+
+        <div class="twoCol">
+          <div>
+            <label>주소</label>
+            <input id="addr" placeholder="예: 서울 강남구 …" />
+            <label>유형</label>
+            <select id="type">
+              <option>건축</option><option>매매</option><option>임대</option><option>바꿔살기</option>
+            </select>
+            <label>금액(만원)</label>
+            <input id="price" type="number" min="0" value="0" />
+            <div class="row">
+              <button class="btn primary" id="saveTrade">저장</button>
+            </div>
+            <p id="tradeMsg" class="note"></p>
+          </div>
+
+          <div>
+            <h3 style="margin:6px 0 8px;font-size:14px">자동 계산(데모)</h3>
+            <ul class="bullet">
+              <li>토큰 증가: <b id="calcToken">0</b></li>
+              <li>코인 증가: <b id="calcCoin">0</b></li>
+              <li>누적 토큰: <b id="totalToken">0</b></li>
+              <li>누적 코인: <b id="totalCoin">0</b></li>
+            </ul>
+            <p class="note">※ 누적은 브라우저에 저장됩니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIRTUAL -->
+    <section id="virtual" class="page">
+      <div class="grid">
+        <div class="card">
+          <h2>가상건축 제안·살이 — 데모</h2>
+          <p class="muted">제안 글을 저장하면 목록에 쌓이는 형태(데모)입니다.</p>
+          <label>제목</label>
+          <input id="vTitle" placeholder="예: 가상 건축 아이디어 1" />
+          <label>내용</label>
+          <textarea id="vBody" placeholder="아이디어 / 설계 / 예상 거주 방식 등"></textarea>
+          <div class="row">
+            <button class="btn primary" id="vSave">등록</button>
+          </div>
+          <p id="vMsg" class="note"></p>
+        </div>
+
+        <div class="card">
+          <h2>제안 목록</h2>
+          <div id="vList" class="muted">아직 등록된 제안이 없습니다.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TALK -->
+    <section id="talk" class="page">
+      <div class="card">
+        <h2>대화(정보 공유) — 데모</h2>
+        <p class="muted">간단 댓글 형식입니다.</p>
+        <label>메시지</label>
+        <input id="tMsg" placeholder="내용을 입력하세요" />
+        <div class="row">
+          <button class="btn primary" id="tSend">등록</button>
+        </div>
+        <div class="hr"></div>
+        <div id="tList" class="muted">아직 대화가 없습니다.</div>
+      </div>
+    </section>
+
+    <!-- ADS -->
+    <section id="ads" class="page">
+      <div class="grid">
+        <div class="card">
+          <h2>광고·홍보 계정 — 데모</h2>
+          <p class="muted">광고주가 홍보 문구를 등록하는 형태(연습)입니다.</p>
+          <label>광고주/브랜드</label>
+          <input id="aBrand" placeholder="예: Real8 Partners" />
+          <label>홍보 문구</label>
+          <textarea id="aCopy" placeholder="예: 부동산 자산 디지털화…"></textarea>
+          <div class="row">
+            <button class="btn gold" id="aSave">광고 등록</button>
+          </div>
+          <p id="aMsg" class="note"></p>
+        </div>
+
+        <div class="card">
+          <h2>등록된 광고</h2>
+          <div id="aList" class="muted">아직 광고가 없습니다.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
   <script>
-    // 메뉴 전환
-    const navs = document.querySelectorAll('.nav');
+    // ---- Tabs (SPA) ----
+    const tabs = document.querySelectorAll('.tab');
     const pages = document.querySelectorAll('.page');
-
     function show(id){
-      pages.forEach(p => p.classList.toggle('hide', p.id !== id));
-      navs.forEach(b => b.classList.toggle('active', b.dataset.page === id));
+      pages.forEach(p => p.classList.toggle('active', p.id===id));
+      tabs.forEach(t => t.classList.toggle('active', t.dataset.page===id));
+      window.scrollTo({top:0, behavior:'smooth'});
     }
-    navs.forEach(b => b.addEventListener('click', () => show(b.dataset.page)));
+    tabs.forEach(t => t.addEventListener('click', ()=>show(t.dataset.page)));
 
-    // 로컬 저장(데모)
-    const KEY = 'realestate_demo_v1';
-    const $ = (id) => document.getElementById(id);
+    // ---- Auth (demo) ----
+    const LS = (k,v)=> v===undefined ? localStorage.getItem(k) : localStorage.setItem(k,v);
+    const who = document.getElementById('who');
+    function setWho(){
+      const u = LS('real8_user') || '';
+      who.textContent = u ? u : '없음';
+      who.className = u ? 'success' : 'warn';
+    }
+    setWho();
 
-    function readForm(){
+    document.getElementById('btnReg').addEventListener('click', ()=>{
+      const id = document.getElementById('regId').value.trim();
+      const pw = document.getElementById('regPw').value.trim();
+      const msg = document.getElementById('regMsg');
+      if(!id || !pw){ msg.textContent='아이디/비밀번호를 입력하세요.'; return; }
+      LS('real8_account_'+id, pw);
+      msg.textContent='회원가입 완료(데모). 이제 로그인하세요.';
+    });
+
+    document.getElementById('btnLogin').addEventListener('click', ()=>{
+      const id = document.getElementById('loginId').value.trim();
+      const pw = document.getElementById('loginPw').value.trim();
+      const msg = document.getElementById('loginMsg');
+      const saved = LS('real8_account_'+id);
+      if(!saved){ msg.textContent='해당 아이디가 없습니다(데모).'; return; }
+      if(saved!==pw){ msg.textContent='비밀번호가 다릅니다.'; return; }
+      LS('real8_user', id);
+      msg.textContent='로그인 성공!';
+      setWho();
+    });
+
+    document.getElementById('btnLogout').addEventListener('click', ()=>{
+      localStorage.removeItem('real8_user');
+      document.getElementById('loginMsg').textContent='로그아웃 했습니다.';
+      setWho();
+    });
+
+    // ---- Admin rules ----
+    function loadRules(){
+      const t = Number(LS('real8_rule_token') || 5);
+      const c = Number(LS('real8_rule_coin') || 10);
+      document.getElementById('ruleToken').value = t;
+      document.getElementById('ruleCoin').value = c;
+      document.getElementById('sumToken').textContent = t;
+      document.getElementById('sumCoin').textContent = c;
+    }
+    loadRules();
+
+    document.getElementById('saveRules').addEventListener('click', ()=>{
+      LS('real8_rule_token', document.getElementById('ruleToken').value);
+      LS('real8_rule_coin', document.getElementById('ruleCoin').value);
+      document.getElementById('ruleMsg').textContent='기준 저장 완료.';
+      loadRules();
+    });
+
+    document.getElementById('makeHash').addEventListener('click', async ()=>{
+      const seed = (document.getElementById('hashSeed').value.trim() || ('admin|'+Date.now()));
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(seed));
+      const hex = [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+      document.getElementById('hashOut').textContent = hex.slice(0,40) + '...';
+    });
+
+    // ---- Trade save & reward (demo) ----
+    function getTotals(){
       return {
-        addr: $('addr').value.trim(),
-        type: $('type').value.trim(),
-        price: $('price').value.trim(),
-        desc: $('desc').value.trim(),
-        savedAt: new Date().toISOString()
+        token: Number(LS('real8_total_token') || 0),
+        coin: Number(LS('real8_total_coin') || 0),
       };
     }
+    function setTotals(t,c){
+      LS('real8_total_token', String(t));
+      LS('real8_total_coin', String(c));
+    }
+    function refreshTotalsUI(){
+      const tot = getTotals();
+      document.getElementById('totalToken').textContent = tot.token;
+      document.getElementById('totalCoin').textContent = tot.coin;
+    }
+    refreshTotalsUI();
 
-    $('saveBtn').addEventListener('click', () => {
-      const data = readForm();
-      localStorage.setItem(KEY, JSON.stringify(data, null, 2));
-      alert('저장되었습니다(로컬). 마이페이지에서 확인하세요.');
-      show('mypage');
-      $('out').textContent = localStorage.getItem(KEY) || '(저장된 데이터 없음)';
+    document.getElementById('saveTrade').addEventListener('click', ()=>{
+      const addr = document.getElementById('addr').value.trim();
+      const price = Number(document.getElementById('price').value || 0);
+      const ruleT = Number(LS('real8_rule_token') || 5);
+      const ruleC = Number(LS('real8_rule_coin') || 10);
+
+      // 데모 계산: 금액이 있으면 코인 더, 저장하면 토큰 약간
+      const addToken = ruleT + Math.min(10, Math.floor(price/1000));
+      const addCoin  = (price>0) ? (ruleC + Math.min(50, Math.floor(price/500))) : ruleC;
+
+      document.getElementById('calcToken').textContent = addToken;
+      document.getElementById('calcCoin').textContent = addCoin;
+
+      const tot = getTotals();
+      setTotals(tot.token + addToken, tot.coin + addCoin);
+      refreshTotalsUI();
+
+      LS('real8_last_addr', addr);
+      document.getElementById('tradeMsg').textContent = '저장 완료(데모) · 토큰/코인 지급 반영됨.';
     });
 
-    $('clearBtn').addEventListener('click', () => {
-      ['addr','type','price','desc'].forEach(id => $(id).value='');
+    // ---- Virtual proposals ----
+    function loadV(){
+      const raw = LS('real8_virtual') || '[]';
+      let arr = [];
+      try{arr = JSON.parse(raw);}catch(e){}
+      const box = document.getElementById('vList');
+      if(!arr.length){ box.textContent='아직 등록된 제안이 없습니다.'; return; }
+      box.innerHTML = arr.map(x=>`
+        <div class="card" style="box-shadow:none;margin:10px 0;padding:12px;border-radius:12px">
+          <b>${escapeHtml(x.title)}</b>
+          <div class="muted" style="margin-top:6px">${escapeHtml(x.body)}</div>
+          <div class="note" style="margin-top:6px">작성: ${escapeHtml(x.by)} · ${new Date(x.at).toLocaleString()}</div>
+        </div>
+      `).join('');
+    }
+    loadV();
+
+    document.getElementById('vSave').addEventListener('click', ()=>{
+      const title = document.getElementById('vTitle').value.trim();
+      const body  = document.getElementById('vBody').value.trim();
+      const by = LS('real8_user') || '익명';
+      if(!title || !body){ document.getElementById('vMsg').textContent='제목/내용을 입력하세요.'; return; }
+      let arr=[]; try{arr=JSON.parse(LS('real8_virtual')||'[]');}catch(e){}
+      arr.unshift({title, body, by, at: Date.now()});
+      LS('real8_virtual', JSON.stringify(arr));
+      document.getElementById('vMsg').textContent='등록 완료.';
+      document.getElementById('vTitle').value='';
+      document.getElementById('vBody').value='';
+      loadV();
     });
 
-    $('loadBtn').addEventListener('click', () => {
-      $('out').textContent = localStorage.getItem(KEY) || '(저장된 데이터 없음)';
+    // ---- Talk ----
+    function loadT(){
+      let arr=[]; try{arr=JSON.parse(LS('real8_talk')||'[]');}catch(e){}
+      const box = document.getElementById('tList');
+      if(!arr.length){ box.textContent='아직 대화가 없습니다.'; return; }
+      box.innerHTML = arr.map(x=>`
+        <div class="card" style="box-shadow:none;margin:10px 0;padding:12px;border-radius:12px">
+          <b>${escapeHtml(x.by)}</b> <span class="note">· ${new Date(x.at).toLocaleString()}</span>
+          <div class="muted" style="margin-top:6px">${escapeHtml(x.msg)}</div>
+        </div>
+      `).join('');
+    }
+    loadT();
+
+    document.getElementById('tSend').addEventListener('click', ()=>{
+      const msg = document.getElementById('tMsg').value.trim();
+      const by = LS('real8_user') || '익명';
+      if(!msg) return;
+      let arr=[]; try{arr=JSON.parse(LS('real8_talk')||'[]');}catch(e){}
+      arr.unshift({by, msg, at: Date.now()});
+      LS('real8_talk', JSON.stringify(arr));
+      document.getElementById('tMsg').value='';
+      loadT();
     });
 
-    $('removeBtn').addEventListener('click', () => {
-      localStorage.removeItem(KEY);
-      $('out').textContent = '(삭제됨)';
+    // ---- Ads ----
+    function loadA(){
+      let arr=[]; try{arr=JSON.parse(LS('real8_ads')||'[]');}catch(e){}
+      const box = document.getElementById('aList');
+      if(!arr.length){ box.textContent='아직 광고가 없습니다.'; return; }
+      box.innerHTML = arr.map(x=>`
+        <div class="card" style="box-shadow:none;margin:10px 0;padding:12px;border-radius:12px">
+          <b>${escapeHtml(x.brand)}</b>
+          <div class="muted" style="margin-top:6px">${escapeHtml(x.copy)}</div>
+          <div class="note" style="margin-top:6px">등록: ${new Date(x.at).toLocaleString()}</div>
+        </div>
+      `).join('');
+    }
+    loadA();
+
+    document.getElementById('aSave').addEventListener('click', ()=>{
+      const brand = document.getElementById('aBrand').value.trim();
+      const copy  = document.getElementById('aCopy').value.trim();
+      if(!brand || !copy){ document.getElementById('aMsg').textContent='브랜드/문구를 입력하세요.'; return; }
+      let arr=[]; try{arr=JSON.parse(LS('real8_ads')||'[]');}catch(e){}
+      arr.unshift({brand, copy, at: Date.now()});
+      LS('real8_ads', JSON.stringify(arr));
+      document.getElementById('aMsg').textContent='광고 등록 완료.';
+      document.getElementById('aBrand').value='';
+      document.getElementById('aCopy').value='';
+      loadA();
     });
 
-    // 처음 홈 표시
-    show('home');
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, m => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[m]));
+    }
   </script>
 </body>
 </html>
