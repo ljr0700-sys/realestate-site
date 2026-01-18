@@ -1,580 +1,530 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>부동산 자산 디지털 플랫폼 (real8)</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>부동산 자산 디지털 플랫폼 (Real8 - V13 Admin)</title>
+    <style>
+        /* === 다크모드 디자인 (V12 유지) === */
+        :root { --bg: #121212; --card: #1e1e1e; --blue: #0056b3; --text: #e0e0e0; --input-bg: #2c2c2c; }
+        body { font-family: 'Noto Sans KR', sans-serif; margin: 0; background: var(--bg); color: var(--text); }
+        
+        /* 헤더 & 네비 */
+        header { background: var(--blue); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #003d80; }
+        .logo { font-size: 22px; font-weight: bold; color: white; }
+        nav { background: #000; border-bottom: 1px solid #333; }
+        .nav-box { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; }
+        .nav-btn { padding: 15px 20px; color: #888; cursor: pointer; font-size: 14px; border-right: 1px solid #222; transition: 0.3s; }
+        .nav-btn:hover { color: white; background: #222; }
+        .nav-btn.active { background: #FEE500; color: black; font-weight: bold; }
 
-  <style>
-    :root{
-      --bg:#070b14;
-      --panel:#0d1426;
-      --panel2:#0b1020;
-      --line:#1b2a52;
-      --text:#eaf0ff;
-      --muted:#a9b6de;
-      --blue:#2563eb;
-      --blue2:#1d4ed8;
-      --gold:#f5c542;
-      --shadow: 0 18px 55px rgba(0,0,0,.55);
-      --radius: 16px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; color:var(--text);
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      background:
-        radial-gradient(1200px 600px at 20% 10%, rgba(37,99,235,.18), transparent 60%),
-        radial-gradient(900px 500px at 80% 20%, rgba(245,197,66,.10), transparent 55%),
-        linear-gradient(180deg, #070b14, #050812);
-      min-height:100vh;
-    }
+        /* 컨텐츠 */
+        .container { max-width: 1200px; margin: 30px auto; padding: 20px; }
+        .page { display: none; }
+        .page.active { display: block; }
+        .card { background: var(--card); padding: 25px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #333; }
+        .head-title { border-left: 5px solid var(--blue); padding-left: 15px; font-size: 20px; font-weight: bold; color: white; margin-bottom: 20px; }
 
-    /* Top header */
-    header{
-      background: linear-gradient(135deg, var(--blue), var(--blue2));
-      padding:22px 18px 18px;
-      box-shadow: 0 12px 40px rgba(0,0,0,.35);
-    }
-    header .wrap{max-width:1100px;margin:0 auto}
-    header h1{
-      margin:0;
-      font-size:28px;
-      letter-spacing:-.3px;
-      font-weight:800;
-    }
-    header p{
-      margin:8px 0 0;
-      color: rgba(255,255,255,.85);
-      line-height:1.35;
-      font-size:13px;
-    }
+        /* 입력 폼 */
+        label { display: block; color: #aaa; margin: 12px 0 5px; font-size: 13px; }
+        input, select, textarea { width: 96%; padding: 12px; background: var(--input-bg); border: 1px solid #444; color: white; border-radius: 4px; font-size: 14px; }
+        input:focus, textarea:focus { outline: 1px solid var(--blue); }
+        
+        /* 버튼 */
+        button { width: 100%; padding: 14px; background: #0d6efd; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 15px; }
+        button:hover { background: #0b5ed7; }
+        .btn-yellow { background: #FEE500; color: black; }
+        .btn-green { background: #28a745; color: white; }
+        .btn-small { width: auto; padding: 8px 15px; margin-top: 5px; font-size: 12px; }
 
-    /* Menu */
-    .menuBar{
-      background: rgba(10,14,26,.92);
-      border-bottom:1px solid rgba(255,255,255,.06);
-      backdrop-filter: blur(8px);
-    }
-    .menuBar .wrap{
-      max-width:1100px; margin:0 auto; padding:10px 10px;
-      display:flex; gap:10px; align-items:center; overflow:auto;
-    }
-    .tab{
-      border:1px solid rgba(255,255,255,.08);
-      background: rgba(17,28,58,.55);
-      color:var(--text);
-      padding:10px 12px;
-      border-radius: 999px;
-      cursor:pointer;
-      white-space:nowrap;
-      font-size:13px;
-      transition:.15s;
-    }
-    .tab:hover{transform: translateY(-1px); border-color: rgba(255,255,255,.16)}
-    .tab.active{
-      background: linear-gradient(135deg, rgba(245,197,66,.95), rgba(245,197,66,.70));
-      color:#111;
-      border-color: rgba(245,197,66,.45);
-      font-weight:800;
-    }
+        /* 레이아웃 분할 */
+        .split-layout { display: flex; gap: 30px; }
+        .left-form { flex: 1; }
+        .right-list { flex: 1.5; background: #252525; padding: 20px; border-radius: 8px; border: 1px solid #333; }
+        
+        /* 라디오 버튼 */
+        .radio-group { display: flex; gap: 10px; margin-bottom: 10px; }
+        .radio-label { flex: 1; background: #333; padding: 10px; text-align: center; border-radius: 4px; cursor: pointer; border: 1px solid #444; font-size: 13px; }
+        input[type="radio"] { display: none; }
+        input[type="radio"]:checked + .radio-label { background: var(--blue); color: white; border-color: var(--blue); font-weight: bold; }
 
-    main{max-width:1100px; margin:18px auto; padding:0 10px 30px;}
-    .grid{display:grid; grid-template-columns: 1.25fr .75fr; gap:14px;}
-    @media (max-width: 980px){ .grid{grid-template-columns:1fr;} }
+        /* 테이블 */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        th { background: #333; padding: 10px; text-align: left; color: #fff; border-bottom: 1px solid #555; }
+        td { padding: 12px; border-bottom: 1px solid #444; color: #ccc; cursor: pointer; vertical-align: middle; }
+        tr:hover td { background: #3a3a3a; color: white; }
+        
+        /* 기타 스타일 */
+        .hash-box { background: #111; color: #28a745; font-family: monospace; padding: 8px; border-radius: 4px; font-size: 11px; word-break: break-all; }
+        .progress-box { margin-top: 10px; }
+        .progress-bar-bg { width: 100%; background: #444; height: 12px; border-radius: 6px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #0d6efd, #00d2ff); width: 0%; transition: width 0.5s; }
+        .progress-text { font-size: 11px; color: #00d2ff; text-align: right; margin-top: 2px; }
+        .media-placeholder { width: 100%; height: 150px; background: #333; border: 1px dashed #555; display: flex; align-items: center; justify-content: center; color: #777; margin-bottom: 10px; border-radius: 5px; }
+        
+        /* 팝업 모달 */
+        .modal-wrap { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-box { background: #252525; width: 650px; padding: 30px; border-radius: 12px; border: 1px solid #555; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.7); }
+        .detail-row { display: flex; border-bottom: 1px solid #444; padding: 10px 0; }
+        .detail-label { width: 120px; color: #888; font-size: 13px; }
+        .detail-val { flex: 1; color: white; font-weight: bold; }
 
-    .card{
-      background: linear-gradient(180deg, rgba(13,20,38,.92), rgba(11,16,32,.92));
-      border:1px solid rgba(255,255,255,.08);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding:16px;
-    }
-    .card h2{margin:0 0 10px;font-size:18px}
-    .muted{color:var(--muted); font-size:13px; line-height:1.5}
-    .bullet{margin:10px 0 0; padding-left:18px}
-    .bullet li{margin:6px 0; color:var(--muted); font-size:13px}
-    .badge{
-      display:inline-flex; gap:8px; align-items:center;
-      padding:6px 10px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.20);
-      font-size:12px; color:rgba(255,255,255,.85)
-    }
-    .row{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
-
-    /* Forms */
-    label{display:block; margin:10px 0 6px; color:rgba(255,255,255,.85); font-size:12px}
-    input, select, textarea{
-      width:100%;
-      padding:11px 12px;
-      border-radius: 12px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(5,8,18,.65);
-      color: var(--text);
-      outline:none;
-    }
-    textarea{min-height:92px; resize:vertical}
-    .btn{
-      display:inline-flex; align-items:center; justify-content:center;
-      gap:8px;
-      padding:10px 12px;
-      border-radius: 12px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(17,28,58,.55);
-      color: var(--text);
-      cursor:pointer;
-      font-weight:700;
-    }
-    .btn.primary{
-      background: linear-gradient(135deg, var(--blue), var(--blue2));
-      border-color: rgba(37,99,235,.35);
-    }
-    .btn.gold{
-      background: linear-gradient(135deg, rgba(245,197,66,.95), rgba(245,197,66,.70));
-      border-color: rgba(245,197,66,.45);
-      color:#111;
-      font-weight:900;
-    }
-    .twoCol{display:grid; grid-template-columns:1fr 1fr; gap:12px}
-    @media (max-width: 980px){ .twoCol{grid-template-columns:1fr;} }
-
-    .hr{height:1px; background:rgba(255,255,255,.08); margin:14px 0}
-    .note{font-size:12px; color:rgba(255,255,255,.75)}
-    .success{color:#7CFFB2; font-weight:800}
-    .warn{color:#ffd88a; font-weight:800}
-
-    /* Page hide/show */
-    .page{display:none}
-    .page.active{display:block}
-  </style>
+        /* 로그인 화면 */
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #121212; z-index: 5000; display: flex; justify-content: center; align-items: center; }
+        .login-card { background: #1e1e1e; padding: 40px; border-radius: 10px; width: 400px; text-align: center; border: 1px solid #333; box-shadow: 0 10px 30px black; }
+        
+        .hidden { display: none !important; }
+        .badge { background: #444; padding: 2px 6px; border-radius: 4px; font-size: 11px; margin-right: 5px; }
+    </style>
 </head>
-
 <body>
-  <header>
-    <div class="wrap">
-      <h1>부동산 자산 디지털 플랫폼 (real8)</h1>
-      <p>
-        조회·회원 활동·기술공유 기록을 기반으로 토큰/코인을 발생시키고, 블록체인(개념) 해시값을 남기기 위한
-        사업용 시범 사이트입니다.
-      </p>
+
+    <div id="login-screen">
+        <div class="login-card">
+            <h2 style="color:white; margin-bottom:20px;">Real8 로그인</h2>
+            <p style="color:#888; font-size:13px; margin-bottom:30px;">로그인한 회원만 물건 등록이 가능합니다.</p>
+            <button class="btn-yellow" onclick="app.login('kakao')">🟡 카카오톡으로 시작</button>
+            <div style="margin: 20px 0; border-top: 1px solid #333;"></div>
+            <input type="text" id="login-id" placeholder="아이디 입력 (admin: 관리자)">
+            <input type="password" placeholder="비밀번호">
+            <button onclick="app.login('general')">로그인</button>
+            <p onclick="app.emergencyReset()" style="margin-top:20px; font-size:12px; color:#555; cursor:pointer;">⚠️ 화면 초기화</p>
+        </div>
     </div>
-  </header>
 
-  <div class="menuBar">
-    <div class="wrap" id="tabs">
-      <button class="tab active" data-page="home">회원가입·로그인·자산 안내</button>
-      <button class="tab" data-page="admin">블록체인·코인관리(관리자)</button>
-      <button class="tab" data-page="trade">건축·매매·임대·바꿔살기(정보 등록)</button>
-      <button class="tab" data-page="virtual">가상건축 제안·살이</button>
-      <button class="tab" data-page="talk">대화(정보 공유)</button>
-      <button class="tab" data-page="ads">광고·홍보 계정</button>
+    <div id="main-app" class="hidden">
+        <header>
+            <div class="logo">부동산 자산 디지털 플랫폼 (Real8)</div>
+            <div style="font-size:13px; color:white;">
+                <span id="user-name" style="color:#FEE500; font-weight:bold;">User</span>님
+                <a onclick="location.reload()" style="color:#aaa; margin-left:15px; cursor:pointer;">로그아웃</a>
+            </div>
+        </header>
+
+        <nav>
+            <div class="nav-box">
+                <div onclick="app.go('home')" class="nav-btn active" id="nav-home">홈·안내</div>
+                <div onclick="app.go('blockchain')" class="nav-btn" id="nav-blockchain">블록체인·토큰코인</div>
+                <div onclick="app.go('info')" class="nav-btn" id="nav-info">건축·매매·임대·펜션 (등록)</div>
+                <div onclick="app.go('virt')" class="nav-btn" id="nav-virt">가상건축 프로젝트</div>
+                <div onclick="app.go('cult')" class="nav-btn" id="nav-cult">주거문화</div>
+                <div onclick="app.go('my')" class="nav-btn" id="nav-my">마이페이지</div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div id="page-home" class="page active">
+                <div class="card">
+                    <div class="head-title">사이트 이용 안내</div>
+                    <ul style="line-height:2.0; color:#ccc; font-size:14px;">
+                        <li>✅ <strong>정보등록:</strong> 로그인한 본인이 '갑' 또는 '을'로서 정보를 등록합니다. (중복방지)</li>
+                        <li>✅ <strong>가상건축:</strong> 참여자가 많을수록 진행도가 올라갑니다. (이중 참여 불가)</li>
+                        <li>✅ <strong>주거문화:</strong> 사진/동영상 링크를 포함한 상세 정보를 공유하세요.</li>
+                        <li>✅ <strong>블록체인:</strong> 토큰을 모아 코인으로 환전하고 해시값을 남깁니다.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="page-blockchain" class="page">
+                <div class="card">
+                    <div class="head-title">토큰/코인 발행 기준 및 관리</div>
+                    
+                    <div id="admin-panel" class="hidden" style="border:1px solid #FEE500; padding:15px; margin-bottom:15px;">
+                        <h4 style="color:#FEE500; margin-top:0;">🛠️ 관리자 설정 (지급 수량 & 환전율)</h4>
+                        <div class="split-layout">
+                            <div class="left-form">
+                                <label>1. 부동산 정보 등록 시 지급량</label><input type="number" id="set-reward-info" value="500">
+                                <label>2. 가상건축 제안 지급량</label><input type="number" id="set-reward-virt-post" value="100">
+                                <label>3. 가상건축 참여 지급량</label><input type="number" id="set-reward-virt-reply" value="20">
+                            </div>
+                            <div class="right-list">
+                                <label>4. 주거문화 글쓰기 지급량</label><input type="number" id="set-reward-cult-post" value="50">
+                                <label>5. 주거문화 댓글 지급량</label><input type="number" id="set-reward-cult-reply" value="20">
+                                <label>🔴 환전율 (토큰 -> 1코인)</label><input type="number" id="set-rate" value="100">
+                                <button onclick="app.saveSettings()">설정 저장 및 공시</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background:#222; padding:20px; border-radius:5px;">
+                        <h4 style="color:white; margin-top:0;">📢 토큰 보상 기준표 (공시)</h4>
+                        <table style="width:100%; text-align:left; color:#ccc;">
+                            <tr><th>구분</th><th>행동</th><th style="color:#FEE500;">지급 토큰</th></tr>
+                            <tr><td>부동산 정보</td><td>정보 등록</td><td><span id="show-reward-info">500</span> Token</td></tr>
+                            <tr><td>가상건축</td><td>프로젝트 제안</td><td><span id="show-reward-virt-post">100</span> Token</td></tr>
+                            <tr><td>가상건축</td><td>참여 (의견제시)</td><td><span id="show-reward-virt-reply">20</span> Token</td></tr>
+                            <tr><td>주거문화</td><td>정보 공유 (글)</td><td><span id="show-reward-cult-post">50</span> Token</td></tr>
+                            <tr><td>주거문화</td><td>댓글 소통</td><td><span id="show-reward-cult-reply">20</span> Token</td></tr>
+                        </table>
+                        <hr style="border-color:#444; margin:15px 0;">
+                        <p>현재 환전율: <strong style="color:#0d6efd; font-size:18px;"><span id="public-rate">100</span> Token = 1 Coin</strong></p>
+                    </div>
+
+                    <h4 style="color:white; margin-top:30px;">📜 전체 코인 발행 대장</h4>
+                    <div style="max-height:200px; overflow-y:auto;">
+                        <table><thead><tr><th width="20%">시간</th><th width="15%">소유자</th><th>해시값 (Proof)</th></tr></thead><tbody id="ledger-list"></tbody></table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-info" class="page">
+                <div class="card">
+                    <div class="head-title">부동산 정보 등록</div>
+                    <div class="split-layout">
+                        <div class="left-form">
+                            <h4 style="margin-top:0; color:#fff;">새로운 정보 등록</h4>
+                            <label>1. 거래 종류</label>
+                            <select id="reg-type" onchange="app.updateRoleLabels()">
+                                <option value="건축">건축</option><option value="매매">매매</option><option value="임대">임대</option>
+                                <option value="바꿔살기">바꿔살기</option><option value="펜션">펜션</option>
+                            </select>
+                            <label>2. 나의 역할</label>
+                            <div class="radio-group">
+                                <label style="flex:1;"><input type="radio" name="my-role" value="gap" checked onchange="app.updateRoleLabels()"><div class="radio-label" id="role-gap-txt">갑</div></label>
+                                <label style="flex:1;"><input type="radio" name="my-role" value="eul" onchange="app.updateRoleLabels()"><div class="radio-label" id="role-eul-txt">을</div></label>
+                            </div>
+                            <label>3. 금액 (원)</label><input type="number" id="reg-price" placeholder="금액">
+                            <label>4. 주소 (중복불가)</label><input type="text" id="reg-addr" placeholder="주소 입력">
+                            <label>5. 설명</label><textarea id="reg-desc" style="height:60px;"></textarea>
+                            <button onclick="app.submitInfo()">정보 등록하기</button>
+                        </div>
+                        <div class="right-list">
+                            <h4 style="margin-top:0; color:#fff;">진행 중인 거래 목록</h4>
+                            <table><thead><tr><th>분류</th><th>주소</th><th>참여자</th><th>상태</th></tr></thead><tbody id="info-table-body"></tbody></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-virt" class="page">
+                <div class="card">
+                    <div class="head-title">가상건축 프로젝트 제안</div>
+                    <div class="split-layout">
+                        <div class="left-form">
+                            <h4 style="margin-top:0; color:#fff;">새로운 제안</h4>
+                            <label>제목</label><input type="text" id="virt-title">
+                            <label>희망 지역</label><input type="text" id="virt-region">
+                            <label>내용</label><textarea id="virt-desc" style="height:80px;"></textarea>
+                            <label>📸 사진 / ▶ 동영상 링크</label><input type="file" id="virt-file"><input type="text" id="virt-video" placeholder="URL 입력" style="margin-top:5px;">
+                            <button onclick="app.addVirtPost()">프로젝트 제안</button>
+                        </div>
+                        <div class="right-list">
+                            <h4 style="margin-top:0; color:#fff;">진행 중인 프로젝트</h4>
+                            <div id="list-virt"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-cult" class="page">
+                <div class="card">
+                    <div class="head-title">주거문화 정보 공유</div>
+                    <div class="split-layout">
+                        <div class="left-form">
+                            <h4 style="margin-top:0; color:#fff;">노하우 공유</h4>
+                            <label>섹션</label><select id="cult-sec"><option>인테리어</option><option>집수리</option><option>건축기술</option></select>
+                            <label>제목</label><input type="text" id="cult-title">
+                            <label>내용</label><textarea id="cult-desc" style="height:80px;"></textarea>
+                            <button onclick="app.addPost('cult')">글 등록</button>
+                        </div>
+                        <div class="right-list">
+                            <h4 style="margin-top:0; color:#fff;">공유된 정보</h4>
+                            <div id="list-cult"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-my" class="page">
+                <div class="card">
+                    <div class="head-title">마이페이지</div>
+                    <div style="background:#333; padding:20px; border-radius:8px;">
+                        <h3>보유 토큰: <span id="my-token" style="color:#0d6efd">0</span></h3>
+                        <h3>보유 코인: <span id="my-coin" style="color:#FEE500">0</span></h3>
+                        <button class="btn-yellow" style="width:auto;" onclick="app.exchange()">🪙 코인으로 환전</button>
+                    </div>
+                    <h4 style="margin-top:30px;">📜 내 코인 발행 증명 (Hash)</h4>
+                    <table><thead><tr><th width="20%">발행일시</th><th>해시값 (Proof)</th></tr></thead><tbody id="my-coin-list"></tbody></table>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <main>
-    <!-- HOME -->
-    <section id="home" class="page active">
-      <div class="grid">
-        <div class="card">
-          <div class="row">
-            <span class="badge">🏠 홈 · 회원가입 · 로그인 · 자산 안내</span>
-            <span class="badge">🔒 저장: 브라우저(LocalStorage) 데모</span>
-          </div>
-
-          <h2 style="margin-top:12px">사이트 구성 및 각 페이지 사용 설명</h2>
-          <ul class="bullet">
-            <li><b>블록체인·코인관리(관리자)</b>: 관리자가 토큰/코인 지급 기준(%)을 설정하고 데모 해시를 생성합니다.</li>
-            <li><b>건축·매매·임대·바꿔살기</b>: 회원이 입력한 정보를 “저장”하면(연습) 코인/토큰이 자동 계산됩니다.</li>
-            <li><b>가상건축 제안</b>: 글/사진(선택)을 올리는 형태의 제안 게시판(데모)입니다.</li>
-            <li><b>대화(정보 공유)</b>: 간단한 대화/댓글 형태(데모)입니다.</li>
-            <li><b>광고·홍보 계정</b>: 광고주 계정/등록 구조(데모)입니다.</li>
-          </ul>
-          <div class="hr"></div>
-          <p class="note">
-            ※ 현재 버전은 <b>브라우저(LocalStorage)</b>에만 저장됩니다. 실서비스는 서버·DB·보안·법적 검토가 필요합니다.
-          </p>
-        </div>
-
-        <div class="card">
-          <h2>회원가입 및 로그인</h2>
-          <p class="muted">이 블록은 “화면을 사업용처럼 보이게 하는” 기본 회원 UI입니다(데모).</p>
-
-          <div class="twoCol">
-            <div>
-              <h3 style="margin:6px 0 8px;font-size:14px">로그인</h3>
-              <label>아이디</label>
-              <input id="loginId" placeholder="예: jung" />
-              <label>비밀번호</label>
-              <input id="loginPw" type="password" placeholder="••••••••" />
-              <div class="row">
-                <button class="btn primary" id="btnLogin">로그인</button>
-                <button class="btn" id="btnLogout">로그아웃</button>
-              </div>
-              <p id="loginMsg" class="note"></p>
+    <div id="modal" class="modal-wrap">
+        <div class="modal-box">
+            <span onclick="document.getElementById('modal').style.display='none'" style="position:absolute; top:20px; right:20px; cursor:pointer; font-size:24px;">&times;</span>
+            <h2 id="modal-title" style="color:white; margin-top:0; border-bottom:1px solid #444; padding-bottom:15px;">상세 정보</h2>
+            <div id="modal-content"></div>
+            
+            <div id="modal-extra-info" style="display:none; margin-top:20px; background:#111; padding:15px; border-radius:8px;">
+                <h4 style="color:#FEE500; margin-top:0;">📝 상세 정보 기록</h4>
+                <textarea id="extra-desc" style="width:96%; height:60px; background:#222; border:1px solid #444; color:white;"></textarea>
+                <button class="btn-small btn-green" onclick="app.updateExtraInfo()">저장하기</button>
             </div>
 
-            <div>
-              <h3 style="margin:6px 0 8px;font-size:14px">회원가입</h3>
-              <label>아이디</label>
-              <input id="regId" placeholder="예: hong" />
-              <label>비밀번호</label>
-              <input id="regPw" type="password" placeholder="••••••••" />
-              <div class="row">
-                <button class="btn gold" id="btnReg">회원가입</button>
-              </div>
-              <p id="regMsg" class="note"></p>
+            <div id="modal-reply-area" style="margin-top:20px; border-top:1px solid #444; padding-top:15px;">
+                <label style="color:#FEE500;">참여 / 댓글 (토큰 지급)</label>
+                <input type="text" id="modal-reply-input" placeholder="의견을 남겨주세요.">
+                <button onclick="app.addReply()" style="width:auto; float:right;">등록</button>
+                <div style="clear:both;"></div>
+                <ul id="modal-replies" style="color:#aaa; font-size:13px; margin-top:15px; list-style:none; padding:0;"></ul>
             </div>
-          </div>
-
-          <div class="hr"></div>
-          <p class="muted">현재 로그인: <b id="who" class="warn">없음</b></p>
         </div>
-      </div>
-    </section>
+    </div>
 
-    <!-- ADMIN -->
-    <section id="admin" class="page">
-      <div class="grid">
-        <div class="card">
-          <h2>블록체인·코인관리(관리자) — 데모</h2>
-          <p class="muted">관리자가 지급 기준을 정하고, 해시를 생성해 “기록”을 남기는 형태(개념)입니다.</p>
+    <script>
+        const KEY = "REAL8_V13_ADMIN_"; 
 
-          <div class="twoCol">
-            <div>
-              <label>토큰 지급(예: 조회/댓글 등) 기본값</label>
-              <input id="ruleToken" type="number" min="0" value="5" />
-              <label>코인 지급(예: 거래/등록 완료) 기본값</label>
-              <input id="ruleCoin" type="number" min="0" value="10" />
-              <div class="row">
-                <button class="btn primary" id="saveRules">기준 저장</button>
-              </div>
-              <p id="ruleMsg" class="note"></p>
-            </div>
+        const app = {
+            data: { 
+                config: { 
+                    rate: 100, 
+                    // [요청 1] 관리자 설정용 기본값
+                    reward_info: 500, 
+                    reward_virt_post: 100, 
+                    reward_virt_reply: 20, 
+                    reward_cult_post: 50, 
+                    reward_cult_reply: 20
+                }, 
+                users: {}, ledger: [], posts: [], info: [] 
+            },
+            user: null, curItem: null, curType: null,
 
-            <div>
-              <label>해시 생성(데모)</label>
-              <input id="hashSeed" placeholder="예: admin|timestamp|data" />
-              <div class="row">
-                <button class="btn" id="makeHash">해시 생성</button>
-              </div>
-              <p class="muted">해시: <b id="hashOut">-</b></p>
-            </div>
-          </div>
-        </div>
+            init: function() {
+                try {
+                    const loaded = localStorage.getItem(KEY + 'data');
+                    if (loaded) this.data = JSON.parse(loaded);
+                    this.updateRoleLabels();
+                } catch (e) { localStorage.clear(); location.reload(); }
+            },
+            save: function() { localStorage.setItem(KEY + 'data', JSON.stringify(this.data)); this.render(); },
 
-        <div class="card">
-          <h2>관리자 요약</h2>
-          <p class="muted">저장된 기준:</p>
-          <ul class="bullet">
-            <li>토큰 기준: <b id="sumToken">-</b></li>
-            <li>코인 기준: <b id="sumCoin">-</b></li>
-          </ul>
-        </div>
-      </div>
-    </section>
+            login: function(type) {
+                const id = document.getElementById('login-id').value;
+                if (!id && type === 'general') return alert("아이디 입력");
+                const uid = (type === 'kakao') ? 'KakaoUser' : id;
+                const isAdmin = (uid === 'admin');
+                if (!this.data.users[uid]) this.data.users[uid] = { token: 0, coin: 0, logs: [], myCoins: [] };
+                this.user = { id: uid, isAdmin: isAdmin };
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-app').classList.remove('hidden');
+                document.getElementById('user-name').innerText = uid;
+                
+                if (isAdmin) {
+                    document.getElementById('admin-panel').classList.remove('hidden');
+                    // 관리자 설정값 불러오기
+                    document.getElementById('set-rate').value = this.data.config.rate;
+                    document.getElementById('set-reward-info').value = this.data.config.reward_info;
+                    document.getElementById('set-reward-virt-post').value = this.data.config.reward_virt_post;
+                    document.getElementById('set-reward-virt-reply').value = this.data.config.reward_virt_reply;
+                    document.getElementById('set-reward-cult-post').value = this.data.config.reward_cult_post;
+                    document.getElementById('set-reward-cult-reply').value = this.data.config.reward_cult_reply;
+                }
+                this.render();
+            },
 
-    <!-- TRADE -->
-    <section id="trade" class="page">
-      <div class="card">
-        <h2>건축·매매·임대·바꿔살기 (정보 등록) — 연습</h2>
-        <p class="muted">주소/가격 등을 입력하고 “저장”하면, 관리자 기준에 따라 토큰/코인을 계산해 보여줍니다(데모).</p>
+            updateRoleLabels: function() {
+                const type = document.getElementById('reg-type').value;
+                let gap="갑", eul="을";
+                if(type==='매매'){gap="매도인";eul="매수인";}
+                else if(type==='임대'){gap="임대인";eul="임차인";}
+                else if(type==='바꿔살기'){gap="신청인";eul="상대방";}
+                else if(type==='펜션'){gap="운영자";eul="이용자";}
+                document.getElementById('role-gap-txt').innerText = gap;
+                document.getElementById('role-eul-txt').innerText = eul;
+            },
 
-        <div class="twoCol">
-          <div>
-            <label>주소</label>
-            <input id="addr" placeholder="예: 서울 강남구 …" />
-            <label>유형</label>
-            <select id="type">
-              <option>건축</option><option>매매</option><option>임대</option><option>바꿔살기</option>
-            </select>
-            <label>금액(만원)</label>
-            <input id="price" type="number" min="0" value="0" />
-            <div class="row">
-              <button class="btn primary" id="saveTrade">저장</button>
-            </div>
-            <p id="tradeMsg" class="note"></p>
-          </div>
+            // 등록 (관리자 설정값 적용)
+            submitInfo: function() {
+                const addr = document.getElementById('reg-addr').value;
+                if(this.data.info.some(i => i.addr === addr)) return alert("🚫 중복 주소 불가");
+                const type = document.getElementById('reg-type').value;
+                const price = Number(document.getElementById('reg-price').value);
+                const desc = document.getElementById('reg-desc').value;
+                const myRole = document.querySelector('input[name="my-role"]:checked').value;
+                
+                if (!addr || !price) return alert("필수 정보 입력");
+                let gapId = (myRole === 'gap') ? this.user.id : "";
+                let eulId = (myRole === 'eul') ? this.user.id : "";
 
-          <div>
-            <h3 style="margin:6px 0 8px;font-size:14px">자동 계산(데모)</h3>
-            <ul class="bullet">
-              <li>토큰 증가: <b id="calcToken">0</b></li>
-              <li>코인 증가: <b id="calcCoin">0</b></li>
-              <li>누적 토큰: <b id="totalToken">0</b></li>
-              <li>누적 코인: <b id="totalCoin">0</b></li>
-            </ul>
-            <p class="note">※ 누적은 브라우저에 저장됩니다.</p>
-          </div>
-        </div>
-      </div>
-    </section>
+                this.data.info.push({
+                    id: Date.now(), type, gap: gapId, eul: eulId, price, addr, desc,
+                    writer: this.user.id, status: '진행중', replies: [], extraDesc: "" 
+                });
+                
+                // 설정된 보상 지급
+                const reward = this.data.config.reward_info;
+                this.data.users[this.user.id].token += reward;
+                alert(`등록 완료! (${reward} 토큰 지급)`); this.save();
+            },
 
-    <!-- VIRTUAL -->
-    <section id="virtual" class="page">
-      <div class="grid">
-        <div class="card">
-          <h2>가상건축 제안·살이 — 데모</h2>
-          <p class="muted">제안 글을 저장하면 목록에 쌓이는 형태(데모)입니다.</p>
-          <label>제목</label>
-          <input id="vTitle" placeholder="예: 가상 건축 아이디어 1" />
-          <label>내용</label>
-          <textarea id="vBody" placeholder="아이디어 / 설계 / 예상 거주 방식 등"></textarea>
-          <div class="row">
-            <button class="btn primary" id="vSave">등록</button>
-          </div>
-          <p id="vMsg" class="note"></p>
-        </div>
+            addVirtPost: function() {
+                const title = document.getElementById('virt-title').value;
+                const region = document.getElementById('virt-region').value;
+                const desc = document.getElementById('virt-desc').value;
+                const video = document.getElementById('virt-video').value;
+                if(!title) return alert("제목 입력");
+                this.data.posts.unshift({
+                    id: Date.now(), type: 'virt', title, region, desc, video,
+                    writer: this.user.id, replies: [], completeness: 0
+                });
+                const reward = this.data.config.reward_virt_post;
+                this.data.users[this.user.id].token += reward;
+                alert(`제안 등록됨 (${reward} 토큰)`); this.save();
+            },
 
-        <div class="card">
-          <h2>제안 목록</h2>
-          <div id="vList" class="muted">아직 등록된 제안이 없습니다.</div>
-        </div>
-      </div>
-    </section>
+            addPost: function(type) {
+                const title = document.getElementById(type+'-title').value;
+                const desc = document.getElementById(type+'-desc').value;
+                const sec = document.getElementById(type+'-sec') ? document.getElementById(type+'-sec').value : '';
+                if(!title) return alert("제목 입력");
+                this.data.posts.unshift({ id: Date.now(), type, title, desc, section: sec, writer: this.user.id, replies: [] });
+                const reward = this.data.config.reward_cult_post;
+                this.data.users[this.user.id].token += reward;
+                alert(`글 등록됨 (${reward} 토큰)`); this.save();
+            },
 
-    <!-- TALK -->
-    <section id="talk" class="page">
-      <div class="card">
-        <h2>대화(정보 공유) — 데모</h2>
-        <p class="muted">간단 댓글 형식입니다.</p>
-        <label>메시지</label>
-        <input id="tMsg" placeholder="내용을 입력하세요" />
-        <div class="row">
-          <button class="btn primary" id="tSend">등록</button>
-        </div>
-        <div class="hr"></div>
-        <div id="tList" class="muted">아직 대화가 없습니다.</div>
-      </div>
-    </section>
+            exchange: function() {
+                const u = this.data.users[this.user.id];
+                const rate = this.data.config.rate;
+                if (u.token < rate) return alert(`토큰 부족 (최소 ${rate} 필요)`);
+                const coinsToMint = Math.floor(u.token / rate);
+                const seed = this.user.id + new Date().getTime() + "Real8";
+                let hash = "0x" + this.generateHash(seed); 
+                const record = { time: new Date().toLocaleString(), owner: this.user.id, hash: hash, amount: coinsToMint };
+                u.token -= (coinsToMint * rate); u.coin += coinsToMint;
+                u.myCoins.unshift(record); this.data.ledger.unshift(record);
+                alert(`${coinsToMint} 코인 발행 완료!\n해시값 생성됨.`); this.save();
+            },
 
-    <!-- ADS -->
-    <section id="ads" class="page">
-      <div class="grid">
-        <div class="card">
-          <h2>광고·홍보 계정 — 데모</h2>
-          <p class="muted">광고주가 홍보 문구를 등록하는 형태(연습)입니다.</p>
-          <label>광고주/브랜드</label>
-          <input id="aBrand" placeholder="예: Real8 Partners" />
-          <label>홍보 문구</label>
-          <textarea id="aCopy" placeholder="예: 부동산 자산 디지털화…"></textarea>
-          <div class="row">
-            <button class="btn gold" id="aSave">광고 등록</button>
-          </div>
-          <p id="aMsg" class="note"></p>
-        </div>
+            generateHash: function(str) {
+                let hash = ""; const chars = "0123456789abcdef";
+                for(let i=0; i<64; i++) {
+                    let code = str.charCodeAt(i % str.length) + Math.floor(Math.random() * 100);
+                    hash += chars[code % 16];
+                }
+                return hash;
+            },
 
-        <div class="card">
-          <h2>등록된 광고</h2>
-          <div id="aList" class="muted">아직 광고가 없습니다.</div>
-        </div>
-      </div>
-    </section>
-  </main>
+            openModal: function(id, source) {
+                this.curType = source; 
+                this.curItem = (source==='info') ? this.data.info.find(i=>i.id==id) : this.data.posts.find(p=>p.id==id);
+                document.getElementById('modal').style.display = 'flex';
+                document.getElementById('modal-title').innerText = this.curItem.title || `[${this.curItem.type}] ${this.curItem.addr}`;
+                
+                let mediaHtml = "";
+                if(this.curItem.video) mediaHtml = `<div class="media-placeholder">▶ 동영상 플레이어 (${this.curItem.video})</div>`;
+                else if(source !== 'info') mediaHtml = `<div class="media-placeholder">📸 사진이 표시되는 영역</div>`;
 
-  <script>
-    // ---- Tabs (SPA) ----
-    const tabs = document.querySelectorAll('.tab');
-    const pages = document.querySelectorAll('.page');
-    function show(id){
-      pages.forEach(p => p.classList.toggle('active', p.id===id));
-      tabs.forEach(t => t.classList.toggle('active', t.dataset.page===id));
-      window.scrollTo({top:0, behavior:'smooth'});
-    }
-    tabs.forEach(t => t.addEventListener('click', ()=>show(t.dataset.page)));
+                let content = "";
+                if(source==='info') {
+                    document.getElementById('modal-extra-info').style.display = 'block';
+                    document.getElementById('extra-desc').value = this.curItem.extraDesc || "";
+                    content = `
+                        <div class="detail-row"><span class="detail-label">거래 금액</span><span class="detail-val">${this.curItem.price.toLocaleString()}원</span></div>
+                        <div class="detail-row"><span class="detail-label">갑</span><span class="detail-val">${this.curItem.gap || '-'}</span></div>
+                        <div class="detail-row"><span class="detail-label">을</span><span class="detail-val">${this.curItem.eul || '-'}</span></div>
+                        <div style="background:#333; padding:15px; margin-top:10px; border-radius:5px;">${this.curItem.desc}</div>
+                        <div style="color:#FEE500; margin-top:10px; font-size:13px;">${this.curItem.extraDesc ? "📌 추가 기록: " + this.curItem.extraDesc : ""}</div>
+                    `;
+                } else {
+                    document.getElementById('modal-extra-info').style.display = 'none';
+                    content = `
+                        ${mediaHtml}
+                        <p>작성자: ${this.curItem.writer}</p>
+                        ${this.curItem.type==='virt' ? `<p>지역: ${this.curItem.region} (진행도: ${this.curItem.completeness}%)</p>` : ''}
+                        <div style="background:#333; padding:15px; margin-top:10px; border-radius:5px;">${this.curItem.desc}</div>
+                    `;
+                }
+                document.getElementById('modal-content').innerHTML = content;
+                this.renderReplies();
+            },
 
-    // ---- Auth (demo) ----
-    const LS = (k,v)=> v===undefined ? localStorage.getItem(k) : localStorage.setItem(k,v);
-    const who = document.getElementById('who');
-    function setWho(){
-      const u = LS('real8_user') || '';
-      who.textContent = u ? u : '없음';
-      who.className = u ? 'success' : 'warn';
-    }
-    setWho();
+            updateExtraInfo: function() {
+                if(!this.curItem) return;
+                this.curItem.extraDesc = document.getElementById('extra-desc').value;
+                alert("저장됨"); this.save(); this.openModal(this.curItem.id, 'info');
+            },
 
-    document.getElementById('btnReg').addEventListener('click', ()=>{
-      const id = document.getElementById('regId').value.trim();
-      const pw = document.getElementById('regPw').value.trim();
-      const msg = document.getElementById('regMsg');
-      if(!id || !pw){ msg.textContent='아이디/비밀번호를 입력하세요.'; return; }
-      LS('real8_account_'+id, pw);
-      msg.textContent='회원가입 완료(데모). 이제 로그인하세요.';
-    });
+            addReply: function() {
+                const msg = document.getElementById('modal-reply-input').value;
+                if(!msg) return;
 
-    document.getElementById('btnLogin').addEventListener('click', ()=>{
-      const id = document.getElementById('loginId').value.trim();
-      const pw = document.getElementById('loginPw').value.trim();
-      const msg = document.getElementById('loginMsg');
-      const saved = LS('real8_account_'+id);
-      if(!saved){ msg.textContent='해당 아이디가 없습니다(데모).'; return; }
-      if(saved!==pw){ msg.textContent='비밀번호가 다릅니다.'; return; }
-      LS('real8_user', id);
-      msg.textContent='로그인 성공!';
-      setWho();
-    });
+                // [요청 2: 이중 참여 방지] 가상건축일 때만 체크
+                if (this.curType === 'virt') {
+                    if (this.curItem.replies.some(r => r.user === this.user.id)) {
+                        return alert("🚫 이미 참여하셨습니다. (중복 참여 불가)");
+                    }
+                    if (this.curItem.completeness < 100) this.curItem.completeness += 10;
+                }
 
-    document.getElementById('btnLogout').addEventListener('click', ()=>{
-      localStorage.removeItem('real8_user');
-      document.getElementById('loginMsg').textContent='로그아웃 했습니다.';
-      setWho();
-    });
+                this.curItem.replies.push({ user: this.user.id, msg: msg });
+                
+                // 설정된 보상 지급
+                let reward = 0;
+                if (this.curType === 'virt') reward = this.data.config.reward_virt_reply;
+                else if (this.curType === 'cult') reward = this.data.config.reward_cult_reply;
+                
+                if(reward > 0) {
+                    this.data.users[this.user.id].token += reward;
+                    alert(`참여 완료! (${reward} 토큰 지급)`);
+                }
 
-    // ---- Admin rules ----
-    function loadRules(){
-      const t = Number(LS('real8_rule_token') || 5);
-      const c = Number(LS('real8_rule_coin') || 10);
-      document.getElementById('ruleToken').value = t;
-      document.getElementById('ruleCoin').value = c;
-      document.getElementById('sumToken').textContent = t;
-      document.getElementById('sumCoin').textContent = c;
-    }
-    loadRules();
+                document.getElementById('modal-reply-input').value='';
+                this.save(); this.openModal(this.curItem.id, this.curType);
+            },
 
-    document.getElementById('saveRules').addEventListener('click', ()=>{
-      LS('real8_rule_token', document.getElementById('ruleToken').value);
-      LS('real8_rule_coin', document.getElementById('ruleCoin').value);
-      document.getElementById('ruleMsg').textContent='기준 저장 완료.';
-      loadRules();
-    });
+            renderReplies: function() {
+                document.getElementById('modal-replies').innerHTML = (this.curItem.replies||[]).map(r=>`<li style="border-bottom:1px solid #444; padding:5px;"><span style="color:#0d6efd;">${r.user}</span>: ${r.msg}</li>`).join('');
+            },
 
-    document.getElementById('makeHash').addEventListener('click', async ()=>{
-      const seed = (document.getElementById('hashSeed').value.trim() || ('admin|'+Date.now()));
-      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(seed));
-      const hex = [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
-      document.getElementById('hashOut').textContent = hex.slice(0,40) + '...';
-    });
+            render: function() {
+                if(!this.user) return;
+                const u = this.data.users[this.user.id];
+                const cfg = this.data.config;
 
-    // ---- Trade save & reward (demo) ----
-    function getTotals(){
-      return {
-        token: Number(LS('real8_total_token') || 0),
-        coin: Number(LS('real8_total_coin') || 0),
-      };
-    }
-    function setTotals(t,c){
-      LS('real8_total_token', String(t));
-      LS('real8_total_coin', String(c));
-    }
-    function refreshTotalsUI(){
-      const tot = getTotals();
-      document.getElementById('totalToken').textContent = tot.token;
-      document.getElementById('totalCoin').textContent = tot.coin;
-    }
-    refreshTotalsUI();
+                // [공시] 회원들에게 보여줄 기준표 업데이트
+                document.getElementById('show-reward-info').innerText = cfg.reward_info;
+                document.getElementById('show-reward-virt-post').innerText = cfg.reward_virt_post;
+                document.getElementById('show-reward-virt-reply').innerText = cfg.reward_virt_reply;
+                document.getElementById('show-reward-cult-post').innerText = cfg.reward_cult_post;
+                document.getElementById('show-reward-cult-reply').innerText = cfg.reward_cult_reply;
+                document.getElementById('public-rate').innerText = cfg.rate;
 
-    document.getElementById('saveTrade').addEventListener('click', ()=>{
-      const addr = document.getElementById('addr').value.trim();
-      const price = Number(document.getElementById('price').value || 0);
-      const ruleT = Number(LS('real8_rule_token') || 5);
-      const ruleC = Number(LS('real8_rule_coin') || 10);
+                document.getElementById('info-table-body').innerHTML = this.data.info.map(i=>`
+                    <tr onclick="app.openModal(${i.id}, 'info')"><td><span class="badge">${i.type}</span></td><td>${i.addr}</td><td><span style="font-size:11px; color:#aaa;">${i.gap||'-'} / ${i.eul||'-'}</span></td><td class="${i.status==='완료'?'status-done':'status-wait'}">${i.status}</td></tr>`).join('');
 
-      // 데모 계산: 금액이 있으면 코인 더, 저장하면 토큰 약간
-      const addToken = ruleT + Math.min(10, Math.floor(price/1000));
-      const addCoin  = (price>0) ? (ruleC + Math.min(50, Math.floor(price/500))) : ruleC;
+                document.getElementById('list-virt').innerHTML = this.data.posts.filter(p=>p.type==='virt').map(p=>`
+                    <div class="card" style="padding:15px; cursor:pointer;" onclick="app.openModal(${p.id}, 'virt')"><strong>[${p.region}] ${p.title}</strong><div class="progress-box"><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${p.completeness}%"></div></div><div class="progress-text">${p.completeness}% 완료</div></div></div>`).join('');
+                
+                document.getElementById('list-cult').innerHTML = this.data.posts.filter(p=>p.type==='cult').map(p=>`<div class="card" style="padding:15px; cursor:pointer;" onclick="app.openModal(${p.id}, 'cult')"><span class="badge">${p.section}</span> ${p.title}</div>`).join('');
+                
+                document.getElementById('ledger-list').innerHTML = this.data.ledger.map(r=>`<tr><td>${r.time}</td><td>${r.owner}</td><td class="hash-box">${r.hash}</td></tr>`).join('');
+                document.getElementById('my-token').innerText = u.token.toLocaleString();
+                document.getElementById('my-coin').innerText = u.coin.toLocaleString();
+                document.getElementById('my-coin-list').innerHTML = (u.myCoins||[]).map(r=>`<tr><td>${r.time}</td><td class="hash-box">${r.hash}</td></tr>`).join('');
+            },
 
-      document.getElementById('calcToken').textContent = addToken;
-      document.getElementById('calcCoin').textContent = addCoin;
+            // 관리자 설정 저장
+            saveSettings: function() {
+                this.data.config.rate = Number(document.getElementById('set-rate').value);
+                this.data.config.reward_info = Number(document.getElementById('set-reward-info').value);
+                this.data.config.reward_virt_post = Number(document.getElementById('set-reward-virt-post').value);
+                this.data.config.reward_virt_reply = Number(document.getElementById('set-reward-virt-reply').value);
+                this.data.config.reward_cult_post = Number(document.getElementById('set-reward-cult-post').value);
+                this.data.config.reward_cult_reply = Number(document.getElementById('set-reward-cult-reply').value);
+                this.save(); alert("설정이 공시되었습니다.");
+            },
 
-      const tot = getTotals();
-      setTotals(tot.token + addToken, tot.coin + addCoin);
-      refreshTotalsUI();
-
-      LS('real8_last_addr', addr);
-      document.getElementById('tradeMsg').textContent = '저장 완료(데모) · 토큰/코인 지급 반영됨.';
-    });
-
-    // ---- Virtual proposals ----
-    function loadV(){
-      const raw = LS('real8_virtual') || '[]';
-      let arr = [];
-      try{arr = JSON.parse(raw);}catch(e){}
-      const box = document.getElementById('vList');
-      if(!arr.length){ box.textContent='아직 등록된 제안이 없습니다.'; return; }
-      box.innerHTML = arr.map(x=>`
-        <div class="card" style="box-shadow:none;margin:10px 0;padding:12px;border-radius:12px">
-          <b>${escapeHtml(x.title)}</b>
-          <div class="muted" style="margin-top:6px">${escapeHtml(x.body)}</div>
-          <div class="note" style="margin-top:6px">작성: ${escapeHtml(x.by)} · ${new Date(x.at).toLocaleString()}</div>
-        </div>
-      `).join('');
-    }
-    loadV();
-
-    document.getElementById('vSave').addEventListener('click', ()=>{
-      const title = document.getElementById('vTitle').value.trim();
-      const body  = document.getElementById('vBody').value.trim();
-      const by = LS('real8_user') || '익명';
-      if(!title || !body){ document.getElementById('vMsg').textContent='제목/내용을 입력하세요.'; return; }
-      let arr=[]; try{arr=JSON.parse(LS('real8_virtual')||'[]');}catch(e){}
-      arr.unshift({title, body, by, at: Date.now()});
-      LS('real8_virtual', JSON.stringify(arr));
-      document.getElementById('vMsg').textContent='등록 완료.';
-      document.getElementById('vTitle').value='';
-      document.getElementById('vBody').value='';
-      loadV();
-    });
-
-    // ---- Talk ----
-    function loadT(){
-      let arr=[]; try{arr=JSON.parse(LS('real8_talk')||'[]');}catch(e){}
-      const box = document.getElementById('tList');
-      if(!arr.length){ box.textContent='아직 대화가 없습니다.'; return; }
-      box.innerHTML = arr.map(x=>`
-        <div class="card" style="box-shadow:none;margin:10px 0;padding:12px;border-radius:12px">
-          <b>${escapeHtml(x.by)}</b> <span class="note">· ${new Date(x.at).toLocaleString()}</span>
-          <div class="muted" style="margin-top:6px">${escapeHtml(x.msg)}</div>
-        </div>
-      `).join('');
-    }
-    loadT();
-
-    document.getElementById('tSend').addEventListener('click', ()=>{
-      const msg = document.getElementById('tMsg').value.trim();
-      const by = LS('real8_user') || '익명';
-      if(!msg) return;
-      let arr=[]; try{arr=JSON.parse(LS('real8_talk')||'[]');}catch(e){}
-      arr.unshift({by, msg, at: Date.now()});
-      LS('real8_talk', JSON.stringify(arr));
-      document.getElementById('tMsg').value='';
-      loadT();
-    });
-
-    // ---- Ads ----
-    function loadA(){
-      let arr=[]; try{arr=JSON.parse(LS('real8_ads')||'[]');}catch(e){}
-      const box = document.getElementById('aList');
-      if(!arr.length){ box.textContent='아직 광고가 없습니다.'; return; }
-      box.innerHTML = arr.map(x=>`
-        <div class="card" style="box-shadow:none;margin:10px 0;padding:12px;border-radius:12px">
-          <b>${escapeHtml(x.brand)}</b>
-          <div class="muted" style="margin-top:6px">${escapeHtml(x.copy)}</div>
-          <div class="note" style="margin-top:6px">등록: ${new Date(x.at).toLocaleString()}</div>
-        </div>
-      `).join('');
-    }
-    loadA();
-
-    document.getElementById('aSave').addEventListener('click', ()=>{
-      const brand = document.getElementById('aBrand').value.trim();
-      const copy  = document.getElementById('aCopy').value.trim();
-      if(!brand || !copy){ document.getElementById('aMsg').textContent='브랜드/문구를 입력하세요.'; return; }
-      let arr=[]; try{arr=JSON.parse(LS('real8_ads')||'[]');}catch(e){}
-      arr.unshift({brand, copy, at: Date.now()});
-      LS('real8_ads', JSON.stringify(arr));
-      document.getElementById('aMsg').textContent='광고 등록 완료.';
-      document.getElementById('aBrand').value='';
-      document.getElementById('aCopy').value='';
-      loadA();
-    });
-
-    function escapeHtml(s){
-      return String(s).replace(/[&<>"']/g, m => ({
-        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-      }[m]));
-    }
-  </script>
+            go: function(id) {
+                document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
+                document.getElementById('page-'+id).classList.add('active');
+                document.querySelectorAll('.nav-btn').forEach(e=>e.classList.remove('active'));
+                document.getElementById('nav-'+id).classList.add('active');
+            },
+            emergencyReset: function() { localStorage.clear(); location.reload(); }
+        };
+        app.init();
+    </script>
 </body>
 </html>
-
