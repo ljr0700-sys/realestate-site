@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>부동산 자산 디지털 플랫폼 (Real8 - V13)</title>
@@ -111,5 +114,36 @@
                 .catch(err => alert("로그인 오류: " + err.message));
         }
     </script>
+<script>
+  // 1. 구글 서버 열쇠 (정린님 전용)
+  var firebaseConfig = {
+    apiKey: "AIzaSyDTz3zvah5J65zgQsik8rSeKSbhySWcCt8",
+    authDomain: "real8-bc.firebaseapp.com",
+    projectId: "real8-bc",
+    appId: "1:792768508652:web:14557cae750168f46c6bc9"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  // 2. 신규 가입 버튼 기능
+  function signUp(email, password) {
+    if(!email || !password) return alert("아이디와 비밀번호를 입력해주세요.");
+    auth.createUserWithEmailAndPassword(email, password)
+      .then(() => alert("축하합니다! 구글 서버 가입 성공! 이제 로그인 버튼을 누르세요."))
+      .catch((error) => alert("가입 실패: " + error.message));
+  }
+
+  // 3. 로그인 및 메인 화면 전환 기능
+  function login(email, password) {
+    auth.signInWithEmailAndPassword(email, password)
+      .then(() => {
+        alert("로그인 성공! 환영합니다.");
+        // 로그인창을 숨기고 정린님의 화려한 부동산 화면(main-app)을 보여줍니다.
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('main-app').classList.remove('hidden');
+      })
+      .catch((error) => alert("로그인 오류: " + error.message));
+  }
+</script>
 </body>
 </html>
