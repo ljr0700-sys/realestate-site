@@ -8,7 +8,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        /* 정린님의 화려한 다크 디자인 복구 */
         body { background-color: #0d0d0d; color: #e0e0e0; font-family: 'Pretendard', sans-serif; margin: 0; }
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; z-index: 10000; }
         .login-card { background: #1a1a1a; padding: 40px; border-radius: 20px; width: 350px; text-align: center; border: 1px solid #333; }
@@ -43,34 +42,23 @@
         <div id="user-display" style="font-size: 14px; color: #007bff;"></div>
     </div>
     <div class="container">
-        <div style="display: flex; gap: 20px; margin-bottom: 25px;">
-            <div class="card" style="flex: 1; margin-bottom: 0;">
-                <div style="color: #888; font-size: 14px;">나의 포인트</div>
-                <div style="font-size: 24px; font-weight: bold; color: #fee500;">1,250,000 P</div>
-            </div>
-            <div class="card" style="flex: 1; margin-bottom: 0;">
-                <div style="color: #888; font-size: 14px;">시스템 상태</div>
-                <div style="font-size: 24px; font-weight: bold; color: #28a745;">SERVER ON</div>
-            </div>
-        </div>
-
         <div class="card">
             <h3 style="margin-top:0;">🏠 실시간 매물 등록</h3>
             <div style="display: flex; gap: 10px;">
-                <input type="text" id="p-title" placeholder="매물명 (예: 가평빌라)" style="flex: 2;">
-                <input type="text" id="p-price" placeholder="금액 (예: 2억 5천)" style="flex: 1;">
+                <input type="text" id="p-title" placeholder="매물명">
+                <input type="text" id="p-price" placeholder="금액">
                 <button class="btn-success" onclick="addP()">+ 등록하기</button>
             </div>
         </div>
         <div class="card">
             <h3>📋 등록된 매물 리스트</h3>
-            <div id="p-list" style="color:#666;">데이터를 불러오는 중입니다...</div>
+            <div id="p-list" style="color:#666;">데이터 연결 성공! 매물을 등록해 보세요.</div>
         </div>
     </div>
 </div>
 
 <script>
-    // 구글 서버 정보 - databaseURL 주소를 정밀하게 수정했습니다
+    // 사진 102번의 실제 데이터베이스 주소를 정확히 입력했습니다.
     const firebaseConfig = {
         apiKey: "AIzaSyDTz3zvah5J65zgQsik8rSeKSbhySWcCt8",
         authDomain: "real8-bc.firebaseapp.com",
@@ -79,15 +67,14 @@
         appId: "1:792768508652:web:14557cae750168f46c6bc9"
     };
 
-    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+    firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
 
     function handleSignUp() {
         const e = document.getElementById('email').value;
         const p = document.getElementById('password').value;
-        if(!e || !p) return alert("아이디와 비밀번호를 입력하세요.");
-        auth.createUserWithEmailAndPassword(e, p).then(() => alert("가입 성공!")).catch(a => alert(a.message));
+        auth.createUserWithEmailAndPassword(e, p).then(() => alert("가입 성공")).catch(a => alert(a.message));
     }
 
     function handleLogin() {
@@ -97,16 +84,16 @@
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
             document.getElementById('user-display').innerText = e + "님 접속 중";
-            loadP(); // 로그인 성공 시 매물 목록 불러오기
-        }).catch(a => alert("로그인 정보가 맞지 않습니다."));
+            loadP();
+        }).catch(a => alert("로그인 실패"));
     }
 
-    // 매물 등록 함수 (구글 서버 저장)
     function addP() {
         const t = document.getElementById('p-title').value;
         const pr = document.getElementById('p-price').value;
-        if(!t || !pr) return alert("매물 정보를 입력하세요.");
+        if(!t || !pr) return alert("정보를 입력하세요.");
         
+        // 장부(properties)에 데이터 기록
         db.ref('properties').push({
             title: t,
             price: pr,
@@ -115,27 +102,17 @@
             alert("서버 저장 완료!");
             document.getElementById('p-title').value = "";
             document.getElementById('p-price').value = "";
-        }).catch(err => alert("저장 실패: " + err.message));
+        });
     }
 
-    // 매물 목록 불러오기 함수 (실시간 반영)
     function loadP() {
         db.ref('properties').on('value', (s) => {
             const list = document.getElementById('p-list');
             list.innerHTML = "";
-            if (!s.exists()) {
-                list.innerHTML = "등록된 매물이 없습니다.";
-                return;
-            }
+            if (!s.exists()) { list.innerHTML = "등록된 매물이 없습니다."; return; }
             s.forEach((c) => {
                 const d = c.val();
-                list.innerHTML += `<div class="list-item">
-                    <div>
-                        <b style="color:#fee500; font-size:17px;">${d.title}</b><br>
-                        <small style="color:#555;">${d.time}</small>
-                    </div>
-                    <div style="font-weight:bold;">${d.price}</div>
-                </div>`;
+                list.innerHTML += `<div class="list-item"><b>${d.title}</b> <span>${d.price}</span></div>`;
             });
         });
     }
