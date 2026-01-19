@@ -539,6 +539,17 @@
     messagingSenderId: "792768508652",
     appId: "1:792768508652:web:14557cae750168f46c6bc9"
   };
+// ---------------------------------------------------
+  // 이 부분을 복사해서 'var firebaseConfig'가 끝나는 }; 바로 아래에 넣으세요
+  const auth = firebase.auth();
+
+  // 회원가입 버튼과 연결할 마법의 기능
+  function signUp(email, password) {
+      auth.createUserWithEmailAndPassword(email, password)
+          .then(() => alert("축하합니다! 구글 서버에 회원정보가 등록되었습니다."))
+          .catch((error) => alert("가입 실패: " + error.message));
+  }
+  // ---------------------------------------------------
   // 구글 서버 시작
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
