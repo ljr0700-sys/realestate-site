@@ -146,4 +146,37 @@
   }
 </script>
 </body>
-</html>
+
+</<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+<script>
+  // 정린님의 구글 서버 열쇠
+  var firebaseConfig = {
+    apiKey: "AIzaSyDTz3zvah5J65zgQsik8rSeKSbhySWcCt8",
+    authDomain: "real8-bc.firebaseapp.com",
+    projectId: "real8-bc",
+    appId: "1:792768508652:web:14557cae750168f46c6bc9"
+  };
+  
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+  const auth = firebase.auth();
+
+  // 로그인 기능 (정린님의 디자인과 연결)
+  function handleLogin() {
+    const email = document.getElementById('login-id').value;
+    const pw = document.getElementById('login-pw').value;
+    
+    auth.signInWithEmailAndPassword(email, pw)
+      .then((userCredential) => {
+        alert("환영합니다! 정린님의 플랫폼에 접속합니다.");
+        // 로그인 성공 시 로그인창 숨기고 메인화면 보여주기
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('main-app').classList.remove('hidden');
+        document.getElementById('user-info').innerText = email + "님 접속 중";
+      })
+      .catch(err => alert("로그인 오류: " + err.message));
+  }
+</script>html>
