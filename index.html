@@ -1,193 +1,79 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <meta charset="UTF-8">
+    <title>부동산 자산 디지털 플랫폼 (Real8)</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>부동산 자산 디지털 플랫폼 (Real8 - V13 Admin)</title>
     <style>
-        /* === 정린님의 소중한 다크모드 디자인 100% 복구 === */
-        :root { --bg: #121212; --card: #1e1e1e; --blue: #0056b3; --text: #e0e0e0; --input-bg: #2c2c2c; }
-        body { font-family: 'Noto Sans KR', sans-serif; margin: 0; background: var(--bg); color: var(--text); }
-        header { background: var(--blue); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #003d80; }
-        .logo { font-size: 22px; font-weight: bold; color: white; }
-        nav { background: #000; border-bottom: 1px solid #333; }
-        .nav-box { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; }
-        .nav-btn { padding: 15px 20px; color: #888; cursor: pointer; font-size: 14px; border-right: 1px solid #222; transition: 0.3s; }
-        .nav-btn:hover { color: white; background: #222; }
-        .nav-btn.active { background: #FEE500; color: black; font-weight: bold; }
-        .container { max-width: 1200px; margin: 30px auto; padding: 20px; }
-        .page { display: none; }
-        .page.active { display: block; }
-        .card { background: var(--card); padding: 25px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #333; }
-        .head-title { border-left: 5px solid var(--blue); padding-left: 15px; font-size: 20px; font-weight: bold; color: white; margin-bottom: 20px; }
-        label { display: block; color: #aaa; margin: 12px 0 5px; font-size: 13px; }
-        input, select, textarea { width: 95%; padding: 12px; background: var(--input-bg); border: 1px solid #444; color: white; border-radius: 4px; font-size: 14px; margin-bottom: 10px; }
-        button { width: 100%; padding: 14px; background: #0d6efd; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 15px; }
-        button:hover { background: #0b5ed7; }
-        .btn-yellow { background: #FEE500; color: black; border: none; }
-        .btn-yellow:hover { background: #e6ce00; }
-        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #121212; z-index: 5000; display: flex; justify-content: center; align-items: center; }
-        .login-card { background: #1e1e1e; padding: 40px; border-radius: 10px; width: 350px; text-align: center; border: 1px solid #333; box-shadow: 0 10px 30px black; }
-        .hidden { display: none !important; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
-        th { background: #333; padding: 10px; text-align: left; color: #fff; border-bottom: 1px solid #555; }
-        td { padding: 12px; border-bottom: 1px solid #444; color: #ccc; }
+        /* 정린님의 세련된 다크 모드 디자인 그대로 유지 */
+        body { background-color: #121212; color: white; font-family: sans-serif; margin: 0; padding: 20px; }
+        .login-card { max-width: 400px; margin: 100px auto; padding: 30px; background: #1e1e1e; border-radius: 15px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #2a2a2a; color: white; }
+        button { width: 95%; padding: 15px; margin: 10px 0; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-yellow { background: #fee500; color: #3c1e1e; }
+        .btn-blue { background: #007bff; color: white; }
+        .hidden { display: none; }
+        #main-app { padding: 20px; border: 1px solid #333; border-radius: 15px; background: #1e1e1e; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
         <div class="login-card">
-            <h2 style="color:white; margin-bottom:20px;">Real8 로그인/회원가입</h2>
-            <p style="color:#888; font-size:13px; margin-bottom:30px;">이메일 형식의 아이디로 시작하세요.</p>
-            
-            <input type="text" id="login-id" placeholder="이메일 입력 (예: test@test.com)">
-            <input type="password" id="login-pw" placeholder="비밀번호 입력">
+            <h2>Real8 플랫폼</h2>
+            <p>보안을 위해 로그인이 필요합니다.</p>
+            <input type="text" id="login-id" placeholder="이메일 아이디 (abc@naver.com)">
+            <input type="password" id="login-pw" placeholder="비밀번호 (6자리 이상)">
             
             <button class="btn-yellow" onclick="handleSignUp()">🌟 신규 회원가입</button>
-            <button onclick="handleLogin()" style="background: #333;">기존 회원 로그인</button>
-            
-            <p onclick="app.emergencyReset()" style="margin-top:20px; font-size:12px; color:#555; cursor:pointer;">⚠️ 화면 초기화</p>
+            <button class="btn-blue" onclick="handleLogin()">기존 회원 로그인</button>
         </div>
     </div>
 
     <div id="main-app" class="hidden">
-        <header>
-            <div class="logo">부동산 자산 디지털 플랫폼 (Real8)</div>
-            <div style="font-size:13px; color:white;">
-                <span id="user-name" style="color:#FEE500; font-weight:bold;">User</span>님
-                <a onclick="location.reload()" style="color:#aaa; margin-left:15px; cursor:pointer;">로그아웃</a>
-            </div>
-        </header>
-
-        <nav>
-            <div class="nav-box">
-                <div onclick="app.go('home')" class="nav-btn active" id="nav-home">홈·안내</div>
-                <div onclick="app.go('blockchain')" class="nav-btn" id="nav-blockchain">블록체인·토큰코인</div>
-                <div onclick="app.go('info')" class="nav-btn" id="nav-info">건축·매매·임대·펜션 (등록)</div>
-                <div onclick="app.go('virt')" class="nav-btn" id="nav-virt">가상건축 프로젝트</div>
-                <div onclick="app.go('cult')" class="nav-btn" id="nav-cult">主居문화</div>
-                <div onclick="app.go('my')" class="nav-btn" id="nav-my">마이페이지</div>
-            </div>
-        </nav>
-
-        <div class="container">
-            <div id="page-home" class="page active">
-                <div class="card">
-                    <div class="head-title">사이트 이용 안내</div>
-                    <ul style="line-height:2.0; color:#ccc; font-size:14px;">
-                        <li>✅ <strong>정보등록:</strong> 로그인한 본인이 정보를 등록합니다.</li>
-                        <li>✅ <strong>가상건축:</strong> 참여자가 많을수록 진행도가 올라갑니다.</li>
-                        <li>✅ <strong>블록체인:</strong> 토큰을 모아 코인으로 환전하고 해시값을 남깁니다.</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div id="page-info" class="page">
-                <div class="card">
-                    <div class="head-title">부동산 정보 등록</div>
-                    <div style="display:flex; gap:20px;">
-                        <div style="flex:1;">
-                            <label>거래 종류</label>
-                            <select id="reg-type"><option value="건축">건축</option><option value="매매">매매</option><option value="임대">임대</option></select>
-                            <label>금액 (원)</label><input type="number" id="reg-price">
-                            <label>주소</label><input type="text" id="reg-addr">
-                            <button onclick="app.submitInfo()">등록하기</button>
-                        </div>
-                        <div style="flex:1.5; background:#252525; padding:15px; border-radius:8px;">
-                            <table><thead><tr><th>분류</th><th>주소</th><th>상태</th></tr></thead><tbody id="info-table-body"></tbody></table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="page-blockchain" class="page"><div class="card"><div class="head-title">블록체인</div><p>데이터 준비 중...</p></div></div>
-            <div id="page-virt" class="page"><div class="card"><div class="head-title">가상건축</div><p>데이터 준비 중...</p></div></div>
-            <div id="page-cult" class="page"><div class="card"><div class="head-title">주거문화</div><p>데이터 준비 중...</p></div></div>
-            <div id="page-my" class="page"><div class="card"><div class="head-title">마이페이지</div><h3>보유 토큰: <span id="my-token">0</span></h3><h3>보유 코인: <span id="my-coin">0</span></h3><button onclick="app.exchange()">환전하기</button></div></div>
+        <h1>🏠 부동산 관리자 대시보드</h1>
+        <p>환영합니다! 정린님의 부동산 플랫폼에 접속하셨습니다.</p>
+        <hr style="border: 0.5px solid #333;">
+        <div style="padding: 20px; background: #2a2a2a; border-radius: 10px;">
+            <h3>현재 등록된 매물: 0건</h3>
+            <button style="width: auto; padding: 10px 20px; background: #28a745; color: white;">+ 새 매물 등록하기</button>
         </div>
     </div>
 
     <script>
-        // [1] 구글 Firebase 설정
-        const firebaseConfig = {
+        // 정린님만의 구글 서버 열쇠 (사진 64번)
+        var firebaseConfig = {
             apiKey: "AIzaSyDTz3zvah5J65zgQsik8rSeKSbhySWcCt8",
             authDomain: "real8-bc.firebaseapp.com",
             projectId: "real8-bc",
-            storageBucket: "real8-bc.firebasestorage.app",
-            messagingSenderId: "792768508652",
             appId: "1:792768508652:web:14557cae750168f46c6bc9"
         };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
-        // [2] 구글 로그인/회원가입 기능
+        // [회원가입 기능]
         function handleSignUp() {
             const email = document.getElementById('login-id').value;
             const pw = document.getElementById('login-pw').value;
-            if(!email || !pw) return alert("아이디와 비밀번호를 입력하세요.");
             auth.createUserWithEmailAndPassword(email, pw)
-                .then(() => alert("🎉 회원가입 성공! 이제 [기존 회원 로그인]을 눌러주세요."))
-                .catch(err => alert("가입 실패: " + err.message));
+                .then(() => alert("가입 성공! 이제 로그인 버튼을 눌러주세요."))
+                .catch(err => alert("에러: " + err.message));
         }
 
+        // [로그인 및 화면전환 기능]
         function handleLogin() {
             const email = document.getElementById('login-id').value;
             const pw = document.getElementById('login-pw').value;
             auth.signInWithEmailAndPassword(email, pw)
-                .then(res => {
-                    alert("성공적으로 로그인되었습니다!");
-                    app.login('general', res.user.email); // 로그인 후 메인 화면으로 이동
+                .then(() => {
+                    alert("로그인 성공! 대시보드로 이동합니다.");
+                    document.getElementById('login-screen').classList.add('hidden');
+                    document.getElementById('main-app').classList.remove('hidden');
                 })
-                .catch(err => alert("로그인 실패: 정보를 다시 확인하세요."));
+                .catch(err => alert("로그인 실패: " + err.message));
         }
-
-        // [3] 부동산 앱 메인 로직
-        const KEY = "REAL8_V13_ADMIN_"; 
-        const app = {
-            data: { users: {}, info: [] },
-            user: null,
-            init: function() {
-                const loaded = localStorage.getItem(KEY + 'data');
-                if (loaded) this.data = JSON.parse(loaded);
-            },
-            login: function(type, email) {
-                const uid = email;
-                if (!this.data.users[uid]) this.data.users[uid] = { token: 0, coin: 0 };
-                this.user = { id: uid };
-                document.getElementById('login-screen').classList.add('hidden'); // 로그인창 숨김
-                document.getElementById('main-app').classList.remove('hidden'); // 메인앱 표시
-                document.getElementById('user-name').innerText = uid.split('@')[0];
-                this.render();
-            },
-            go: function(id) {
-                document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
-                document.getElementById('page-'+id).classList.add('active');
-                document.querySelectorAll('.nav-btn').forEach(e=>e.classList.remove('active'));
-                document.getElementById('nav-'+id).classList.add('active');
-            },
-            submitInfo: function() {
-                const addr = document.getElementById('reg-addr').value;
-                if(!addr) return alert("주소를 입력하세요");
-                this.data.info.push({ id: Date.now(), addr, type: document.getElementById('reg-type').value, status: '진행중' });
-                this.data.users[this.user.id].token += 500;
-                alert("등록 완료! (500 토큰 지급)");
-                this.save(); this.render();
-            },
-            render: function() {
-                if(!this.user) return;
-                const u = this.data.users[this.user.id];
-                document.getElementById('my-token').innerText = u.token;
-                document.getElementById('my-coin').innerText = u.coin;
-                document.getElementById('info-table-body').innerHTML = this.data.info.map(i=>`<tr><td>${i.type}</td><td>${i.addr}</td><td>${i.status}</td></tr>`).join('');
-            },
-            save: function() { localStorage.setItem(KEY + 'data', JSON.stringify(this.data)); },
-            emergencyReset: function() { localStorage.clear(); location.reload(); }
-        };
-        app.init();
     </script>
 </body>
 </html>
