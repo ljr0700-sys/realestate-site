@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>부동산 자산 디지털 플랫폼 (Real8 - V13 Admin)</title>
@@ -527,4 +530,18 @@
         app.init();
     </script>
 </body>
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyDTz3zvah5J65zgQsik8rSeKSbhySWcCt8",
+    authDomain: "real8-bc.firebaseapp.com",
+    projectId: "real8-bc",
+    storageBucket: "real8-bc.firebasestorage.app",
+    messagingSenderId: "792768508652",
+    appId: "1:792768508652:web:14557cae750168f46c6bc9"
+  };
+  // 구글 서버 시작
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+</script>
 </html>
