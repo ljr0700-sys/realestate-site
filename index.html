@@ -2,60 +2,49 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Real8 - 통합 자산 관리 포털</title>
+    <title>Real8 - 포털 회원가입 및 로그인</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <style>
-        /* [1] 네이버 스타일 로그인 디자인 */
-        body { background-color: #f5f6f7; color: #333; font-family: sans-serif; margin: 0; }
-        .login-wrap { display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .login-box { width: 350px; padding: 40px; background: #fff; border: 1px solid #ddd; border-radius: 10px; text-align: center; }
-        input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        .btn-green { width: 100%; padding: 15px; background: #03c75a; color: #fff; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        body { background-color: #f5f6f7; font-family: sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .auth-card { width: 400px; background: #fff; padding: 40px; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .logo { font-size: 32px; font-weight: bold; color: #03c75a; text-align: center; margin-bottom: 30px; }
+        input { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
+        .btn-submit { width: 100%; padding: 15px; background: #03c75a; color: white; border: none; border-radius: 4px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .toggle-text { text-align: center; margin-top: 20px; font-size: 14px; color: #666; }
+        .toggle-text span { color: #03c75a; cursor: pointer; font-weight: bold; text-decoration: underline; }
         .hidden { display: none !important; }
-
-        /* [2] 정린님의 소중한 다크 모드 디자인 (사진 106번 복구) */
-        #main-service { background-color: #0d0d0d; color: #fff; min-height: 100vh; padding: 0; }
-        .header-bar { background: #1a1a1a; padding: 15px 25px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; }
-        .content-area { padding: 30px; max-width: 1100px; margin: auto; }
-        .admin-card { background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 25px; margin-bottom: 20px; }
-        .yellow-text { color: #fee500; font-weight: bold; }
+        
+        /* 로그인 성공 후 화면 */
+        #main-app { background: #0d0d0d; color: #fff; width: 100%; height: 100vh; display: flex; flex-direction: column; }
+        .nav { background: #1a1a1a; padding: 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
 
-<div id="auth-section" class="login-wrap">
-    <div class="login-box">
-        <h1 style="color: #03c75a;">Real8</h1>
-        <input type="email" id="u-email" placeholder="이메일 주소">
-        <input type="password" id="u-pw" placeholder="비밀번호">
-        <button class="btn-green" onclick="handleJoin()">회원가입</button>
-        <button class="btn-green" style="background:#444; margin-top:5px;" onclick="handleAuth()">로그인</button>
+<div id="auth-page" class="auth-card">
+    <div class="logo">Real8</div>
+    
+    <div id="form-area">
+        <h3 id="form-title" style="text-align: center; margin-bottom: 20px;">로그인</h3>
+        <input type="email" id="email" placeholder="이메일 주소 (아이디)">
+        <input type="password" id="pw" placeholder="비밀번호">
+        <button class="btn-submit" id="submit-btn" onclick="handleSubmit()">로그인하기</button>
+        
+        <div class="toggle-text" id="toggle-msg">
+            아직 회원이 아니신가요? <span onclick="switchMode(true)">회원가입 하기</span>
+        </div>
     </div>
 </div>
 
-<div id="main-service" class="hidden">
-    <div class="header-bar">
-        <div style="font-size:20px; font-weight:bold; color:#fee500;">Real8 Platform (Server)</div>
-        <div style="font-size:14px;"><span id="user-display" class="yellow-text"></span>님 로그인 중 | <a href="#" onclick="location.reload()" style="color:#888;">로그아웃</a></div>
+<div id="main-app" class="hidden">
+    <div class="nav">
+        <span style="color:#fee500; font-weight:bold; font-size:20px;">Real8 시스템 접속 성공</span>
+        <span><b id="user-display" style="color:#03c75a;"></b>님 환영합니다 | <button onclick="location.reload()">로그아웃</button></span>
     </div>
-    
-    <div class="content-area">
-        <div class="admin-card">
-            <h3 style="border-left: 4px solid #fee500; padding-left: 10px;">토큰/코인 발행 기준 및 관리</h3>
-            <p style="color:#888; font-size:13px;">🪙 관리자 설정 (지급 수량 & 환전율)</p>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top:20px;">
-                <div>
-                    <div style="margin-bottom:5px; font-size:12px;">1. 부동산 정보 등록 시 지급량</div>
-                    <input type="text" value="500" style="background:#222; color:#fff; border:1px solid #444; width:100%;">
-                </div>
-                <div>
-                    <div style="margin-bottom:5px; font-size:12px;">4. 주거문화 글쓰기 지급량</div>
-                    <input type="text" value="50" style="background:#222; color:#fff; border:1px solid #444; width:100%;">
-                </div>
-            </div>
-            <button style="background:#007bff; color:#fff; border:none; padding:10px 20px; border-radius:5px; margin-top:20px; width:100%;">설정 저장 및 공시</button>
-        </div>
+    <div style="padding: 40px; text-align: center;">
+        <h2>본인 확인이 완료되어 시스템에 접속되었습니다.</h2>
+        <p>이제 일반인 다수가 가입하고 이용하는 포털 체계가 작동합니다.</p>
     </div>
 </div>
 
@@ -69,20 +58,43 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    function handleJoin() {
-        const e = document.getElementById('u-email').value;
-        const p = document.getElementById('u-pw').value;
-        auth.createUserWithEmailAndPassword(e, p).then(() => alert("회원가입 성공!")).catch(a => alert(a.message));
+    let isSignUp = false;
+
+    // 회원가입 <-> 로그인 모드 전환
+    function switchMode(signUp) {
+        isSignUp = signUp;
+        document.getElementById('form-title').innerText = isSignUp ? "신규 회원가입" : "로그인";
+        document.getElementById('submit-btn').innerText = isSignUp ? "본인 확인 및 가입" : "로그인하기";
+        document.getElementById('toggle-msg').innerHTML = isSignUp ? 
+            "이미 계정이 있으신가요? <span onclick='switchMode(false)'>로그인하기</span>" : 
+            "아직 회원이 아니신가요? <span onclick='switchMode(true)'>회원가입 하기</span>";
     }
 
-    function handleAuth() {
-        const e = document.getElementById('u-email').value;
-        const p = document.getElementById('u-pw').value;
-        auth.signInWithEmailAndPassword(e, p).then((res) => {
-            document.getElementById('auth-section').classList.add('hidden');
-            document.getElementById('main-service').classList.remove('hidden');
-            document.getElementById('user-display').innerText = res.user.email;
-        }).catch(() => alert("아이디/비번 확인"));
+    // 본인 확인 절차 실행
+    function handleSubmit() {
+        const email = document.getElementById('email').value;
+        const pw = document.getElementById('pw').value;
+
+        if(!email || !pw) return alert("정보를 입력해 주세요.");
+
+        if(isSignUp) {
+            // [회원가입] 본인 확인 및 계정 생성
+            auth.createUserWithEmailAndPassword(email, pw)
+                .then(() => {
+                    alert("본인 확인 및 회원가입이 완료되었습니다! 로그인해 주세요.");
+                    switchMode(false);
+                })
+                .catch(err => alert("가입 오류: " + err.message));
+        } else {
+            // [로그인] 본인 확인 후 입장
+            auth.signInWithEmailAndPassword(email, pw)
+                .then((res) => {
+                    document.getElementById('auth-page').classList.add('hidden');
+                    document.getElementById('main-app').classList.remove('hidden');
+                    document.getElementById('user-display').innerText = res.user.email;
+                })
+                .catch(err => alert("로그인 실패: 정보를 확인하세요."));
+        }
     }
 </script>
 </body>
