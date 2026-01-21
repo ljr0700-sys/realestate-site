@@ -2,28 +2,27 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Real8 - 본인확인 통합 로그인</title>
+    <title>Real8 - 최종 통합 자산 플랫폼</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
-        /* [핵심] 접속 즉시 로그인 창이 보이도록 최상단 고정 */
-        body { margin: 0; font-family: 'Malgun Gothic', sans-serif; background: #f5f6f7; display: flex; align-items: center; justify-content: center; height: 100vh; }
-        .login-box { background: #fff; padding: 50px; border: 1px solid #ddd; border-radius: 12px; width: 380px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.15); z-index: 10001; }
-        .logo { font-size: 45px; font-weight: bold; color: #03c75a; margin-bottom: 30px; letter-spacing: -2px; }
-        input { width: 100%; padding: 16px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; outline: none; }
-        .btn { width: 100%; padding: 18px; border: none; border-radius: 8px; font-weight: bold; font-size: 18px; cursor: pointer; transition: 0.3s; }
-        .btn-green { background: #03c75a; color: white; }
-        .btn-join { background: #fff; color: #666; border: 1px solid #ccc; margin-top: 10px; }
+        body { margin: 0; font-family: 'Malgun Gothic', sans-serif; background: #000; color: #fff; overflow-x: hidden; }
         .hidden { display: none !important; }
+        /* [핵심] 로그인창이 무조건 가장 먼저 보이도록 설정 */
+        #auth-gate { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f5f6f7; display: flex; align-items: center; justify-content: center; z-index: 99999; }
+        .login-box { background: #fff; padding: 45px; border-radius: 12px; width: 360px; text-align: center; color: #333; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+        .logo { font-size: 42px; font-weight: bold; color: #03c75a; margin-bottom: 30px; }
+        input { width: 100%; padding: 15px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        .btn-green { width: 100%; padding: 16px; background: #03c75a; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 18px; }
 
-        /* 로그인 후 나타날 정린님의 원본 디자인 */
-        #main-app { background: #000; position: fixed; top: 0; left: 0; width: 100%; height: 100%; color: #fff; overflow-y: auto; }
-        header { background: #2b579a; padding: 20px; font-weight: bold; font-size: 22px; display: flex; justify-content: space-between; }
+        /* 로그인 후 디자인 복구 */
+        #main-app { display: none; }
+        header { background: #2b579a; padding: 20px; font-weight: bold; font-size: 20px; display: flex; justify-content: space-between; border-bottom: 3px solid #003d80; }
         nav { background: #1a1a1a; display: flex; border-bottom: 2px solid #333; }
         .nav-btn { padding: 15px 25px; cursor: pointer; color: #fff; border-right: 1px solid #222; font-size: 14px; }
         .nav-active { background: #fee500; color: #000; font-weight: bold; }
-        .page { padding: 40px; display: none; }
+        .page { padding: 40px; display: none; max-width: 1000px; margin: 0 auto; }
         .page-show { display: block !important; }
         .card { border: 1px solid #fee500; padding: 30px; background: #0a0a0a; border-radius: 8px; }
     </style>
@@ -34,17 +33,17 @@
     <div class="login-box">
         <div class="logo">Real8</div>
         <p style="color:#888; margin-top:-20px; margin-bottom:30px;">본인 확인 후 시스템 접속이 가능합니다.</p>
-        <input type="email" id="email" placeholder="이메일(아이디) 주소">
+        <input type="email" id="email" placeholder="이메일 주소">
         <input type="password" id="pw" placeholder="비밀번호">
-        <button class="btn btn-green" onclick="handleAuth(false)">로그인하기</button>
-        <button class="btn btn-join" onclick="handleAuth(true)">신규 회원가입</button>
+        <button class="btn-green" onclick="handleAuth(false)">로그인하기</button>
+        <button class="btn-green" style="background:#ffc107; color:#000; margin-top:10px;" onclick="handleAuth(true)">신규 회원가입</button>
     </div>
 </div>
 
-<div id="main-app" class="hidden">
+<div id="main-app">
     <header>
-        <span>Real8 Platform (Final)</span>
-        <div style="font-size:13px;"><span id="u-info" style="color:#fee500;"></span>님 접속 중 | <a onclick="location.reload()" style="cursor:pointer; color:#fff;">로그아웃</a></div>
+        <span>Real8 Platform (Final 2026)</span>
+        <div style="font-size:13px;"><span id="u-info" style="color:#fee500;"></span>님 접속 | <a onclick="location.reload()" style="cursor:pointer; color:#fff;">로그아웃</a></div>
     </header>
     <nav>
         <div class="nav-btn nav-active" onclick="goPage('p-bc', this)">블록체인·토큰코인</div>
@@ -57,10 +56,19 @@
     <div id="p-bc" class="page page-show">
         <div class="card">
             <h2>토큰/코인 발행 및 블록체인 공시</h2>
-            <label style="color:#fee500; font-size:12px;">📍 해시 연계용 부동산 주소 (재료 1)</label>
-            <input type="text" id="addr" value="경기도 가평군 설악면" style="background:#111; color:#fff; border:none; border-bottom:1px solid #444; width:100%; padding:15px; font-size:18px;">
-            <button onclick="makeHash()" style="margin-top:30px; background:#007bff; color:white; border:none; padding:20px; width:100%; border-radius:8px; font-weight:bold; cursor:pointer;">설정 저장 및 블록체인 해시 공시</button>
+            <label style="color:#fee500;">📍 해시 연계용 부동산 주소 (재료 1)</label>
+            <input type="text" id="addr" value="경기도 가평군 설악면" style="background:#111; color:#fff; border:none; border-bottom:1px solid #444; margin-top:10px;">
+            <button onclick="makeHash()" style="margin-top:30px; background:#007bff; color:white; border:none; padding:18px; width:100%; border-radius:6px; font-weight:bold; cursor:pointer;">설정 저장 및 해시 공시</button>
             <div id="hash-log" style="margin-top:20px; color:#00ff00; word-break:break-all; font-family:monospace;"></div>
+        </div>
+    </div>
+
+    <div id="p-build" class="page">
+        <div class="card">
+            <h2>부동산 정보 등록</h2>
+            <label>거래 종류</label><select style="background:#111; color:#fff; padding:10px; width:100%;"><option>건축</option><option>매매</option></select>
+            <label style="margin-top:20px; display:block;">주소 입력</label><input type="text" placeholder="사진 22번처럼 주소 입력" style="background:#111; color:#fff; border:1px solid #444; width:100%;">
+            <button style="margin-top:25px; background:#28a745; color:white; border:none; padding:18px; width:100%; border-radius:6px;">정보 등록</button>
         </div>
     </div>
     </div>
@@ -70,20 +78,14 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // 회원가입 및 로그인 처리
     function handleAuth(isJoin) {
         const e = document.getElementById('email').value, p = document.getElementById('pw').value;
-        if(!e || !p) return alert("정보를 입력하세요.");
-        if(isJoin) {
-            auth.createUserWithEmailAndPassword(e, p).then(() => alert("가입 성공! 로그인해 주세요.")).catch(err => alert(err.message));
-        } else {
-            auth.signInWithEmailAndPassword(e, p).then(res => {
-                document.body.style.background = "#000"; // 배경색 변경
-                document.getElementById('auth-gate').classList.add('hidden');
-                document.getElementById('main-app').classList.remove('hidden');
-                document.getElementById('u-info').innerText = res.user.email;
-            }).catch(() => alert("아이디/비번을 확인하세요."));
-        }
+        if(isJoin) auth.createUserWithEmailAndPassword(e, p).then(() => alert("가입 성공! 로그인하세요.")).catch(err => alert(err.message));
+        else auth.signInWithEmailAndPassword(e, p).then(res => {
+            document.getElementById('auth-gate').classList.add('hidden');
+            document.getElementById('main-app').style.display = 'block';
+            document.getElementById('u-info').innerText = res.user.email;
+        }).catch(() => alert("정보 확인 실패"));
     }
 
     function goPage(id, el) {
@@ -97,7 +99,7 @@
         const raw = document.getElementById('addr').value + window.location.href + new Date().toLocaleString();
         const hash = CryptoJS.SHA256(raw).toString();
         document.getElementById('hash-log').innerHTML = "<b>[공시 완료]</b><br>Hash: " + hash;
-        alert("해시값이 성공적으로 생성되었습니다.");
+        alert("해시값이 공시되었습니다.");
     }
 </script>
 </body>
