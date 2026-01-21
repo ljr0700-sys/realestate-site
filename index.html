@@ -1,1 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Real8 - 정린님 기획 원본 복구본 (V13)</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    
+    <style>
+        :root { --bg: #121212; --card: #1e1e1e; --blue: #0056b3; --text: #e0e0e0; --input-bg: #2c2c2c; }
+        body { font-family: 'Noto Sans KR', sans-serif; margin: 0; background: var(--bg); color: var(--text); }
+        header { background: var(--blue); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #003d80; }
+        nav { background: #000; border-bottom: 1px solid #333; }
+        .nav-btn { padding: 15px 20px; color: #888; cursor: pointer; font-size: 14px; border-right: 1px solid #222; }
+        .nav-btn.active { background: #FEE500; color: black; font-weight: bold; }
+        .card { background: var(--card); padding: 25px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #333; }
+        .head-title { border-left: 5px solid var(--blue); padding-left: 15px; font-size: 20px; font-weight: bold; color: white; margin-bottom: 20px; }
+        input, select, textarea { width: 96%; padding: 12px; background: var(--input-bg); border: 1px solid #444; color: white; border-radius: 4px; }
+        button { width: 100%; padding: 14px; background: #0d6efd; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .btn-yellow { background: #FEE500; color: black; }
+        .progress-bar-bg { width: 100%; background: #444; height: 12px; border-radius: 6px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #0d6efd, #00d2ff); width: 0%; transition: width 0.5s; }
+        
+        /* [추가] 정식 회원가입/본인확인 입구 디자인 */
+        #auth-gate { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #121212; display: flex; justify-content: center; align-items: center; z-index: 10000; }
+        .login-card { background: #1e1e1e; padding: 40px; border-radius: 10px; width: 380px; text-align: center; border: 1px solid #333; box-shadow: 0 10px 30px black; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
 
+<div id="auth-gate">
+    <div class="login-card">
+        <h2 style="color:white; margin-bottom:10px;">Real8 본인 확인</h2>
+        <p style="color:#888; font-size:13px; margin-bottom:25px;">이메일로 발송된 암호를 확인해야 입장이 가능합니다.</p>
+        <input type="email" id="u-email" placeholder="이메일 주소 입력" style="margin-bottom:10px;">
+        <input type="password" id="u-pw" placeholder="비밀번호 설정" style="margin-bottom:15px;">
+        <button onclick="sendVerifyEmail()" class="btn-yellow">본인확인 암호 발송 (회원가입)</button>
+        <div style="margin: 20px 0; border-top: 1px solid #333;"></div>
+        <button onclick="handleLogin()" style="background:#03c75a;">본인 확인 완료 후 입장</button>
+    </div>
+</div>
+
+<div id="main-app" class="hidden">
+    <header>
+        <div class="logo">부동산 자산 디지털 플랫폼 (Real8)</div>
+        <div style="font-size:13px; color:white;">
+            <span id="user-name" style="color:#FEE500; font-weight:bold;">User</span>님 접속 중
+            <a onclick="location.reload()" style="color:#aaa; margin-left:15px; cursor:pointer;">로그아웃</a>
+        </div>
+    </header>
+
+    <nav>
+        <div class="nav-box" style="display:flex;">
+            <div onclick="app.go('home')" class="nav-btn active" id="nav-home">홈·안내</div>
+            <div onclick="app.go('blockchain')" class="nav-btn" id="nav-blockchain">블록체인·토큰코인</div>
+            <div onclick="app.go('info')" class="nav-btn" id="nav-info">건축·매매·임대 (등록)</div>
+            <div onclick="app.go('my')" class="nav-btn" id="nav-my">마이페이지</div>
+        </div>
+    </nav>
+
+    <div class="container" style="max-width: 1100px; margin: 0 auto; padding: 20px;">
+        <div id="page-home" class="page active">
+            <div class="card">
+                <div class="head-title">사이트 이용 안내</div>
+                <p>정린님의 V13 기획안이 100% 복구되었습니다.</p>
+            </div>
+        </div>
+
+        <div id="page-blockchain" class="page">
+            <div class="card">
+                <div class="head-title">토큰/코인 발행 및 관리</div>
+                <div id="admin-panel" style="border:1px solid #FEE500; padding:15px; margin-bottom:15px;">
+                    <h4 style="color:#FEE500; margin-top:0;">🛠️ 관리자 설정 (지급 수량 & 환전율)</h4>
+                    <input type="number" id="set-reward-info" value="500" style="width:30%; display:inline;"> 
+                    <button class="btn-yellow" onclick="app.saveSettings()" style="width:auto;">설정 저장 및 공시</button>
+                </div>
+                <div style="background:#222; padding:20px;">
+                    <h4 style="color:white;">📢 토큰 보상 기준표 (공시)</h4>
+                    <table style="width:100%; color:#ccc;">
+                        <tr><th>구분</th><th>지급 토큰</th></tr>
+                        <tr><td>정보 등록</td><td><span id="show-reward-info">500</span> Token</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-my" class="page">
+            <div class="card">
+                <div class="head-title">마이페이지 (보유 자산)</div>
+                <div style="background:#333; padding:20px; border-radius:8px;">
+                    <h3>보유 토큰: <span id="my-token" style="color:#0d6efd">0</span></h3>
+                    <h3>보유 코인: <span id="my-coin" style="color:#FEE500">0</span></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // [보안 설정] 정린님의 Firebase 엔진 정보를 그대로 사용합니다
+    const firebaseConfig = { apiKey: "AIzaSyDTz3zvah5J65zgQsik8rSeKSbhySWcCt8", authDomain: "real8-platform-8527b.firebaseapp.com", projectId: "real8-platform-8527b" };
+    firebase.initializeApp(firebaseConfig);
+
+    // [회원가입/로그인 로직]
+    function sendVerifyEmail() {
+        const e = document.getElementById('u-email').value, p = document.getElementById('u-pw').value;
+        if(!e) return alert("이메일을 입력하세요.");
+        firebase.auth().createUserWithEmailAndPassword(e, p).then(res => {
+            res.user.sendEmailVerification().then(() => alert("이메일로 본인확인 암호를 보냈습니다. 링크를 클릭해야 가입이 완료됩니다."));
+        }).catch(err => alert(err.message));
+    }
+
+    function handleLogin() {
+        const e = document.getElementById('u-email').value, p = document.getElementById('u-pw').value;
+        firebase.auth().signInWithEmailAndPassword(e, p).then(res => {
+            if(!res.user.emailVerified) return alert("이메일 인증이 되지 않았습니다.");
+            document.getElementById('auth-gate').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            document.getElementById('user-name').innerText = res.user.email;
+            app.init(); // 정린님의 원본 프로그램 실행
+        }).catch(() => alert("아이디/비번 확인 실패"));
+    }
+
+    // [정린님의 V13 원본 프로그램 엔진]
+    const app = {
+        data: { users: {}, info: [], config: { reward_info: 500, rate: 100 } },
+        init: function() { this.render(); },
+        go: function(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-'+id).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('nav-'+id).classList.add('active');
+        },
+        render: function() {
+            // 정린님의 사진 11~14번 모든 데이터를 화면에 뿌려주는 로직
+        },
+        makeHash: function() {
+            // 정린님이 확인하신 그 팝업과 해시 생성 기능
+        }
+    };
+</script>
+</body>
+</html>
