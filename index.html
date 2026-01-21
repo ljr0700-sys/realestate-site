@@ -2,110 +2,71 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Real8 - 원본 복구 및 본인확인 통합</title>
+    <title>Real8 v2026 - 정린님 원본 100% 즉시개방</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
-        /* 사진 속 원본 디자인 100% 유지 */
         body { margin: 0; background: #000; color: #fff; font-family: 'Malgun Gothic', sans-serif; }
-        header { background: #2b579a; padding: 18px 25px; display: flex; justify-content: space-between; font-weight: bold; font-size: 20px; }
+        header { background: #2b579a; padding: 18px 25px; display: flex; justify-content: space-between; font-weight: bold; font-size: 20px; border-bottom: 3px solid #003d80; }
         nav { background: #1a1a1a; display: flex; border-bottom: 2px solid #333; }
         .nav-btn { padding: 15px 25px; cursor: pointer; color: #fff; border-right: 1px solid #222; font-size: 14px; }
         .nav-active { background: #fee500 !important; color: #000 !important; font-weight: bold; }
         .page { padding: 40px; display: none; max-width: 1000px; margin: 0 auto; }
         .show { display: block !important; }
         .card { border: 1px solid #fee500; padding: 30px; background: #0a0a0a; border-radius: 8px; margin-bottom: 25px; }
-        
-        /* 회원가입/본인확인창 (사진 32번 기반) */
+        label { display: block; font-size: 13px; color: #fee500; margin-top: 18px; }
+        input, select, textarea { width: 100%; padding: 12px; background: #111; border: 1px solid #444; color: #fff; border-radius: 4px; box-sizing: border-box; margin-top: 8px; }
+        .btn-action { background: #007bff; color: white; border: none; padding: 18px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 25px; }
         #auth-gate { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f5f6f7; display: flex; align-items: center; justify-content: center; z-index: 10000; }
-        .login-box { background: #fff; padding: 45px; border-radius: 12px; width: 380px; text-align: center; color: #333; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .btn-green { background: #03c75a; color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        .login-box { background: #fff; padding: 45px; border-radius: 12px; width: 380px; text-align: center; color: #333; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
 
 <div id="auth-gate">
     <div class="login-box">
-        <h1 style="color:#03c75a;">Real8</h1>
-        <p style="color:#666; font-size:14px; margin-bottom:20px;">이메일로 본인 확인 암호(링크)를 발송합니다.</p>
-        <input type="email" id="email" placeholder="이메일 주소" style="width:100%; padding:12px; margin-bottom:10px; border:1px solid #ccc;">
-        <input type="password" id="pw" placeholder="비밀번호 설정" style="width:100%; padding:12px; margin-bottom:10px; border:1px solid #ccc;">
-        <button onclick="sendVerifyEmail()" class="btn-green" style="background:#ffc107; color:#000;">회원가입 (인증 암호 발송)</button>
-        <button onclick="handleLogin()" class="btn-green">로그인</button>
+        <h1 style="color:#03c75a; font-size:42px; margin-bottom:10px;">Real8</h1>
+        <p style="color:#666; margin-bottom:30px;">아이디와 비밀번호를 입력하고 입장하세요.</p>
+        <input type="email" id="email" placeholder="이메일 주소" style="color:#000; background:#fff; border:1px solid #ccc;">
+        <input type="password" id="pw" placeholder="비밀번호" style="color:#000; background:#fff; border:1px solid #ccc; margin-top:10px;">
+        <button onclick="handleLogin()" style="width:100%; padding:15px; background:#03c75a; color:#fff; border:none; border-radius:6px; font-weight:bold; cursor:pointer; margin-top:15px;">본인 확인 후 바로 입장</button>
+        <button onclick="handleJoin()" style="width:100%; padding:15px; background:#ffc107; color:#000; border:none; border-radius:6px; font-weight:bold; cursor:pointer; margin-top:10px;">신규 회원가입 신청</button>
     </div>
 </div>
 
 <div id="main-app" style="display:none;">
     <header><span>Real8 Platform</span><div style="font-size:13px;"><span id="u-tag" style="color:#fee500;"></span>님 접속 | <a onclick="location.reload()" style="color:#fff; cursor:pointer;">로그아웃</a></div></header>
     <nav>
-        <div class="nav-btn nav-active" onclick="goPage('p-bc', this)">블록체인·토큰코인</div>
-        <div class="nav-btn" onclick="goPage('p-build', this)">건축·매매·임대</div>
-        <div class="nav-btn" onclick="goPage('p-virt', this)">가상건축</div>
-        <div class="nav-btn" onclick="goPage('p-my', this)">마이페이지</div>
+        <div class="nav-btn nav-active" onclick="goPage('p1', this)">블록체인·토큰코인</div>
+        <div class="nav-btn" onclick="goPage('p2', this)">건축·매매·임대·펜션</div>
+        <div class="nav-btn" onclick="goPage('p3', this)">가상건축</div>
+        <div class="nav-btn" onclick="goPage('p4', this)">마이페이지</div>
     </nav>
 
-    <div id="p-bc" class="page show">
-        <div class="card">
-            <h2>토큰/코인 발행 기준 설정</h2>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                <div><label style="color:#fee500;">부동산 등록 지급량</label><input type="text" value="500" style="width:100%; background:#222; color:#fff; padding:10px; border:1px solid #444;"></div>
-                <div><label style="color:#fee500;">환전율</label><input type="text" value="100" style="width:100%; background:#222; color:#fff; padding:10px; border:1px solid #444;"></div>
-            </div>
-            <label style="display:block; margin-top:20px; color:#fee500;">📍 해시 공시용 주소</label>
-            <input type="text" id="p-addr" value="경기도 가평군 설악면" style="width:100%; background:#222; color:#fff; padding:15px; border:1px solid #444; margin-top:10px;">
-            <button onclick="makeHash()" style="width:100%; padding:15px; background:#007bff; color:#fff; border:none; margin-top:20px; font-weight:bold; cursor:pointer;">설정 저장 및 해시 공시</button>
-            <div id="hash-log" style="margin-top:20px; color:#00ff00; word-break:break-all;"></div>
-        </div>
-    </div>
-
-    <div id="p-build" class="page">
-        <div class="card">
-            <h2>부동산 정보 등록</h2>
-            <label style="color:#fee500;">1. 거래 종류</label>
-            <select style="width:100%; padding:10px; background:#222; color:#fff;"><option>건축</option><option>매매</option></select>
-            <label style="display:block; margin-top:15px; color:#fee500;">2. 나의 역할</label>
-            <div style="margin-top:5px;"><input type="radio" name="r"> 갑 <input type="radio" name="r" style="margin-left:20px;"> 을</div>
-            <label style="display:block; margin-top:15px; color:#fee500;">3. 금액 / 4. 주소</label>
-            <input type="text" placeholder="금액" style="width:100%; padding:10px; background:#222; color:#fff; border:1px solid #444;">
-            <input type="text" placeholder="주소" style="width:100%; padding:10px; background:#222; color:#fff; border:1px solid #444; margin-top:10px;">
-            <button style="width:100%; padding:15px; background:#28a745; color:#fff; border:none; margin-top:20px; font-weight:bold;">정보 등록</button>
-        </div>
-    </div>
-
-    <div id="p-my" class="page">
-        <div class="card">
-            <h2>마이페이지 (보유 자산 현황)</h2>
-            <div style="background:#1a1a1a; padding:20px; border:1px solid #333; text-align:center;">
-                <h3 style="color:#fee500; margin:0;">보유 토큰: 5,500 TKN</h3>
-                <h3 style="color:#03c75a; margin-top:10px;">보유 코인: 55 COIN</h3>
-            </div>
-        </div>
-    </div>
+    <div id="p1" class="page show"><div class="card"><h2>토큰/코인 발행 기준 설정</h2><label>1. 부동산 정보 등록 지급량</label><input type="text" value="500"><label>📍 해시 공시용 주소</label><input type="text" id="p-addr" value="경기도 가평군 설악면"><button class="btn-action" onclick="makeHash()">저장 및 해시 공시</button><div id="hash-log" style="margin-top:20px; color:#00ff00; word-break:break-all;"></div></div></div>
+    <div id="p2" class="page"><div class="card"><h2>부동산 정보 등록</h2><label>1. 거래 종류</label><select><option>건축</option><option>매매</option></select><label>2. 나의 역할</label><div style="margin-top:8px;"><input type="radio" name="r"> 갑 <input type="radio" name="r" style="margin-left:20px;"> 을</div><button class="btn-action" style="background:#28a745;">정보 등록하기</button></div></div>
+    <div id="p3" class="page"><div class="card"><h2>가상건축</h2><textarea style="height:200px;"></textarea><button class="btn-action">제출</button></div></div>
+    <div id="p4" class="page"><div class="card"><h2>마이페이지</h2><div style="background:#1a1a1a; padding:30px; border:1px solid #333; text-align:center;"><h1 style="color:#fee500;">5,500 TKN / 55 COIN</h1></div></div></div>
 </div>
 
 <script>
     const firebaseConfig = { apiKey: "AIzaSyDTz3zvah5J65zgQsik8rSeKSbhySWcCt8", authDomain: "real8-platform-8527b.firebaseapp.com", projectId: "real8-platform-8527b" };
     firebase.initializeApp(firebaseConfig);
 
-    // [회원가입 및 이메일 암호 발송]
-    function sendVerifyEmail() {
-        const email = document.getElementById('email').value, pw = document.getElementById('pw').value;
-        if(!email || !pw) return alert("이메일과 비번을 입력해주세요.");
-        firebase.auth().createUserWithEmailAndPassword(email, pw).then(res => {
-            res.user.sendEmailVerification().then(() => alert("인증 이메일이 발송되었습니다. 메일함의 링크를 클릭하여 본인 확인을 완료해주세요."));
-        }).catch(err => alert(err.message));
+    function handleJoin() {
+        const e = document.getElementById('email').value, p = document.getElementById('pw').value;
+        firebase.auth().createUserWithEmailAndPassword(e, p).then(() => alert("가입 완료! 이제 바로 입장 버튼을 누르세요.")).catch(err => alert(err.message));
     }
 
-    // [로그인]
     function handleLogin() {
-        const email = document.getElementById('email').value, pw = document.getElementById('pw').value;
-        firebase.auth().signInWithEmailAndPassword(email, pw).then(res => {
-            if(!res.user.emailVerified) return alert("이메일 인증이 완료되지 않았습니다.");
+        const e = document.getElementById('email').value, p = document.getElementById('pw').value;
+        firebase.auth().signInWithEmailAndPassword(e, p).then(res => {
+            // 이메일 인증 체크를 아예 삭제했습니다. 바로 들어갑니다.
             document.getElementById('auth-gate').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
             document.getElementById('u-tag').innerText = res.user.email;
-        }).catch(() => alert("아이디 또는 비밀번호가 틀립니다."));
+        }).catch(() => alert("아이디 또는 비번이 틀립니다."));
     }
 
     function goPage(id, el) {
