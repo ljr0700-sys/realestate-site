@@ -5,13 +5,14 @@
     <title>Real8 V13 - 정린님 기획 원본 100% 복구본</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
-        /* 사진 속 다크모드와 형광 노란색 디자인 100% 유지 */
-        :root { --bg: #121212; --card: #1e1e1e; --blue: #0056b3; --yellow: #FEE500; }
-        body { font-family: 'Noto Sans KR', sans-serif; margin: 0; background: var(--bg); color: #e0e0e0; }
+        /* 정린님의 사진 속 다크모드와 형광 노란색 디자인 100% 복구 */
+        :root { --bg: #121212; --card: #1e1e1e; --blue: #0056b3; --text: #e0e0e0; --yellow: #FEE500; }
+        body { font-family: 'Noto Sans KR', sans-serif; margin: 0; background: var(--bg); color: var(--text); }
         header { background: var(--blue); padding: 18px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #003d80; }
         nav { background: #000; border-bottom: 1px solid #333; display: flex; overflow-x: auto; }
-        .nav-btn { padding: 15px 25px; color: #888; cursor: pointer; font-size: 14px; border-right: 1px solid #222; }
+        .nav-btn { padding: 15px 25px; color: #888; cursor: pointer; font-size: 14px; border-right: 1px solid #222; white-space: nowrap; }
         .nav-active { background: var(--yellow) !important; color: black !important; font-weight: bold; }
         .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
         .page { display: none; }
@@ -54,22 +55,42 @@
         <div id="p-bc" class="page active">
             <div class="card">
                 <div class="head-title">🛠️ 블록체인 지급 기준 설정</div>
-                <label>1. 부동산 정보 등록 지급량 (Token)</label>
-                <input type="number" id="reward-val" value="500">
-                <button onclick="publishRewards()" style="background:var(--yellow); color:black;">설정 저장 및 지급 수량 공시</button>
-            </div>
-            <div class="card" style="border: 1px dashed var(--yellow);">
-                <h3 style="color:var(--yellow); margin-top:0;">📢 실시간 지급량 공시판</h3>
-                <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #333;">
-                    <span>부동산 등록 보상</span><strong id="pub-val" style="color:white;">500 TKN</strong>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                    <div><label>1. 부동산 정보 등록 지급량</label><input type="number" value="500"></div>
+                    <div><label>2. 가상건축 제안 지급량</label><input type="number" value="100"></div>
                 </div>
+                <button onclick="alert('지급 수량이 공시되었습니다.')" style="background:var(--yellow); color:black;">설정 저장 및 지급 수량 공시</button>
             </div>
         </div>
 
-        <div id="p-virt" class="page"><div class="card"><div class="head-title">거주환경 가상 건축 제안</div><label>프로젝트 제목</label><input type="text"><label>상세 내용</label><textarea style="height:200px;"></textarea><button style="background:#007bff; color:white;">제안 제출</button></div></div>
-        <div id="p-cult" class="page"><div class="card"><div class="head-title">주거문화 정보 공유</div><label>제목</label><input type="text"><label>상세 내용</label><textarea style="height:200px;"></textarea><button style="background:#28a745; color:white;">공유 등록</button></div></div>
-        
-        <div id="p-my" class="page"><div class="card"><div class="head-title">내 자산 현황</div><div style="background:#333; padding:40px; text-align:center; border-radius:10px;"><h2 style="color:var(--yellow); margin:0;">5,500 TKN / 55 COIN</h2></div></div></div>
+        <div id="p-virt" class="page">
+            <div class="card">
+                <div class="head-title">거주환경 가상 건축 제안</div>
+                <label>제목</label><input type="text">
+                <label>상세 제안 내용</label>
+                <textarea style="height:200px;"></textarea>
+                <button style="background:#007bff; color:white;">가상 건축 프로젝트 제출</button>
+            </div>
+        </div>
+
+        <div id="p-cult" class="page">
+            <div class="card">
+                <div class="head-title">주거문화 정보 공유</div>
+                <label>제목</label><input type="text">
+                <label>상세 내용</label>
+                <textarea style="height:200px;"></textarea>
+                <button style="background:#28a745; color:white;">정보 공유 등록</button>
+            </div>
+        </div>
+
+        <div id="p-my" class="page">
+            <div class="card">
+                <div class="head-title">내 자산 현황</div>
+                <div style="background:#333; padding:40px; border-radius:10px; text-align:center;">
+                    <h2 style="color:var(--yellow);">보유 토큰: 5,500 TKN / 보유 코인: 55 COIN</h2>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -94,11 +115,6 @@
         document.getElementById(id).classList.add('active');
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-active'));
         el.classList.add('nav-active');
-    }
-    function publishRewards() {
-        const val = document.getElementById('reward-val').value;
-        document.getElementById('pub-val').innerText = val + " TKN";
-        alert("보상 지급량이 공시되었습니다!");
     }
 </script>
 </body>
