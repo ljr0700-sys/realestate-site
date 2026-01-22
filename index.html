@@ -2,21 +2,22 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Real8 V13 - 정린님 기획안 100% 완전 복구본</title>
+    <title>Real8 V13 - 정린님 기획 원본 100% 복구본</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
+        /* 사진 속 다크모드와 형광 노란색 디자인 100% 유지 */
         :root { --bg: #121212; --card: #1e1e1e; --blue: #0056b3; --yellow: #FEE500; }
         body { font-family: 'Noto Sans KR', sans-serif; margin: 0; background: var(--bg); color: #e0e0e0; }
         header { background: var(--blue); padding: 18px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #003d80; }
         nav { background: #000; border-bottom: 1px solid #333; display: flex; overflow-x: auto; }
-        .nav-btn { padding: 15px 25px; color: #888; cursor: pointer; font-size: 14px; border-right: 1px solid #222; white-space: nowrap; }
+        .nav-btn { padding: 15px 25px; color: #888; cursor: pointer; font-size: 14px; border-right: 1px solid #222; }
         .nav-active { background: var(--yellow) !important; color: black !important; font-weight: bold; }
         .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
         .page { display: none; }
         .active { display: block !important; }
         .card { background: var(--card); padding: 25px; border-radius: 8px; border: 1px solid #333; margin-bottom: 20px; }
+        .head-title { border-left: 5px solid var(--blue); padding-left: 15px; font-size: 18px; font-weight: bold; color: white; margin-bottom: 20px; }
         label { display: block; color: var(--yellow); margin: 15px 0 5px; font-size: 13px; }
         input, select, textarea { width: 95%; padding: 12px; background: #2c2c2c; border: 1px solid #444; color: white; border-radius: 4px; }
         button { width: 100%; padding: 14px; background: #0d6efd; color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 15px; }
@@ -27,8 +28,8 @@
 
 <div id="auth-gate">
     <div style="background:#1e1e1e; padding:45px; border-radius:12px; width:380px; text-align:center; border:1px solid #333;">
-        <h1 style="color:white; margin-bottom:10px;">Real8</h1>
-        <p style="color:#888; margin-bottom:30px;">아이디와 비번만으로 즉시 입장합니다.</p>
+        <h1 style="color:white;">Real8</h1>
+        <p style="color:#888; font-size:13px; margin-bottom:30px;">아이디와 비번만으로 즉시 입장합니다.</p>
         <input type="email" id="u-email" placeholder="아이디(이메일)">
         <input type="password" id="u-pw" placeholder="비밀번호" style="margin-top:10px;">
         <button onclick="handleLogin()" style="background:var(--yellow); color:black;">본인 확인 후 바로 입장</button>
@@ -52,59 +53,23 @@
     <div class="container">
         <div id="p-bc" class="page active">
             <div class="card">
-                <h3>🛠️ 블록체인 공시 설정</h3>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                    <div><label>1. 부동산 정보 등록 지급량</label><input type="number" value="500"></div>
-                    <div><label>2. 가상건축 제안 지급량</label><input type="number" value="100"></div>
-                </div>
-                <label>📍 공시 부동산 주소</label><input type="text" id="p-addr" value="경기도 가평군 설악면">
-                <button onclick="makeHash()" style="background:var(--yellow); color:black;">설정 저장 및 해시 공시</button>
-                <div id="hash-log" style="margin-top:20px; color:#28a745; word-break:break-all; font-family:monospace; background:#111; padding:15px; border:1px dashed #444;"></div>
+                <div class="head-title">🛠️ 블록체인 지급 기준 설정</div>
+                <label>1. 부동산 정보 등록 지급량 (Token)</label>
+                <input type="number" id="reward-val" value="500">
+                <button onclick="publishRewards()" style="background:var(--yellow); color:black;">설정 저장 및 지급 수량 공시</button>
             </div>
-        </div>
-
-        <div id="p-reg" class="page">
-            <div class="card">
-                <h3>🏠 부동산 정보 등록</h3>
-                <label>1. 거래 종류</label><select><option>건축</option><option>매매</option></select>
-                <label>2. 나의 역할</label>
-                <div style="margin-top:10px;"><input type="radio" name="role" checked> 갑 <input type="radio" name="role" style="margin-left:20px;"> 을</div>
-                <label>4. 주소 입력</label><input type="text" id="addr-in" placeholder="정확한 주소 입력">
-                <button style="background:#28a745; color:white;">정보 등록 및 토큰 받기</button>
-            </div>
-        </div>
-
-        <div id="p-virt" class="page">
-            <div class="card">
-                <h3>🏗️ 거주환경 가상 건축 제안</h3>
-                <label>제목 / 희망 지역</label>
-                <input type="text" placeholder="제목" style="margin-bottom:10px;">
-                <input type="text" placeholder="지역">
-                <label>상세 제안 내용</label>
-                <textarea style="height:200px;" placeholder="상세 내용을 입력하세요."></textarea>
-                <button style="background:#007bff; color:white;">가상 건축 프로젝트 제출</button>
-            </div>
-        </div>
-
-        <div id="p-cult" class="page">
-            <div class="card">
-                <h3>🏘️ 주거문화 정보 공유</h3>
-                <label>제목</label><input type="text" placeholder="제목">
-                <label>공유 내용 (사진/영상 링크 포함)</label>
-                <textarea style="height:200px;" placeholder="노하우를 공유해 주세요."></textarea>
-                <button style="background:#28a745; color:white;">정보 공유 등록</button>
-            </div>
-        </div>
-
-        <div id="p-my" class="page">
-            <div class="card">
-                <h3>👤 내 자산 현황</h3>
-                <div style="background:#333; padding:30px; border-radius:10px; text-align:center;">
-                    <h2 style="color:var(--yellow);">보유 토큰: 5,500 TKN</h2>
-                    <h2 style="color:#0d6efd; margin-top:10px;">보유 코인: 55 COIN</h2>
+            <div class="card" style="border: 1px dashed var(--yellow);">
+                <h3 style="color:var(--yellow); margin-top:0;">📢 실시간 지급량 공시판</h3>
+                <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #333;">
+                    <span>부동산 등록 보상</span><strong id="pub-val" style="color:white;">500 TKN</strong>
                 </div>
             </div>
         </div>
+
+        <div id="p-virt" class="page"><div class="card"><div class="head-title">거주환경 가상 건축 제안</div><label>프로젝트 제목</label><input type="text"><label>상세 내용</label><textarea style="height:200px;"></textarea><button style="background:#007bff; color:white;">제안 제출</button></div></div>
+        <div id="p-cult" class="page"><div class="card"><div class="head-title">주거문화 정보 공유</div><label>제목</label><input type="text"><label>상세 내용</label><textarea style="height:200px;"></textarea><button style="background:#28a745; color:white;">공유 등록</button></div></div>
+        
+        <div id="p-my" class="page"><div class="card"><div class="head-title">내 자산 현황</div><div style="background:#333; padding:40px; text-align:center; border-radius:10px;"><h2 style="color:var(--yellow); margin:0;">5,500 TKN / 55 COIN</h2></div></div></div>
     </div>
 </div>
 
@@ -114,9 +79,8 @@
 
     function handleJoin() {
         const e = document.getElementById('u-email').value, p = document.getElementById('u-pw').value;
-        firebase.auth().createUserWithEmailAndPassword(e, p).then(() => alert("가입 성공! 바로 입장하세요.")).catch(err => alert(err.message));
+        firebase.auth().createUserWithEmailAndPassword(e, p).then(() => alert("가입 성공!")).catch(err => alert(err.message));
     }
-
     function handleLogin() {
         const e = document.getElementById('u-email').value, p = document.getElementById('u-pw').value;
         firebase.auth().signInWithEmailAndPassword(e, p).then(res => {
@@ -125,18 +89,16 @@
             document.getElementById('u-tag').innerText = res.user.email;
         }).catch(() => alert("아이디 또는 비번이 틀립니다."));
     }
-
     function goPage(id, el) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-active'));
         el.classList.add('nav-active');
     }
-
-    function makeHash() {
-        const hash = CryptoJS.SHA256(document.getElementById('p-addr').value + new Date().getTime()).toString();
-        document.getElementById('hash-log').innerHTML = "<b>[공시 완료]</b><br>" + hash;
-        alert("성공적으로 해시값이 공시되었습니다!");
+    function publishRewards() {
+        const val = document.getElementById('reward-val').value;
+        document.getElementById('pub-val').innerText = val + " TKN";
+        alert("보상 지급량이 공시되었습니다!");
     }
 </script>
 </body>
