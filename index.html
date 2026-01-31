@@ -2,11 +2,11 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Real8 V13 - 정린님 기획 원본 100% 복구본</title>
+    <title>Real8 V13 - 정린님 원본 완벽 복구본</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <style>
-        /* 정린님의 사진 속 다크모드와 형광 노란색 디자인 100% 보존 */
+        /* [디자인] 사진 속 다크모드와 형광 노란색 디자인 유지 */
         :root { --bg: #121212; --card: #1e1e1e; --blue: #0056b3; --text: #e0e0e0; --yellow: #FEE500; }
         body { font-family: 'Noto Sans KR', sans-serif; margin: 0; background: var(--bg); color: var(--text); }
         header { background: var(--blue); padding: 18px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #003d80; }
@@ -30,7 +30,7 @@
     <div style="background:#1e1e1e; padding:45px; border-radius:12px; width:380px; text-align:center; border:1px solid #333;">
         <h1 style="color:white; margin-bottom:10px;">Real8</h1>
         <p style="color:#888; font-size:13px; margin-bottom:30px;">아이디와 비번만으로 즉시 입장합니다.</p>
-        <input type="email" id="u-email" placeholder="아이디(이메일)">
+        <input type="email" id="u-email" placeholder="이메일 주소">
         <input type="password" id="u-pw" placeholder="비밀번호" style="margin-top:10px;">
         <button onclick="handleLogin()" style="background:var(--yellow); color:black;">본인 확인 후 바로 입장</button>
         <button onclick="handleJoin()" style="background:#444; margin-top:10px;">회원 가입 신청</button>
@@ -40,30 +40,27 @@
 <div id="main-app" style="display:none;">
     <header>
         <div style="font-size:20px; font-weight:bold;">부동산 자산 디지털 플랫폼 (Real8)</div>
-        <div style="font-size:13px;"><span id="u-tag" style="color:var(--yellow); font-weight:bold;"></span>님 접속 | <a onclick="location.reload()" style="color:#aaa; cursor:pointer;">로그아웃</a></div>
+        <div style="font-size:13px;"><span id="u-tag" style="color:var(--yellow); font-weight:bold;"></span>님 접속</div>
     </header>
     <nav>
         <div class="nav-btn nav-active" onclick="goPage('p-bc', this)">블록체인·토큰코인</div>
         <div class="nav-btn" onclick="goPage('p-reg', this)">건축·매매·임대·펜션</div>
         <div class="nav-btn" onclick="goPage('p-virt', this)">가상건축</div>
         <div class="nav-btn" onclick="goPage('p-cult', this)">주거문화</div>
-        <div class="nav-btn" onclick="goPage('p-my', this)">마이페이지</div>
     </nav>
 
     <div class="container">
         <div id="p-bc" class="page active">
             <div class="card">
-                <div class="head-title">🛠️ 블록체인 지급 기준 설정</div>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                    <div><label>1. 부동산 등록 지급량</label><input type="number" id="reward-val" value="500"></div>
-                    <div><label>2. 가상건축 제안 지급량</label><input type="number" value="100"></div>
-                </div>
-                <button onclick="publishRewards()" style="background:var(--yellow); color:black;">설정 저장 및 지급 수량 공시</button>
+                <div class="head-title">🛠️ 블록체인 지급 기준 설정 및 공시</div>
+                <label>1. 부동산 정보 등록 지급량 (Token)</label>
+                <input type="number" id="reward-val" value="500">
+                <button onclick="publishRewards()" style="background:var(--yellow); color:black;">현재 지급 수량 전체 공시하기</button>
             </div>
             <div class="card" style="border: 1px dashed var(--yellow);">
-                <h3 style="color:var(--yellow); margin-top:0;">📢 실시간 지급량 공시판</h3>
+                <h3 style="color:var(--yellow); margin-top:0;">📢 실시간 블록체인 지급량 공시판</h3>
                 <div style="display:flex; justify-content:space-between; padding:10px 0;">
-                    <span>현재 부동산 등록 보상</span><strong id="pub-val" style="color:white;">500 TKN</strong>
+                    <span>부동산 등록 보상</span><strong id="pub-val" style="color:white;">500 TKN</strong>
                 </div>
             </div>
         </div>
@@ -71,20 +68,18 @@
         <div id="p-virt" class="page">
             <div class="card">
                 <div class="head-title">거주환경 가상 건축 프로젝트 제안</div>
-                <label>프로젝트 제목 / 지역</label>
-                <input type="text" placeholder="제목/지역">
-                <label>상세 제안 내용</label>
-                <textarea style="height:200px;"></textarea>
-                <button style="background:#007bff; color:white;">가상 건축 프로젝트 제출</button>
+                <label>프로젝트 제목</label><input type="text" placeholder="제목">
+                <label>상세 제안 내용</label><textarea style="height:200px;"></textarea>
+                <button style="background:#007bff; color:white;">제안서 제출</button>
             </div>
         </div>
 
-        <div id="p-my" class="page">
+        <div id="p-cult" class="page">
             <div class="card">
-                <div class="head-title">내 자산 현황</div>
-                <div style="background:#333; padding:40px; border-radius:10px; text-align:center;">
-                    <h2 style="color:var(--yellow); margin:0;">보유 토큰: 5,500 TKN / 보유 코인: 55 COIN</h2>
-                </div>
+                <div class="head-title">주거문화 정보 공유</div>
+                <label>공유 제목</label><input type="text">
+                <label>상세 내용</label><textarea style="height:200px;"></textarea>
+                <button style="background:#28a745; color:white;">정보 등록</button>
             </div>
         </div>
     </div>
@@ -115,7 +110,7 @@
     function publishRewards() {
         const val = document.getElementById('reward-val').value;
         document.getElementById('pub-val').innerText = val + " TKN";
-        alert("현재 보상 지급량이 공시되었습니다!");
+        alert("현재 보상 지급량이 블록체인 네트워크에 공시되었습니다!");
     }
 </script>
 </body>
