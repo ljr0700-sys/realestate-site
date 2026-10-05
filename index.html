@@ -1,98 +1,693 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>Real8 V13 - 정린님 원본 100% 복구본</title>
+    <meta charset="UTF-8" />
+    <title>부동산 자산 디지털 플랫폼 (real8) - 데모</title>
     <style>
-        /* 정린님 사진 속 다크모드/노란색/파란색 디자인 100% 재현 */
-        :root { --bg: #121212; --card: #1e1e1e; --blue: #0056b3; --text: #e0e0e0; --yellow: #FEE500; }
-        body { font-family: 'Noto Sans KR', sans-serif; margin: 0; background: var(--bg); color: var(--text); }
-        header { background: var(--blue); padding: 18px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #003d80; }
-        nav { background: #000; border-bottom: 1px solid #333; display: flex; overflow-x: auto; }
-        .nav-btn { padding: 15px 25px; color: #888; cursor: pointer; font-size: 14px; border-right: 1px solid #222; white-space: nowrap; }
-        .nav-active { background: var(--yellow) !important; color: black !important; font-weight: bold; }
-        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
-        .page { display: none; }
-        .active { display: block !important; }
-        .card { background: var(--card); padding: 25px; border-radius: 8px; border: 1px solid #333; margin-bottom: 20px; }
-        .head-title { border-left: 5px solid var(--blue); padding-left: 15px; font-size: 18px; font-weight: bold; color: white; margin-bottom: 20px; }
-        label { display: block; color: var(--yellow); margin: 15px 0 5px; font-size: 13px; }
-        input, textarea { width: 95%; padding: 12px; background: #2c2c2c; border: 1px solid #444; color: white; border-radius: 4px; }
-        button { width: 100%; padding: 14px; background: #0d6efd; color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #101318;
+            color: #f5f5f5;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        header {
+            background: linear-gradient(90deg, #0052a5, #007be5);
+            padding: 12px 24px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .logo span {
+            color: #ffe66d;
+        }
+
+        nav {
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        nav button {
+            border: none;
+            background: rgba(0, 0, 0, 0.12);
+            color: #f5f5f5;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        nav button.active {
+            background: #ffe66d;
+            color: #222;
+            font-weight: 600;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 24px auto 40px;
+            padding: 0 16px 24px;
+        }
+
+        .card {
+            background: #181d24;
+            border-radius: 8px;
+            padding: 20px 24px;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 18px;
+            border-bottom: 1px solid #2b3440;
+            padding-bottom: 8px;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        ul.guide {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        ul.guide li + li {
+            margin-top: 4px;
+        }
+
+        .columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .column {
+            flex: 1 1 260px;
+        }
+
+        label {
+            font-size: 13px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="number"],
+        input[type="datetime-local"] {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #343f4f;
+            background: #0f1319;
+            color: #f5f5f5;
+            font-size: 13px;
+        }
+
+        input::placeholder {
+            color: #707887;
+        }
+
+        button.primary {
+            margin-top: 8px;
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: none;
+            background: #00c896;
+            color: #041013;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button.primary:hover {
+            background: #00a97f;
+        }
+
+        .msg {
+            margin-top: 6px;
+            font-size: 13px;
+            min-height: 18px;
+        }
+
+        .msg.ok {
+            color: #4cd964;
+        }
+
+        .msg.err {
+            color: #ff6b6b;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        th, td {
+            border: 1px solid #2b3440;
+            padding: 6px 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #222a35;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            background: #ffe66d;
+            color: #222;
+            font-weight: 600;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .small {
+            font-size: 12px;
+            color: #a0a7b5;
+        }
+
+        code {
+            font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 11px;
+        }
     </style>
 </head>
 <body>
     <header>
-        <div style="font-size:20px; font-weight:bold;">부동산 자산 디지털 플랫폼 (Real8)</div>
-        <div style="font-size:12px; color:#ccc;">정린님 전용 복구 버전</div>
+        <div class="logo">부동산 자산 디지털 플랫폼 <span>(real8)</span></div>
+        <nav>
+            <button data-target="home" class="active">홈·회원가입·로그인·자산 안내</button>
+            <button data-target="token">블록체인·토큰코인 관리(관리자)</button>
+            <button data-target="trade">건축·매매·임대·바꿔살기(정보 등록)</button>
+            <button data-target="virtual">가상 건축 제안·참여</button>
+            <button data-target="ads">광고·홍보 계정</button>
+            <button data-target="mypage">마이페이지</button>
+        </nav>
     </header>
-    <nav>
-        <div class="nav-btn nav-active" onclick="goPage('p-bc', this)">블록체인·토큰코인</div>
-        <div class="nav-btn" onclick="goPage('p-virt', this)">가상건축</div>
-        <div class="nav-btn" onclick="goPage('p-cult', this)">주거문화</div>
-        <div class="nav-btn" onclick="goPage('p-my', this)">마이페이지</div>
-    </nav>
 
-    <div class="container">
-        <div id="p-bc" class="page active">
+    <main>
+        <!-- 1. 홈 / 회원가입 / 로그인 / 자산 안내 -->
+        <section id="home" class="page active">
             <div class="card">
-                <div class="head-title">🛠️ 블록체인 지급 기준 설정</div>
-                <label>1. 부동산 정보 등록 지급량 (Token)</label>
-                <input type="number" id="reward-val" value="500">
-                <button onclick="publish()" style="background:var(--yellow); color:black;">현재 지급 수량 전체 공시하기</button>
+                <h2>홈 · 회원가입 · 로그인 · 자산 안내</h2>
+                <p class="small">
+                    이 페이지는 <strong>실제 서비스 개발 전</strong>에 구조와 흐름을 검증하기 위한
+                    <span class="badge">로컬 연습용 데모</span>입니다.<br />
+                    (회원 정보와 토큰 기록은 이 컴퓨터의 브라우저 <code>localStorage</code>에만 저장됩니다.)
+                </p>
             </div>
-            <div class="card" style="border: 1px dashed var(--yellow);">
-                <h3 style="color:var(--yellow); margin-top:0;">📢 실시간 블록체인 지급량 공시판</h3>
-                <div style="display:flex; justify-content:space-between; padding:10px 0;">
-                    <span>부동산 등록 보상</span><strong id="pub-val" style="color:white;">500 TKN</strong>
+
+            <div class="card">
+                <h3>사이트 구성 및 각 페이지 사용 설명</h3>
+                <ul class="guide">
+                    <li><strong>블록체인·토큰코인 관리(관리자)</strong>  
+                        : 부동산 정보 등록/검증, 토큰 증감(%), 코인 변환율(%), 회원 각 거래 시 배율을 설정합니다.
+                    </li>
+                    <li><strong>건축·매매·임대·바꿔살기(정보 등록)</strong>  
+                        : 회원들이 실제 부동산 정보(주소, 면적, 사진 등)를 등록하고, 검토 후 승인이 되면 토큰이 자산으로 적립됩니다.
+                    </li>
+                    <li><strong>가상 건축 제안·참여</strong>  
+                        : 가상의 부동산 프로젝트(리모델링, 개발 등)를 제안/참여할 수 있으며, 참여도에 따라 토큰 보상이 이루어집니다.
+                    </li>
+                    <li><strong>마이페이지</strong>  
+                        : 회원별 누적 토큰/코인, 참여 이력, 등록한 부동산 목록을 조회할 수 있습니다. (현재는 기본 정보만 표시)
+                    </li>
+                    <li><strong>광고·홍보 계정</strong>  
+                        : 부동산 중개업소·시행사·시공사 등의 광고와 PR를 위한 공간입니다. 일정 토큰/코인을 사용해 광고를 노출할 수 있습니다.
+                    </li>
+                    <li><strong>보관 방식</strong>  
+                        : 실제 서비스에서는 별도 서버·DB·블록체인을 사용하지만, 이 데모는 <code>localStorage</code>에만 저장됩니다.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="columns">
+                    <!-- 로그인 -->
+                    <div class="column">
+                        <h3>로그인 (연습용)</h3>
+                        <label for="loginId">아이디</label>
+                        <input id="loginId" type="text" placeholder="예: ji_jung" />
+                        <label for="loginPassword">비밀번호</label>
+                        <input id="loginPassword" type="password" placeholder="비밀번호" />
+                        <button class="primary" id="loginBtn">로그인</button>
+                        <div id="loginMsg" class="msg"></div>
+                    </div>
+
+                    <!-- 회원가입 -->
+                    <div class="column">
+                        <h3>회원가입 (연습용)</h3>
+                        <label for="signupId">아이디</label>
+                        <input id="signupId" type="text" placeholder="예: oji_hong" />
+                        <label for="signupPassword">비밀번호</label>
+                        <input id="signupPassword" type="password" placeholder="비밀번호" />
+                        <button class="primary" id="signupBtn">회원가입</button>
+                        <div id="signupMsg" class="msg"></div>
+                        <p class="small">
+                            ※ 실제 서비스에서는 이메일·전화번호 인증(Firebase·통신사 인증 등)을 추가하여  
+                            <strong>1인 1계정</strong>을 보장하게 됩니다. 이 버전에서는 구조만 연습합니다.
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div id="p-virt" class="page">
+        <!-- 2. 블록체인·토큰코인 관리 (관리자 데모) -->
+        <section id="token" class="page">
             <div class="card">
-                <div class="head-title">거주환경 가상 건축 프로젝트 제안</div>
-                <label>프로젝트 제목 / 희망 지역</label>
-                <input type="text" placeholder="예: 가평군 가상 건축 제안">
-                <label>상세 제안 내용</label>
-                <textarea style="height:200px;" placeholder="상세 기획 내용을 입력하세요."></textarea>
-                <button style="background:#007bff; color:white;">가상 건축 제안서 제출</button>
+                <h2>블록체인·토큰코인 발행 기준 및 관리 (데모)</h2>
+                <p class="small">
+                    아래 기준은 <strong>사업 설명용 예시</strong>이며, 실제 비율은 추후 투자자·참여자와 협의하여 조정할 수 있습니다.
+                </p>
+
+                <h3>토큰 보상 기준표 (예시)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 140px;">구분</th>
+                            <th>행동</th>
+                            <th style="width: 120px;">지급 토큰</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>부동산 정보</td>
+                            <td>주소·면적·사진·거래 정보 등 <strong>정보 등록</strong></td>
+                            <td>200 Token</td>
+                        </tr>
+                        <tr>
+                            <td>개발/개선 제안</td>
+                            <td>리모델링, 용도 변경 등 <strong>프로젝트 제안</strong></td>
+                            <td>100 Token</td>
+                        </tr>
+                        <tr>
+                            <td>가상 건축 참여</td>
+                            <td>댓글·투표·아이디어 제공 등 <strong>참여(의견 제시)</strong></td>
+                            <td>20 Token</td>
+                        </tr>
+                        <tr>
+                            <td>주거경험 공유</td>
+                            <td>거주 후기·유지보수 경험 등 <strong>정보 공유(글)</strong></td>
+                            <td>50 Token</td>
+                        </tr>
+                        <tr>
+                            <td>커뮤니티 활동</td>
+                            <td>다른 회원 글에 <strong>댓글·질문·답변</strong> 등 소통</td>
+                            <td>20 Token</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="small">
+                    현재 환산율 예시: <strong>100 Token = 1 Coin</strong> (실제 비율은 추후 조정)
+                </p>
             </div>
-        </div>
 
-        <div id="p-cult" class="page">
             <div class="card">
-                <div class="head-title">주거문화 정보 공유</div>
-                <label>정보 공유 제목</label>
-                <input type="text" placeholder="제목">
-                <label>상세 내용 (건축/주거 팁)</label>
-                <textarea style="height:200px;"></textarea>
-                <button style="background:#28a745; color:white;">정보 등록</button>
-            </div>
-        </div>
+                <h3>새 토큰 기록 추가 (해시값 생성 데모)</h3>
+                <p class="small">
+                    부동산 주소 + 사이트 주소 + 발행 시간 텍스트를 합쳐서 <strong>SHA-256 해시값</strong>을 생성합니다.  
+                    이 해시값은 나중에 블록체인에 기록할 수 있는 <strong>기본 데이터</strong>가 됩니다.
+                </p>
 
-        <div id="p-my" class="page">
-            <div class="card">
-                <div class="head-title">내 자산 현황</div>
-                <div style="background:#333; padding:40px; border-radius:10px; text-align:center;">
-                    <h2 style="color:var(--yellow); margin:0;">보유 토큰: 5,500 TKN / 보유 코인: 55 COIN</h2>
+                <div class="columns">
+                    <div class="column">
+                        <label for="propAddress">부동산 주소</label>
+                        <input id="propAddress" type="text" placeholder="예: 서울시 ○○구 ○○로 123, 101동 1001호" />
+
+                        <label for="siteUrl">사이트 주소(URL)</label>
+                        <input id="siteUrl" type="text" placeholder="예: https://real8-bcs.netlify.app/property/123" />
+
+                        <label for="tokenAmount">지급 토큰 수량</label>
+                        <input id="tokenAmount" type="number" min="1" value="200" />
+
+                        <label for="ownerId">소유자(회원 아이디)</label>
+                        <input id="ownerId" type="text" placeholder="예: ji_jung" />
+
+                        <button class="primary" id="addTokenBtn">토큰 기록 생성 & 해시값 추가</button>
+                        <div id="tokenMsg" class="msg"></div>
+                        <p class="small">
+                            ※ 해시 생성은 브라우저에서만 이루어지며, <strong>실제 코인 발행·입출금 기능은 포함되어 있지 않습니다.</strong>
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+
+            <div class="card">
+                <h3>전체 코인 발행 대장 (로컬 저장)</h3>
+                <table id="ledgerTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 170px;">시간</th>
+                            <th style="width: 100px;">소유자</th>
+                            <th>부동산 주소</th>
+                            <th style="width: 110px;">토큰 수량</th>
+                            <th>해시값 (Proof)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ledgerBody">
+                        <!-- 자바스크립트에서 행을 채웁니다 -->
+                    </tbody>
+                </table>
+                <p class="small">
+                    ※ 이 표의 내용은 브라우저 <code>localStorage</code>에 저장되며,
+                    <strong>이 컴퓨터·이 브라우저에서만</strong> 보입니다.
+                </p>
+            </div>
+        </section>
+
+        <!-- 3. 이하 메뉴는 구조만 잡아둠 -->
+        <section id="trade" class="page">
+            <div class="card">
+                <h2>건축·매매·임대·바꿔살기 (정보 등록)</h2>
+                <p class="small">
+                    이 영역에는 향후 실제 부동산 등록 양식(주소, 면적, 구조, 사진 업로드 등)을 넣을 예정입니다.<br />
+                    지금은 전체 구조만 잡아둔 상태입니다.
+                </p>
+            </div>
+        </section>
+
+        <section id="virtual" class="page">
+            <div class="card">
+                <h2>가상 건축 제안·참여</h2>
+                <p class="small">추후 ‘가상 건축’ 프로젝트 제안·투표·댓글 기능을 추가할 수 있습니다.</p>
+            </div>
+        </section>
+
+        <section id="ads" class="page">
+            <div class="card">
+                <h2>광고·홍보 계정</h2>
+                <p class="small">중개업소·시행사·시공사 등 광고 계정 관리 화면이 들어갈 영역입니다.</p>
+            </div>
+        </section>
+
+        <section id="mypage" class="page">
+            <div class="card">
+                <h2>마이페이지 (기본 구조)</h2>
+                <p class="small" id="mypageInfo">
+                    아직 로그인 정보가 없습니다. 상단에서 먼저 <strong>회원가입 후 로그인</strong>을 해 주세요.
+                </p>
+            </div>
+        </section>
+    </main>
 
     <script>
-        function goPage(id, el) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-active'));
-            el.classList.add('nav-active');
+        // ===== 1. 간단한 SPA 네비게이션 =====
+        const navButtons = document.querySelectorAll("nav button");
+        const pages = document.querySelectorAll(".page");
+
+        navButtons.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const target = btn.getAttribute("data-target");
+
+                navButtons.forEach((b) => b.classList.remove("active"));
+                btn.classList.add("active");
+
+                pages.forEach((p) => {
+                    if (p.id === target) p.classList.add("active");
+                    else p.classList.remove("active");
+                });
+            });
+        });
+
+        // ===== 2. 회원가입 / 로그인 (localStorage 기반 연습용) =====
+        const USERS_KEY = "real8_users";
+        const CURRENT_USER_KEY = "real8_current_user";
+
+        function loadUsers() {
+            try {
+                const raw = localStorage.getItem(USERS_KEY);
+                return raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                console.error(e);
+                return [];
+            }
         }
-        function publish() {
-            const v = document.getElementById('reward-val').value;
-            document.getElementById('pub-val').innerText = v + " TKN";
-            alert("블록체인 네트워크에 성공적으로 공시되었습니다.");
+
+        function saveUsers(users) {
+            localStorage.setItem(USERS_KEY, JSON.stringify(users));
         }
+
+        function setCurrentUser(id) {
+            if (id) localStorage.setItem(CURRENT_USER_KEY, id);
+            else localStorage.removeItem(CURRENT_USER_KEY);
+            updateMyPageInfo();
+        }
+
+        function getCurrentUserId() {
+            return localStorage.getItem(CURRENT_USER_KEY) || null;
+        }
+
+        function updateMyPageInfo() {
+            const el = document.getElementById("mypageInfo");
+            const id = getCurrentUserId();
+            if (!el) return;
+            if (!id) {
+                el.innerHTML =
+                    '아직 로그인 정보가 없습니다. 상단에서 먼저 <strong>회원가입 후 로그인</strong>을 해 주세요.';
+            } else {
+                el.innerHTML =
+                    `<strong>${id}</strong> 님이 로그인 중입니다. (이 정보는 이 브라우저에만 저장됩니다.)`;
+            }
+        }
+
+        const loginIdInput = document.getElementById("loginId");
+        const loginPasswordInput = document.getElementById("loginPassword");
+        const loginBtn = document.getElementById("loginBtn");
+        const loginMsg = document.getElementById("loginMsg");
+
+        const signupIdInput = document.getElementById("signupId");
+        const signupPasswordInput = document.getElementById("signupPassword");
+        const signupBtn = document.getElementById("signupBtn");
+        const signupMsg = document.getElementById("signupMsg");
+
+        function showMsg(el, text, ok = false) {
+            el.textContent = text || "";
+            el.classList.remove("ok", "err");
+            if (!text) return;
+            el.classList.add(ok ? "ok" : "err");
+        }
+
+        signupBtn.addEventListener("click", () => {
+            const id = signupIdInput.value.trim();
+            const pw = signupPasswordInput.value.trim();
+            const users = loadUsers();
+
+            if (!id || !pw) {
+                showMsg(signupMsg, "아이디와 비밀번호를 모두 입력해 주세요.");
+                return;
+            }
+
+            if (users.some((u) => u.id === id)) {
+                showMsg(signupMsg, "이미 사용 중인 아이디입니다.");
+                return;
+            }
+
+            users.push({
+                id,
+                password: pw,
+                tokens: 0,
+                coins: 0,
+            });
+            saveUsers(users);
+            showMsg(signupMsg, "회원가입이 완료되었습니다. 이제 로그인해 주세요.", true);
+
+            signupPasswordInput.value = "";
+        });
+
+        loginBtn.addEventListener("click", () => {
+            const id = loginIdInput.value.trim();
+            const pw = loginPasswordInput.value.trim();
+            const users = loadUsers();
+
+            if (!id || !pw) {
+                showMsg(loginMsg, "아이디와 비밀번호를 입력해 주세요.");
+                return;
+            }
+
+            const user = users.find((u) => u.id === id && u.password === pw);
+            if (!user) {
+                showMsg(loginMsg, "아이디 또는 비밀번호가 올바르지 않습니다.");
+                return;
+            }
+
+            showMsg(loginMsg, `${id} 님, 로그인되었습니다.`, true);
+            setCurrentUser(id);
+            loginPasswordInput.value = "";
+        });
+
+        // 페이지 로드 시 현재 로그인 상태 표시
+        updateMyPageInfo();
+
+        // ===== 3. 해시값(SHA-256) 생성 + 토큰 기록 대장 =====
+        const LEDGER_KEY = "real8_token_ledger";
+
+        function loadLedger() {
+            try {
+                const raw = localStorage.getItem(LEDGER_KEY);
+                return raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                console.error(e);
+                return [];
+            }
+        }
+
+        function saveLedger(list) {
+            localStorage.setItem(LEDGER_KEY, JSON.stringify(list));
+        }
+
+        async function sha256(text) {
+            // Web Crypto API 사용 (localhost/https에서 동작)
+            const encoder = new TextEncoder();
+            const data = encoder.encode(text);
+            const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+            return hashHex;
+        }
+
+        function renderLedger() {
+            const tbody = document.getElementById("ledgerBody");
+            const list = loadLedger();
+            tbody.innerHTML = "";
+
+            if (!list.length) {
+                const tr = document.createElement("tr");
+                const td = document.createElement("td");
+                td.colSpan = 5;
+                td.textContent = "아직 기록이 없습니다. 위에서 토큰 기록을 추가해 보세요.";
+                td.style.textAlign = "center";
+                td.style.color = "#a0a7b5";
+                tr.appendChild(td);
+                tbody.appendChild(tr);
+                return;
+            }
+
+            list
+                .slice()
+                .reverse()
+                .forEach((item) => {
+                    const tr = document.createElement("tr");
+
+                    const tdTime = document.createElement("td");
+                    tdTime.textContent = item.time;
+
+                    const tdOwner = document.createElement("td");
+                    tdOwner.textContent = item.ownerId || "-";
+
+                    const tdAddr = document.createElement("td");
+                    tdAddr.textContent = item.propAddress;
+
+                    const tdAmount = document.createElement("td");
+                    tdAmount.textContent = item.tokenAmount + " Token";
+
+                    const tdHash = document.createElement("td");
+                    tdHash.textContent = item.hash;
+
+                    tr.appendChild(tdTime);
+                    tr.appendChild(tdOwner);
+                    tr.appendChild(tdAddr);
+                    tr.appendChild(tdAmount);
+                    tr.appendChild(tdHash);
+
+                    tbody.appendChild(tr);
+                });
+        }
+
+        const propAddressInput = document.getElementById("propAddress");
+        const siteUrlInput = document.getElementById("siteUrl");
+        const tokenAmountInput = document.getElementById("tokenAmount");
+        const ownerIdInput = document.getElementById("ownerId");
+        const addTokenBtn = document.getElementById("addTokenBtn");
+        const tokenMsg = document.getElementById("tokenMsg");
+
+        addTokenBtn.addEventListener("click", async () => {
+            const propAddress = propAddressInput.value.trim();
+            const siteUrl = siteUrlInput.value.trim();
+            const tokenAmount = parseInt(tokenAmountInput.value, 10) || 0;
+            const ownerId = ownerIdInput.value.trim() || getCurrentUserId();
+
+            if (!propAddress || !siteUrl || !tokenAmount) {
+                showMsg(tokenMsg, "부동산 주소, 사이트 주소, 토큰 수량을 모두 입력해 주세요.");
+                return;
+            }
+
+            const time = new Date().toLocaleString("ko-KR", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+            });
+
+            const baseString = `${propAddress}|${siteUrl}|${time}`;
+            try {
+                const hash = await sha256(baseString);
+                const list = loadLedger();
+                list.push({
+                    time,
+                    ownerId,
+                    propAddress,
+                    siteUrl,
+                    tokenAmount,
+                    hash,
+                });
+                saveLedger(list);
+                renderLedger();
+
+                showMsg(tokenMsg, "토큰 기록과 해시값이 생성되었습니다.", true);
+
+                // 입력값은 주소만 남기고 다른 것들은 초기화
+                tokenAmountInput.value = "200";
+                // siteUrlInput.value = "";
+                // propAddressInput.value = "";
+                // ownerIdInput.value = "";
+            } catch (e) {
+                console.error(e);//
+                showMsg(tokenMsg, "해시 생성 중 오류가 발생했습니다.", false);
+            }
+        });
+
+        // 페이지 로드 시 대장 표시
+        renderLedger();
     </script>
+<div style="padding:20px; margin:20px; border:2px solid #d4af37; color:#d4af37; font-weight:bold;">
+REAL8 COIN · TOKEN · NFT — 관계기관 승인 전
+</div>
 </body>
 </html>
