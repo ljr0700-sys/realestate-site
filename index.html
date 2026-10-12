@@ -1,201 +1,267 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b0d10">
   <title>REAL8 부동산 자산 디지털 플랫폼</title>
-  <link rel="stylesheet" href="./styles.css" />
-  <script type="module" src="./app.js"></script>
+  <meta name="description" content="부동산 정보·경험·검증·기여를 기록하고 신뢰도와 기여도를 축적하는 REAL8 플랫폼">
+  <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-<header class="site-header">
-  <div class="brand">
-    <div class="brand-title">REAL8 부동산 자산 디지털 플랫폼</div>
-    <div class="brand-sub">부동산 정보·경험·기여를 기록하고 검증하는 디지털 자산 플랫폼</div>
+<header class="header">
+  <div class="brand-wrap">
+    <div class="brand">REAL8</div>
+    <div>
+      <div class="brand-title">부동산 자산 디지털 플랫폼</div>
+      <div class="brand-sub">정보 · 검증 · 기여 · 디지털 기록</div>
+    </div>
   </div>
-  <nav class="nav">
-    <button data-view="home" class="active">홈</button>
-    <button data-view="market">부동산 정보</button>
-    <button data-view="virtual">가상건축</button>
-    <button data-view="rewards">보상·해시</button>
-    <button data-view="mypage">마이페이지</button>
-    <button data-view="auth">회원가입·로그인</button>
-    <button data-view="admin">관리자</button>
+  <button class="menu-toggle" id="menuToggle" aria-label="메뉴 열기">☰</button>
+  <nav id="mainNav">
+    <button data-view="home" class="nav-btn active">홈</button>
+    <button data-view="market" class="nav-btn">부동산 정보</button>
+    <button data-view="virtual" class="nav-btn">가상건축</button>
+    <button data-view="community" class="nav-btn">주거문화</button>
+    <button data-view="rewards" class="nav-btn">기여·보상</button>
+    <button data-view="mypage" class="nav-btn">마이페이지</button>
+    <button data-view="auth" class="nav-btn">회원가입·로그인</button>
+    <button data-view="admin" class="nav-btn admin-only hidden">관리자</button>
   </nav>
 </header>
 
-<main>
+<main class="shell">
   <section id="home" class="view active">
-    <div class="hero card">
-      <div>
-        <span class="badge">REAL8 BUSINESS PLATFORM</span>
-        <h1>부동산 정보와 경험을 디지털 자산으로</h1>
-        <p>
-          건축·매매·임대차·바꿔살기·가상건축·주거문화·집수리·인테리어·정원 정보를
-          회원이 등록하고 서로 확인·검증하여 신뢰도 높은 부동산 지식 자산을 구축합니다.
-        </p>
-        <div class="actions">
-          <button class="primary" data-view="market">부동산 정보 보기</button>
-          <button data-view="market">정보 등록·공유</button>
-          <button data-view="auth">회원가입</button>
-        </div>
+    <div class="hero">
+      <div class="eyebrow">REAL8 BUSINESS PLATFORM</div>
+      <h1>부동산 정보와 경험을<br><span>신뢰할 수 있는 디지털 기록</span>으로</h1>
+      <p>건축·매매·전월세·렌트·바꿔살기·가상건축·집수리·인테리어·정원 정보를 회원이 등록하고, 다른 회원의 확인과 의견을 통해 신뢰도를 높입니다.</p>
+      <div class="hero-actions">
+        <button class="primary" data-view="market">정보 등록하기</button>
+        <button class="secondary" data-view="auth">회원가입</button>
+        <button class="secondary" data-view="rewards">기여·보상 보기</button>
       </div>
+      <div class="notice-line">REAL8 포인트는 현재 플랫폼 내부 기여도 기록입니다. 관계 법령·인가·등록 검토 전에는 거래 가능한 암호자산으로 발행하지 않습니다.</div>
     </div>
 
-    <div class="grid-3">
-      <article class="card"><h3>건축·매매</h3><p>건축 경험, 설계·시공 정보, 매매 관련 자료를 기록합니다.</p></article>
-      <article class="card"><h3>임대차·바꿔살기</h3><p>전세·월세·렌트·주거 교환 정보를 구조화하여 공유합니다.</p></article>
-      <article class="card"><h3>주거문화·관리</h3><p>집수리·인테리어·정원·생활 편의 정보를 회원 경험과 함께 축적합니다.</p></article>
+    <div class="section-title">
+      <h2>주요 서비스</h2>
+      <p>실제 사업 운영에 필요한 흐름으로 정리했습니다.</p>
+    </div>
+    <div class="cards three">
+      <article class="card"><div class="icon">🏗</div><h3>건축·매매·임대차</h3><p>건축, 매매, 전세·월세, 렌트, 바꿔살기 정보를 지역·유형별로 등록합니다.</p></article>
+      <article class="card"><div class="icon">✓</div><h3>회원 확인·검증</h3><p>회원 의견, 수정 제안, 사실 확인 기록을 누적해 정보 신뢰도를 표시합니다.</p></article>
+      <article class="card"><div class="icon">#</div><h3>고유 해시 기록</h3><p>등록 시 사이트 식별값·작성자·시간·대상정보를 결합하여 SHA-256 해시를 생성합니다.</p></article>
+      <article class="card"><div class="icon">🏡</div><h3>주거문화</h3><p>집수리·인테리어·정원·생활 편의·지역 경험을 공유합니다.</p></article>
+      <article class="card"><div class="icon">◫</div><h3>가상건축</h3><p>새로운 주거 아이디어, 공간 구성, 설계 제안을 등록하고 의견을 모읍니다.</p></article>
+      <article class="card"><div class="icon">★</div><h3>기여 보상</h3><p>정보 등록·검증·유용한 의견 등 플랫폼 기여를 내부 포인트로 기록합니다.</p></article>
     </div>
 
-    <div class="card status-card">
-      <h2>REAL8 디지털 자산 상태</h2>
-      <div class="status-grid">
-        <div><strong>코인</strong><span>REAL8 COIN</span></div>
-        <div><strong>토큰</strong><span>REAL8 TOKEN</span></div>
-        <div><strong>NFT</strong><span>REAL8 NFT</span></div>
-        <div><strong>관계기관 상태</strong><span class="pending">승인 전</span></div>
-      </div>
-      <p class="notice">※ 실제 관계기관 승인·등록 완료 전까지 거래 가능한 코인·토큰·NFT 발행 기능은 비활성화됩니다.</p>
+    <div class="cards two">
+      <article class="card">
+        <h3>운영 상태</h3>
+        <div class="status-row"><span>회원 인증</span><b id="homeAuthState">연결 확인 중</b></div>
+        <div class="status-row"><span>데이터베이스</span><b id="homeDbState">연결 확인 중</b></div>
+        <div class="status-row"><span>거래 가능한 코인·토큰</span><b class="warn">비활성화</b></div>
+        <div class="status-row"><span>NFT 발행</span><b class="warn">법률·사업 검토 후</b></div>
+      </article>
+      <article class="card">
+        <h3>플랫폼 원칙</h3>
+        <ul class="clean-list">
+          <li>정보 제공자·등록일·수정일·근거를 가능한 한 명확히 표시</li>
+          <li>회원 확인은 공적 보증이나 법적 인증을 의미하지 않음</li>
+          <li>중개·광고·전문서비스는 자격·표시·약관 체계를 갖춘 뒤 운영</li>
+          <li>포인트·배지·해시 기록을 우선 운영하고 암호자산은 별도 검토</li>
+        </ul>
+      </article>
     </div>
   </section>
 
   <section id="market" class="view">
-    <div class="card">
-      <h2>부동산 정보 등록</h2>
-      <p class="muted">등록 시 고유 SHA-256 해시를 생성하여 기록합니다.</p>
-      <form id="postForm" class="form-grid">
-        <label>분류
-          <select id="category" required>
-            <option value="건축">건축</option>
-            <option value="매매">매매</option>
-            <option value="전세">전세</option>
-            <option value="월세">월세</option>
-            <option value="렌트">렌트</option>
-            <option value="바꿔살기">바꿔살기</option>
-            <option value="가상건축">가상건축</option>
-            <option value="주거문화">주거문화</option>
-            <option value="집수리">집수리</option>
-            <option value="인테리어">인테리어</option>
-            <option value="정원">정원</option>
-          </select>
-        </label>
-        <label>제목<input id="title" required placeholder="예: 청평 단독주택 외벽 보수 경험" /></label>
-        <label>지역<input id="region" placeholder="예: 경기 가평군" /></label>
-        <label>주소/대상 식별값<input id="assetAddress" placeholder="정확한 주소가 아니어도 됩니다." /></label>
-        <label class="full">내용<textarea id="content" required rows="6" placeholder="정보와 경험을 자세히 입력해 주세요."></textarea></label>
-        <button type="submit" class="primary">정보 등록</button>
-      </form>
-      <div id="postMessage" class="message"></div>
-    </div>
+    <div class="section-title"><h2>부동산 정보 등록·조회</h2><p>회원 로그인 후 정보를 등록할 수 있습니다.</p></div>
+    <div class="cards two align-start">
+      <article class="card">
+        <h3>정보 등록</h3>
+        <form id="postForm" class="form-grid">
+          <label>분류<select id="category" required>
+            <option>건축</option><option>매매</option><option>전세</option><option>월세</option><option>렌트</option>
+            <option>바꿔살기</option><option>가상건축</option><option>주거문화</option><option>집수리</option><option>인테리어</option><option>정원</option><option>지역생활정보</option>
+          </select></label>
+          <label>제목<input id="title" maxlength="120" required></label>
+          <label>지역<input id="region" maxlength="80" placeholder="예: 경기 가평군"></label>
+          <label>대상 주소·식별값<input id="assetAddress" maxlength="200" placeholder="공개 가능한 범위만 입력"></label>
+          <label class="full">내용<textarea id="content" rows="8" maxlength="5000" required></textarea></label>
+          <label class="full">근거·출처<textarea id="evidence" rows="3" maxlength="1000" placeholder="문서·현장경험·공개자료 등"></textarea></label>
+          <label class="check full"><input id="infoConfirm" type="checkbox" required> 등록 내용에 대한 책임과 공개 범위를 확인했습니다.</label>
+          <button class="primary" type="submit">등록하고 해시 생성</button>
+        </form>
+        <div id="postMessage" class="message"></div>
+      </article>
 
-    <div class="card">
-      <div class="section-head">
-        <h2>등록된 정보</h2>
-        <input id="searchInput" placeholder="제목·지역·분류 검색" />
-      </div>
-      <div id="postList" class="list"></div>
+      <article class="card">
+        <div class="toolbar">
+          <h3>등록된 정보</h3>
+          <input id="searchInput" placeholder="제목·지역·분류 검색">
+        </div>
+        <div id="postList" class="list empty-box">등록된 정보를 불러오는 중입니다.</div>
+      </article>
     </div>
   </section>
 
   <section id="virtual" class="view">
+    <div class="section-title"><h2>가상건축 제안·참여</h2><p>공간 아이디어와 주거 모델을 제안하고 의견을 모읍니다.</p></div>
+    <div class="cards two align-start">
+      <article class="card">
+        <form id="virtualForm" class="form-grid">
+          <label>제안 제목<input id="virtualTitle" maxlength="120" required></label>
+          <label class="full">제안 내용<textarea id="virtualContent" rows="8" maxlength="5000" required></textarea></label>
+          <button class="primary" type="submit">가상건축 제안 등록</button>
+        </form>
+        <div id="virtualMessage" class="message"></div>
+      </article>
+      <article class="card">
+        <h3>최근 제안</h3>
+        <div id="virtualList" class="list empty-box">제안을 불러오는 중입니다.</div>
+      </article>
+    </div>
+  </section>
+
+  <section id="community" class="view">
+    <div class="section-title"><h2>주거문화·생활정보</h2><p>집수리, 인테리어, 정원, 생활 편의, 지역 경험을 공유합니다.</p></div>
+    <div class="cards three">
+      <article class="card"><h3>집수리</h3><p>유지보수 과정, 재료, 주의사항, 비용 경험을 기록합니다.</p></article>
+      <article class="card"><h3>인테리어</h3><p>공간 개선 아이디어와 실제 사용 경험을 나눕니다.</p></article>
+      <article class="card"><h3>정원·조경</h3><p>잔디, 나무, 정원 관리와 계절별 관리 경험을 공유합니다.</p></article>
+    </div>
     <div class="card">
-      <h2>가상건축 제안·참여</h2>
-      <p>회원이 가상의 주거 아이디어와 설계 개념을 등록하고 다른 회원이 의견을 남길 수 있는 영역입니다.</p>
-      <form id="virtualForm" class="form-grid">
-        <label>제안 제목<input id="virtualTitle" placeholder="예: 2세대가 함께 사는 중정형 주택" /></label>
-        <label class="full">제안 내용<textarea id="virtualContent" rows="6" placeholder="공간 구성, 목적, 특징 등을 입력하세요."></textarea></label>
-        <button type="submit" class="primary">제안 등록</button>
-      </form>
-      <div id="virtualList" class="list"></div>
+      <h3>주거문화 최신 글</h3>
+      <div id="communityList" class="list empty-box">게시물을 불러오는 중입니다.</div>
     </div>
   </section>
 
   <section id="rewards" class="view">
-    <div class="grid-2">
-      <div class="card">
-        <h2>REAL8 보상 원장</h2>
-        <p>현재는 내부 보상기록으로 운영하며, 관계기관 승인 전에는 거래 가능한 암호자산으로 발행하지 않습니다.</p>
-        <div class="reward-cards">
-          <div><strong>정보등록</strong><span id="rewardPost">10 P</span></div>
-          <div><strong>검증기여</strong><span id="rewardVerify">10 P</span></div>
-          <div><strong>유용한 의견</strong><span id="rewardComment">10 P</span></div>
+    <div class="section-title"><h2>기여·보상·해시</h2><p>사업 초기에는 거래 불가능한 내부 포인트와 디지털 기록 중심으로 운영합니다.</p></div>
+    <div class="cards two align-start">
+      <article class="card">
+        <h3>나의 기여 보상</h3>
+        <div class="kpi-grid">
+          <div class="kpi"><span>보유 포인트</span><strong id="myPoints">0</strong></div>
+          <div class="kpi"><span>정보 등록</span><strong id="myPostCount">0</strong></div>
+          <div class="kpi"><span>검증 기여</span><strong id="myVerifyCount">0</strong></div>
         </div>
         <div id="rewardLedger" class="list"></div>
-      </div>
-      <div class="card">
-        <h2>사이트 식별 해시</h2>
-        <p>사이트 주소와 REAL8 식별문구를 SHA-256으로 해시하여 표시합니다.</p>
-        <div id="siteHash" class="hash-box">해시값 생성 중...</div>
-        <p class="notice">이 해시는 사이트 식별용이며, 정부 승인 또는 실제 블록체인 발행을 의미하지 않습니다.</p>
-      </div>
+      </article>
+      <article class="card">
+        <h3>REAL8 사이트 식별 해시</h3>
+        <p>사이트 URL과 REAL8 식별문구를 SHA-256으로 계산한 값입니다.</p>
+        <div class="hash-box" id="siteHash">생성 중...</div>
+        <div class="legal-box">
+          <b>중요 안내</b>
+          <p>이 해시는 정보 식별·무결성 확인을 위한 기록입니다. 정부 승인, 소유권 증명, 등기, 투자상품 또는 암호자산 발행을 의미하지 않습니다.</p>
+        </div>
+      </article>
     </div>
   </section>
 
   <section id="mypage" class="view">
-    <div class="card">
-      <h2>마이페이지</h2>
-      <div id="profileBox" class="profile-box"></div>
-      <div class="stats">
-        <div><strong id="statPosts">0</strong><span>등록 정보</span></div>
-        <div><strong id="statPoints">0</strong><span>보상 포인트</span></div>
-        <div><strong id="statVerified">0</strong><span>검증 기여</span></div>
-      </div>
+    <div class="section-title"><h2>마이페이지</h2><p>회원 정보와 활동 내역을 확인합니다.</p></div>
+    <div class="cards two align-start">
+      <article class="card">
+        <h3>회원 정보</h3>
+        <div id="profileBox" class="profile-box"></div>
+        <form id="profileForm" class="form-grid">
+          <label>표시 이름<input id="profileName" maxlength="60"></label>
+          <label>지역<input id="profileRegion" maxlength="80"></label>
+          <label class="full">소개<textarea id="profileBio" rows="4" maxlength="500"></textarea></label>
+          <button class="primary" type="submit">회원 정보 저장</button>
+        </form>
+        <div id="profileMessage" class="message"></div>
+      </article>
+      <article class="card">
+        <h3>활동 요약</h3>
+        <div class="kpi-grid">
+          <div class="kpi"><span>등록 정보</span><strong id="statPosts">0</strong></div>
+          <div class="kpi"><span>기여 포인트</span><strong id="statPoints">0</strong></div>
+          <div class="kpi"><span>검증 기록</span><strong id="statVerified">0</strong></div>
+        </div>
+        <button id="logoutBtn" class="secondary full-btn">로그아웃</button>
+      </article>
     </div>
   </section>
 
   <section id="auth" class="view">
-    <div class="grid-2">
-      <div class="card">
-        <h2>회원가입</h2>
+    <div class="section-title"><h2>회원가입·로그인</h2><p>이메일 기반 회원 인증을 사용합니다.</p></div>
+    <div class="cards two align-start">
+      <article class="card">
+        <h3>회원가입</h3>
         <form id="signupForm" class="form-grid">
-          <label>이름<input id="signupName" required /></label>
-          <label>이메일<input id="signupEmail" type="email" required /></label>
-          <label>비밀번호<input id="signupPassword" type="password" minlength="8" required /></label>
-          <button type="submit" class="primary">회원가입</button>
+          <label>이름<input id="signupName" maxlength="60" required></label>
+          <label>이메일<input id="signupEmail" type="email" required></label>
+          <label>비밀번호<input id="signupPassword" type="password" minlength="8" required></label>
+          <label class="check full"><input id="termsAgree" type="checkbox" required> 이용약관·개인정보 처리방침에 동의합니다.</label>
+          <button class="primary" type="submit">회원가입</button>
         </form>
         <div id="signupMessage" class="message"></div>
-      </div>
-      <div class="card">
-        <h2>로그인</h2>
+      </article>
+      <article class="card">
+        <h3>로그인</h3>
         <form id="loginForm" class="form-grid">
-          <label>이메일<input id="loginEmail" type="email" required /></label>
-          <label>비밀번호<input id="loginPassword" type="password" required /></label>
-          <button type="submit" class="primary">로그인</button>
-          <button type="button" id="logoutBtn">로그아웃</button>
+          <label>이메일<input id="loginEmail" type="email" required></label>
+          <label>비밀번호<input id="loginPassword" type="password" required></label>
+          <button class="primary" type="submit">로그인</button>
         </form>
         <div id="loginMessage" class="message"></div>
-      </div>
+        <div class="legal-box compact"><b>보안</b><p>비밀번호는 브라우저 파일이나 localStorage에 저장하지 않고 Supabase Auth를 통해 처리합니다.</p></div>
+      </article>
     </div>
   </section>
 
   <section id="admin" class="view">
-    <div class="card">
-      <h2>관리자 설정</h2>
-      <p class="muted">관리자 계정에서만 실제 변경하도록 운영하십시오.</p>
-      <div class="form-grid">
-        <label>정보등록 보상<input id="adminRewardPost" type="number" min="0" value="10" /></label>
-        <label>검증기여 보상<input id="adminRewardVerify" type="number" min="0" value="10" /></label>
-        <label>의견 보상<input id="adminRewardComment" type="number" min="0" value="10" /></label>
-        <label>관계기관 상태
-          <select id="approvalStatus">
-            <option>승인 전</option>
-            <option>심사 중</option>
-            <option>승인 완료</option>
-          </select>
-        </label>
-        <label>승인기관<input id="approvalOrg" placeholder="승인 전에는 비워두세요." /></label>
-        <label>승인번호<input id="approvalNo" placeholder="승인 전에는 비워두세요." /></label>
-        <label>승인일<input id="approvalDate" type="date" /></label>
-        <button id="saveAdmin" class="primary">설정 저장</button>
-      </div>
-      <p class="notice">※ 실제 승인·등록 사실이 확인된 경우에만 “승인 완료”로 변경하십시오.</p>
+    <div class="section-title"><h2>관리자</h2><p>관리자 역할 계정만 접근할 수 있습니다.</p></div>
+    <div class="cards two align-start">
+      <article class="card">
+        <h3>보상 기준</h3>
+        <form id="adminSettingsForm" class="form-grid">
+          <label>정보 등록 포인트<input id="settingPostPoints" type="number" min="0" max="1000"></label>
+          <label>검증 포인트<input id="settingVerifyPoints" type="number" min="0" max="1000"></label>
+          <label>의견 포인트<input id="settingCommentPoints" type="number" min="0" max="1000"></label>
+          <label>관계기관 상태<select id="settingApproval">
+            <option value="승인 전">승인 전</option>
+            <option value="검토 중">검토 중</option>
+            <option value="승인 완료">승인 완료</option>
+          </select></label>
+          <button class="primary" type="submit">설정 저장</button>
+        </form>
+        <div id="adminMessage" class="message"></div>
+      </article>
+      <article class="card">
+        <h3>운영 안내</h3>
+        <ul class="clean-list">
+          <li>실제 코인·토큰·NFT 발행은 별도 법률·세무·기술 검토 후 활성화</li>
+          <li>부동산 중개 기능은 관련 자격·사업 구조가 준비된 경우에만 운영</li>
+          <li>광고·전문가 계정은 광고 표시 및 검수 정책을 별도 운영</li>
+          <li>관리자 권한은 Supabase profiles.role = admin인 계정에만 부여</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section id="terms" class="view">
+    <div class="card prose">
+      <h2>이용안내</h2>
+      <p>REAL8은 부동산 관련 정보와 경험을 회원이 등록·공유하고, 회원의 확인과 의견을 기록하는 정보 플랫폼입니다.</p>
+      <h3>정보 이용</h3><p>등록된 정보는 참고자료이며 공적 등기·감정·법률·세무·중개 자문을 대체하지 않습니다.</p>
+      <h3>보상</h3><p>REAL8 포인트는 플랫폼 내부 기여도 기록이며 현금성 자산, 증권, 암호자산 또는 수익 보장을 의미하지 않습니다.</p>
+      <h3>개인정보</h3><p>공개 게시물에 주민등록번호, 계좌번호, 비밀번호, 정확한 개인 주소 등 민감한 정보를 등록하지 마십시오.</p>
     </div>
   </section>
 </main>
 
-<footer>
-  REAL8 · 부동산 자산 디지털 플랫폼
+<footer class="footer">
+  <div>© REAL8 · 부동산 자산 디지털 플랫폼</div>
+  <button data-view="terms">이용안내·개인정보</button>
 </footer>
+
+<script type="module" src="./app.js"></script>
 </body>
 </html>
