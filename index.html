@@ -1,208 +1,191 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>부동산 자산 디지털 플랫폼 REAL8</title>
-  <link rel="stylesheet" href="./styles.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>REAL8 부동산 자산 디지털 플랫폼</title>
+<link rel="stylesheet" href="./styles.css">
 </head>
 <body>
 <header class="topbar">
-  <div class="title-wrap">
-    <div class="site-title">부동산 자산 디지털 플랫폼 <span>(real8)</span></div>
-    <div class="site-sub">부동산 정보·경험·검증·기여를 기록하고 회원 활동을 디지털 자산으로 관리하는 사업용 플랫폼</div>
+  <div class="brand">
+    <b>부동산 자산 디지털 플랫폼 <span>(REAL8)</span></b>
+    <small>부동산 정보·경험·검증·기여를 신뢰 가능한 디지털 기록으로 관리합니다.</small>
   </div>
-  <nav id="nav">
-    <button data-page="home" class="active">홈·회원가입·로그인·자산 안내</button>
-    <button data-page="admin">블록체인·토큰·코인관리 (관리자)</button>
-    <button data-page="trade">건축·매매·임대·바꿔살기 (정보 등록)</button>
+  <nav>
+    <button class="active" data-page="home">홈·회원가입·로그인·자산 안내</button>
+    <button data-page="rewards">블록체인·코인·토큰</button>
+    <button data-page="trade">건축·매매·임대·바꿔살기</button>
     <button data-page="virtual">가상건축 제안·참여</button>
-    <button data-page="culture">문화·주거 정보</button>
+    <button data-page="culture">거주문화·집수리·인테리어·정원</button>
     <button data-page="mypage">마이페이지</button>
+    <button data-page="admin">관리자</button>
   </nav>
 </header>
 
 <main>
-  <section id="home" class="page active">
+<section id="home" class="page active">
+  <div class="panel">
+    <h2>홈 · 회원가입 · 로그인 · 자산 안내</h2>
+    <p>회원가입은 우선 이름 + 이메일 + 비밀번호로 간단하게 사용합니다. 이메일·문자·카카오 본인확인은 다음 단계에서 추가할 수 있도록 구조를 준비했습니다.</p>
+    <div class="trust-grid">
+      <div><b>회원계정</b><span>Supabase 인증</span></div>
+      <div><b>활동기록</b><span>회원별 DB 저장</span></div>
+      <div><b>고유 해시</b><span>사이트주소+발행일시+부동산주소</span></div>
+      <div><b>변경이력</b><span>관리자 설정 변경 저장</span></div>
+    </div>
+  </div>
+
+  <div class="cols">
     <div class="panel">
-      <h2>홈 · 회원가입 · 로그인 · 자산 안내</h2>
-      <p>REAL8은 회원이 부동산 관련 정보를 등록하고, 다른 회원의 확인·의견을 통해 정보를 확장하고 신뢰도를 높이는 플랫폼입니다.</p>
-      <div class="guide">
-        <h3>사이트 구성 및 각 페이지 사용 설명</h3>
-        <ul>
-          <li>블록체인·토큰·코인관리: 관리자만 보상 기준과 승인 상태를 관리합니다.</li>
-          <li>건축·매매·임대·바꿔살기: 회원이 실제 부동산 정보를 등록합니다.</li>
-          <li>가상건축 제안·참여: 공간 아이디어와 설계 제안을 등록하고 의견을 받습니다.</li>
-          <li>문화·주거 정보: 인테리어·집수리·정원·주거문화 정보를 공유합니다.</li>
-          <li>마이페이지: 회원 활동, 기여 포인트, 등록정보를 확인합니다.</li>
-        </ul>
-      </div>
+      <h3>로그인</h3>
+      <form id="loginForm">
+        <label>이메일<input id="loginEmail" type="email" required></label>
+        <label>비밀번호<input id="loginPassword" type="password" required></label>
+        <button class="primary" type="submit">로그인</button>
+      </form>
+      <div id="loginMsg" class="msg"></div>
     </div>
-
-    <div class="columns">
-      <div class="panel">
-        <h3>로그인</h3>
-        <form id="loginForm">
-          <label>이메일<input id="loginEmail" type="email" required></label>
-          <label>비밀번호<input id="loginPassword" type="password" required></label>
-          <button class="action" type="submit">로그인</button>
-        </form>
-        <div id="loginMsg" class="msg"></div>
-      </div>
-
-      <div class="panel">
-        <h3>회원가입</h3>
-        <form id="signupForm">
-          <label>이름<input id="signupName" required></label>
-          <label>이메일<input id="signupEmail" type="email" required></label>
-          <label>비밀번호<input id="signupPassword" type="password" minlength="8" required></label>
-          <button class="action" type="submit">회원가입</button>
-        </form>
-        <div class="small">※ 아이디는 실제 로그인과 활동 기록에 사용됩니다.</div>
-        <div id="signupMsg" class="msg"></div>
-      </div>
-    </div>
-
-    <div class="panel asset-box">
-      <h3>REAL8 디지털 자산 운영 원칙</h3>
-      <p>현재 사업 단계에서는 내부 포인트와 사이트 고유 SHA-256 해시를 사용합니다. 실제 거래 가능한 코인·토큰·NFT 발행은 관계 법령·인가·등록·세무 검토 후 별도 활성화합니다.</p>
-      <div><b>사이트 고유 해시:</b> <span id="siteHash">생성 중...</span></div>
-    </div>
-  </section>
-
-  <section id="admin" class="page">
     <div class="panel">
-      <h2>블록체인·토큰·코인 발행 기준 관리 (관리자)</h2>
-      <p>회원 기여 활동에 따른 내부 포인트 보상 기준과 관계기관 상태를 관리합니다.</p>
-      <div class="status-line">현재 상태: <span id="approvalState">승인 전</span></div>
+      <h3>회원가입</h3>
+      <form id="signupForm">
+        <label>이름<input id="signupName" required></label>
+        <label>이메일<input id="signupEmail" type="email" required></label>
+        <label>비밀번호<input id="signupPassword" type="password" minlength="8" required></label>
+        <label>비밀번호 확인<input id="signupPassword2" type="password" minlength="8" required></label>
+        <button class="primary" type="submit">회원가입</button>
+      </form>
+      <div id="signupMsg" class="msg"></div>
     </div>
+  </div>
+</section>
 
+<section id="rewards" class="page">
+  <div class="panel">
+    <h2>블록체인 · 코인 · 토큰</h2>
+    <p>회원은 자신의 지급 내역과 보유 수량을 확인할 수 있습니다. 현재는 내부 원장형 기록으로 운영합니다.</p>
+  </div>
+  <div class="summary3">
+    <div><span>REAL8 TOKEN</span><strong id="rewardToken">0</strong></div>
+    <div><span>REAL8 COIN</span><strong id="rewardCoin">0</strong></div>
+    <div><span>환산 표시값</span><strong id="rewardValue">0원</strong></div>
+  </div>
+  <div class="panel"><h3>지급 내역</h3><div id="rewardList" class="list"></div></div>
+</section>
+
+<section id="trade" class="page">
+  <div class="panel">
+    <h2>건축 · 매매 · 임대 · 바꿔살기</h2>
+    <p>거래별 갑·을 명칭과 희망조건을 저장하고, 조건에 가까운 목록을 볼 수 있습니다.</p>
+  </div>
+  <div class="cols">
     <div class="panel">
-      <h3>분야별 비율 설정</h3>
-      <div class="rate-grid">
-        <div><b>분야</b></div><div><b>토큰 증가율(%)</b></div><div><b>코인 변환율(%)</b></div>
-        <div>건축</div><input id="rate1" value="10"><input id="coin1" value="10">
-        <div>매매</div><input id="rate2" value="10"><input id="coin2" value="10">
-        <div>임대</div><input id="rate3" value="10"><input id="coin3" value="10">
-        <div>바꿔살기</div><input id="rate4" value="10"><input id="coin4" value="10">
+      <h3>거래 정보 등록</h3>
+      <form id="tradeForm">
+        <label>거래 종류
+          <select id="tradeType">
+            <option>건축</option><option>매매</option><option>전세</option><option>월세</option><option>렌트</option><option>바꿔살기</option>
+          </select>
+        </label>
+        <div class="party-row">
+          <div><span>갑 명칭</span><b id="partyA">건축주</b></div>
+          <div><span>을 명칭</span><b id="partyB">시공사</b></div>
+        </div>
+        <label>제목<input id="tradeTitle" required></label>
+        <label>지역<input id="tradeRegion"></label>
+        <label>부동산 주소<input id="tradeAddress"></label>
+        <label>희망 금액(원)<input id="tradePrice" inputmode="numeric"></label>
+        <label>갑의 희망 조건<textarea id="conditionA" rows="3"></textarea></label>
+        <label>을의 희망 조건<textarea id="conditionB" rows="3"></textarea></label>
+        <label>상세 내용<textarea id="tradeContent" rows="5" required></textarea></label>
+        <button class="primary" type="submit">정보 등록</button>
+      </form>
+      <div id="tradeMsg" class="msg"></div>
+    </div>
+    <div class="panel">
+      <h3>희망 조건에 가까운 목록</h3>
+      <select id="matchType"><option value="">전체 종류</option><option>건축</option><option>매매</option><option>전세</option><option>월세</option><option>렌트</option><option>바꿔살기</option></select>
+      <input id="matchRegion" placeholder="희망 지역">
+      <input id="matchPrice" placeholder="희망 금액">
+      <button id="matchBtn" class="secondary">목록 보기</button>
+      <div id="matchList" class="list"></div>
+    </div>
+  </div>
+</section>
+
+<section id="virtual" class="page">
+  <div class="panel"><h2>가상건축 제안 · 참여</h2></div>
+  <div class="cols">
+    <div class="panel">
+      <form id="virtualForm">
+        <label>제목<input id="virtualTitle" required></label>
+        <label>목적<input id="virtualPurpose"></label>
+        <label>규모<input id="virtualScale"></label>
+        <label>예산<input id="virtualBudget"></label>
+        <label>디자인 방향<input id="virtualStyle"></label>
+        <label>상세 설명<textarea id="virtualContent" rows="7" required></textarea></label>
+        <button class="primary" type="submit">제안 등록</button>
+      </form>
+      <div id="virtualMsg" class="msg"></div>
+    </div>
+    <div class="panel"><h3>가상건축 상세 리스트</h3><div id="virtualList" class="list"></div></div>
+  </div>
+</section>
+
+<section id="culture" class="page">
+  <div class="panel"><h2>거주문화 · 집수리 · 인테리어 · 정원</h2></div>
+  <div class="cols">
+    <div class="panel">
+      <form id="cultureForm">
+        <label>분야<select id="cultureCategory"><option>거주문화</option><option>집수리</option><option>인테리어</option><option>정원</option><option>지역생활정보</option></select></label>
+        <label>제목<input id="cultureTitle" required></label>
+        <label>상세 내용<textarea id="cultureContent" rows="7" required></textarea></label>
+        <button class="primary" type="submit">정보 등록</button>
+      </form>
+      <div id="cultureMsg" class="msg"></div>
+    </div>
+    <div class="panel"><h3>등록된 정보</h3><div id="cultureList" class="list"></div></div>
+  </div>
+</section>
+
+<section id="mypage" class="page">
+  <div class="panel"><h2>마이페이지</h2></div>
+  <div class="cols">
+    <div class="panel"><h3>내 회원정보</h3><div id="profileBox">로그인 후 표시됩니다.</div><button id="logoutBtn" class="secondary">로그아웃</button></div>
+    <div class="panel">
+      <h3>내 자산 요약</h3>
+      <div class="summary3">
+        <div><span>보유 TOKEN</span><strong id="myToken">0</strong></div>
+        <div><span>보유 COIN</span><strong id="myCoin">0</strong></div>
+        <div><span>환산 표시값</span><strong id="myValue">0원</strong></div>
       </div>
-      <label>실현 전 거래 시 토큰 배율<input id="dealMultiplier" value="2"></label>
-      <button id="saveAdmin" class="action">비율 저장</button>
-      <div class="small">※ 실제 암호자산 발행 기능은 현재 비활성화되어 있습니다.</div>
+      <div id="myActivity" class="list"></div>
+    </div>
+  </div>
+</section>
+
+<section id="admin" class="page">
+  <div class="panel">
+    <h2>관리자 · 지급수량 및 코인 변환율 설정</h2>
+    <p>관리자만 지급 기준을 바꾸며 변경 전·후 값과 변경시각이 저장됩니다.</p>
+  </div>
+  <div class="cols">
+    <div class="panel">
+      <form id="rewardRuleForm">
+        <label>거래 정보 등록 TOKEN<input id="ruleTrade" type="number" min="0"></label>
+        <label>가상건축 제안 TOKEN<input id="ruleVirtual" type="number" min="0"></label>
+        <label>가상건축 참여 TOKEN<input id="ruleVirtualJoin" type="number" min="0"></label>
+        <label>거주문화 정보 등록 TOKEN<input id="ruleCulture" type="number" min="0"></label>
+        <label>댓글·검증 참여 TOKEN<input id="ruleVerify" type="number" min="0"></label>
+        <label>TOKEN 몇 개 = COIN 1개<input id="ruleConversion" type="number" min="1"></label>
+        <label>COIN 환산 표시값(원)<input id="ruleCoinValue" type="number" min="0"></label>
+        <button class="primary" type="submit">기준 저장</button>
+      </form>
       <div id="adminMsg" class="msg"></div>
     </div>
-  </section>
-
-  <section id="trade" class="page">
-    <div class="panel">
-      <h2>건축·매매·임대·바꿔살기 (정보 등록)</h2>
-      <ul class="checks">
-        <li>회원이 직접 정보를 등록합니다.</li>
-        <li>등록 시 사이트 고유 SHA-256 해시가 자동 생성됩니다.</li>
-        <li>회원의 의견·검증 기록을 누적할 수 있습니다.</li>
-      </ul>
-    </div>
-
-    <div class="columns">
-      <div class="panel">
-        <h3>정보 등록</h3>
-        <form id="postForm">
-          <label>거래 유형
-            <select id="category">
-              <option>건축</option><option>매매</option><option>전세</option><option>월세</option><option>렌트</option><option>바꿔살기</option>
-            </select>
-          </label>
-          <label>지역구<input id="region" placeholder="예: 경기도 가평군"></label>
-          <label>시/동/리<input id="district" placeholder="예: 청평면"></label>
-          <label>거래 금액(원)<input id="price" placeholder="예: 300000000"></label>
-          <label>주소 / 위치<input id="assetAddress" placeholder="공개 가능한 범위만 입력"></label>
-          <label>제목<input id="postTitle" required></label>
-          <label>내용<textarea id="postContent" rows="6" required></textarea></label>
-          <button class="action" type="submit">정보 등록</button>
-        </form>
-        <div id="postMsg" class="msg"></div>
-      </div>
-
-      <div class="panel">
-        <h3>등록된 정보 목록</h3>
-        <div id="postList" class="data-list">등록된 정보를 불러오는 중...</div>
-      </div>
-    </div>
-  </section>
-
-  <section id="virtual" class="page">
-    <div class="panel">
-      <h2>가상건축 제안 · 참여</h2>
-      <p>가상공간·공간활용·설계 아이디어를 제안하고 회원 의견을 기록합니다.</p>
-    </div>
-    <div class="columns">
-      <div class="panel">
-        <h3>가상건축 제안 등록</h3>
-        <form id="virtualForm">
-          <label>제목<input id="virtualTitle" required></label>
-          <label>내용<textarea id="virtualContent" rows="7" required></textarea></label>
-          <button class="action" type="submit">제안 등록</button>
-        </form>
-        <div id="virtualMsg" class="msg"></div>
-      </div>
-      <div class="panel">
-        <h3>등록된 가상건축 리스트</h3>
-        <div id="virtualList" class="data-list"></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="culture" class="page">
-    <div class="panel">
-      <h2>문화 · 주거 정보</h2>
-      <p>집수리·인테리어·정원·거주문화 등 생활형 정보를 기록하고 공유합니다.</p>
-    </div>
-    <div class="columns">
-      <div class="panel">
-        <h3>정보 등록</h3>
-        <form id="cultureForm">
-          <label>분야
-            <select id="cultureCategory">
-              <option>집수리</option><option>인테리어</option><option>정원</option><option>주거문화</option><option>지역생활정보</option>
-            </select>
-          </label>
-          <label>제목<input id="cultureTitle" required></label>
-          <label>내용<textarea id="cultureContent" rows="7" required></textarea></label>
-          <button class="action" type="submit">등록</button>
-        </form>
-        <div id="cultureMsg" class="msg"></div>
-      </div>
-      <div class="panel">
-        <h3>등록된 생활 정보</h3>
-        <div id="cultureList" class="data-list"></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="mypage" class="page">
-    <div class="panel">
-      <h2>마이페이지</h2>
-      <p>회원 정보와 등록정보, 기여 활동, 포인트를 확인합니다.</p>
-    </div>
-
-    <div class="columns">
-      <div class="panel">
-        <h3>회원 정보</h3>
-        <div id="profileInfo">로그인 후 회원 정보가 표시됩니다.</div>
-        <button id="logoutBtn" class="action secondary">로그아웃</button>
-      </div>
-
-      <div class="panel">
-        <h3>내 활동 기록</h3>
-        <div class="summary-grid">
-          <div><span>등록 정보</span><strong id="myPosts">0</strong></div>
-          <div><span>검증 기록</span><strong id="myVerifications">0</strong></div>
-          <div><span>보유 포인트</span><strong id="myPoints">0</strong></div>
-        </div>
-        <div id="myActivity" class="data-list"></div>
-      </div>
-    </div>
-  </section>
+    <div class="panel"><h3>변동 이력</h3><div id="ruleHistory" class="list"></div></div>
+  </div>
+</section>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

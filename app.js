@@ -1,183 +1,41 @@
 (() => {
-  const $ = id => document.getElementById(id);
-  const esc = s => String(s ?? "").replace(/[&<>"']/g, m => (
-    {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]
-  ));
-  const msg = (id, text) => { const el=$(id); if(el) el.textContent=text; };
+const cfg=window.REAL8_CONFIG, db=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY), $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const show=(id,t,ok=true)=>{const e=$(id);if(e){e.textContent=t;e.className="msg"+(ok?"":" error")}};
+let user=null,profile=null,rules={trade_token:10,virtual_token:10,virtual_join_token:5,culture_token:10,verify_token:3,token_per_coin:100,coin_display_value:0};
+const parties={"건축":["건축주","시공사"],"매매":["매도인","매수인"],"전세":["임대인","임차인"],"월세":["임대인","임차인"],"렌트":["대여자","이용자"],"바꿔살기":["제안자","교환상대"]};
 
-  // 메뉴는 Supabase 연결과 상관없이 항상 작동
-  function openPage(id) {
-    document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === id));
-    document.querySelectorAll("nav button").forEach(b => b.classList.toggle("active", b.dataset.page === id));
-    window.scrollTo({top:0, behavior:"smooth"});
-    if (id==="trade") loadPosts();
-    if (id==="virtual") loadVirtual();
-    if (id==="culture") loadCulture();
-    if (id==="mypage") loadMyPage();
-  }
-  document.querySelectorAll("nav button[data-page]").forEach(b => {
-    b.addEventListener("click", () => openPage(b.dataset.page));
-  });
+async function session(){const {data:{session}}=await db.auth.getSession();user=session?.user||null;if(user){const {data}=await db.from("profiles").select("*").eq("user_id",user.id).maybeSingle();profile=data}}
+async function loadRules(){const {data}=await db.from("reward_rules").select("*").eq("id",1).maybeSingle();if(data)rules=data}
+async function hash(v){const b=new TextEncoder().encode(v),h=await crypto.subtle.digest("SHA-256",b);return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,"0")).join("")}
 
-  async function sha256(v) {
-    const b = new TextEncoder().encode(v);
-    const h = await crypto.subtle.digest("SHA-256", b);
-    return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,"0")).join("");
-  }
+document.querySelectorAll("nav button[data-page]").forEach(b=>b.onclick=async()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));b.classList.add("active");$(b.dataset.page).classList.add("active");if(b.dataset.page==="trade")loadMatches();if(b.dataset.page==="virtual")loadVirtual();if(b.dataset.page==="culture")loadCulture();if(b.dataset.page==="mypage")loadMy();if(b.dataset.page==="rewards")loadRewards();if(b.dataset.page==="admin")loadAdmin();window.scrollTo({top:0})});
 
-  let client = null, user = null, profile = null;
-  try {
-    const cfg = window.REAL8_CONFIG;
-    if (window.supabase && cfg?.SUPABASE_URL && cfg?.SUPABASE_ANON_KEY) {
-      client = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
-    }
-  } catch(e) {
-    console.error(e);
-  }
+$("tradeType").onchange=()=>{const [a,b]=parties[$("tradeType").value];$("partyA").textContent=a;$("partyB").textContent=b};
 
-  async function session() {
-    if (!client) return;
-    const {data:{session}} = await client.auth.getSession();
-    user = session?.user || null;
-    profile = null;
-    if (user) {
-      const {data} = await client.from("profiles").select("*").eq("user_id",user.id).maybeSingle();
-      profile = data;
-    }
-  }
+$("signupForm").onsubmit=async e=>{e.preventDefault();if($("signupPassword").value!==$("signupPassword2").value)return show("signupMsg","비밀번호가 서로 다릅니다.",false);const {data,error}=await db.auth.signUp({email:$("signupEmail").value.trim(),password:$("signupPassword").value,options:{data:{display_name:$("signupName").value.trim()}}});if(error)return show("signupMsg",error.message,false);show("signupMsg",data.session?"회원가입과 로그인이 완료되었습니다.":"회원가입이 완료되었습니다. 이메일 확인 설정이 켜져 있으면 확인 후 로그인하세요.");await session()};
+$("loginForm").onsubmit=async e=>{e.preventDefault();const {error}=await db.auth.signInWithPassword({email:$("loginEmail").value.trim(),password:$("loginPassword").value});if(error)return show("loginMsg",error.message,false);show("loginMsg","로그인되었습니다.");await session()};
+$("logoutBtn").onclick=async()=>{await db.auth.signOut();user=null;profile=null;$("profileBox").textContent="로그아웃되었습니다."};
 
-  async function start() {
-    const sh=$("siteHash");
-    if (sh) {
-      try { sh.textContent = await sha256(location.href.split("#")[0] + "|REAL8|BUSINESS"); }
-      catch { sh.textContent = "브라우저에서 해시 생성 준비 중"; }
-    }
-    await session();
-  }
+async function need(id){await session();if(!user){show(id,"먼저 로그인해 주세요.",false);return false}return true}
 
-  const signup = $("signupForm");
-  if(signup) signup.addEventListener("submit", async e => {
-    e.preventDefault();
-    if(!client) return msg("signupMsg","현재 데이터베이스 연결을 확인해 주세요.");
-    const {error} = await client.auth.signUp({
-      email:$("signupEmail").value.trim(),
-      password:$("signupPassword").value,
-      options:{data:{display_name:$("signupName").value.trim()}}
-    });
-    msg("signupMsg", error ? error.message : "회원가입이 완료되었습니다. 이메일 확인이 필요한 경우 받은편지를 확인해 주세요.");
-  });
+$("tradeForm").onsubmit=async e=>{e.preventDefault();if(!(await need("tradeMsg")))return;const type=$("tradeType").value,[pa,pb]=parties[type],ts=new Date().toISOString(),addr=$("tradeAddress").value.trim(),rh=await hash([location.origin,ts,addr].join("|"));const {data,error}=await db.from("posts").insert({author_id:user.id,category:type,title:$("tradeTitle").value.trim(),region:$("tradeRegion").value.trim(),asset_address:addr,price:Number($("tradePrice").value||0),party_a_label:pa,party_b_label:pb,condition_a:$("conditionA").value.trim(),condition_b:$("conditionB").value.trim(),content:$("tradeContent").value.trim(),record_hash:rh,status:"등록"}).select("id").single();if(error)return show("tradeMsg",error.message,false);await db.rpc("award_activity",{p_user_id:user.id,p_action:"trade_register",p_reference_id:data.id,p_property_address:addr});show("tradeMsg","등록되었습니다.");e.target.reset();$("tradeType").dispatchEvent(new Event("change"));loadMatches()};
 
-  const login = $("loginForm");
-  if(login) login.addEventListener("submit", async e => {
-    e.preventDefault();
-    if(!client) return msg("loginMsg","현재 데이터베이스 연결을 확인해 주세요.");
-    const {error} = await client.auth.signInWithPassword({
-      email:$("loginEmail").value.trim(),
-      password:$("loginPassword").value
-    });
-    msg("loginMsg", error ? error.message : "로그인되었습니다.");
-    if(!error) await session();
-  });
+$("matchBtn").onclick=loadMatches;
+async function loadMatches(){let q=db.from("posts").select("*").in("category",["건축","매매","전세","월세","렌트","바꿔살기"]).order("created_at",{ascending:false}).limit(100);const t=$("matchType").value,r=$("matchRegion").value.trim(),p=Number($("matchPrice").value||0);if(t)q=q.eq("category",t);if(r)q=q.ilike("region","%"+r+"%");const {data,error}=await q;if(error)return $("matchList").textContent=error.message;let rows=data||[];if(p)rows.sort((a,b)=>Math.abs(Number(a.price||0)-p)-Math.abs(Number(b.price||0)-p));$("matchList").innerHTML=rows.map(x=>`<div class="item"><b>${esc(x.category)} · ${esc(x.title)}</b><div>${esc(x.party_a_label)} 희망: ${esc(x.condition_a||"-")}</div><div>${esc(x.party_b_label)} 희망: ${esc(x.condition_b||"-")}</div><div class="meta">${esc(x.region||"")} / ${Number(x.price||0).toLocaleString()}원</div><div class="hash">${esc(x.record_hash||"")}</div></div>`).join("")||"등록정보가 없습니다."}
 
-  const logout=$("logoutBtn");
-  if(logout) logout.addEventListener("click", async ()=>{
-    if(client) await client.auth.signOut();
-    user=null; profile=null;
-    if($("profileInfo")) $("profileInfo").textContent="로그아웃되었습니다.";
-  });
+$("virtualForm").onsubmit=async e=>{e.preventDefault();if(!(await need("virtualMsg")))return;const title=$("virtualTitle").value.trim(),ts=new Date().toISOString(),rh=await hash([location.origin,ts,"VIRTUAL",title].join("|"));const {data,error}=await db.from("posts").insert({author_id:user.id,category:"가상건축",title,content:$("virtualContent").value.trim(),details_json:{purpose:$("virtualPurpose").value,scale:$("virtualScale").value,budget:$("virtualBudget").value,style:$("virtualStyle").value},record_hash:rh,status:"등록"}).select("id").single();if(error)return show("virtualMsg",error.message,false);await db.rpc("award_activity",{p_user_id:user.id,p_action:"virtual_register",p_reference_id:data.id,p_property_address:"가상건축"});show("virtualMsg","가상건축 제안이 등록되었습니다.");e.target.reset();loadVirtual()};
+async function loadVirtual(){const {data,error}=await db.from("posts").select("*").eq("category","가상건축").order("created_at",{ascending:false});if(error)return $("virtualList").textContent=error.message;$("virtualList").innerHTML=(data||[]).map(x=>{const d=x.details_json||{};return `<div class="item"><b>${esc(x.title)}</b><div class="meta">목적 ${esc(d.purpose||"-")} / 규모 ${esc(d.scale||"-")} / 예산 ${esc(d.budget||"-")} / 스타일 ${esc(d.style||"-")}</div><div>${esc(x.content)}</div><button class="secondary joinV" data-id="${x.id}">참여 기록 + 토큰</button></div>`}).join("")||"등록된 제안이 없습니다.";document.querySelectorAll(".joinV").forEach(b=>b.onclick=async()=>{if(!(await need("virtualMsg")))return;const {error}=await db.rpc("award_activity",{p_user_id:user.id,p_action:"virtual_join",p_reference_id:b.dataset.id,p_property_address:"가상건축 참여"});show("virtualMsg",error?error.message:"참여 기록이 저장되었습니다.",!error)})}
 
-  const postForm=$("postForm");
-  if(postForm) postForm.addEventListener("submit", async e=>{
-    e.preventDefault();
-    if(!client) return msg("postMsg","데이터베이스 연결을 확인해 주세요.");
-    await session();
-    if(!user) return msg("postMsg","먼저 로그인해 주세요.");
-    const now=new Date().toISOString();
-    const category=$("category").value;
-    const record_hash=await sha256([location.origin,category,$("assetAddress").value,user.id,now].join("|"));
-    const {error}=await client.from("posts").insert({
-      author_id:user.id,
-      category,
-      title:$("postTitle").value.trim(),
-      region:[$("region").value,$("district").value].filter(Boolean).join(" "),
-      asset_address:$("assetAddress").value.trim(),
-      content:$("postContent").value.trim()+"\n거래금액: "+$("price").value.trim(),
-      record_hash,
-      status:"등록"
-    });
-    msg("postMsg", error ? error.message : "정보가 등록되고 고유 해시가 생성되었습니다.");
-    if(!error){ e.target.reset(); loadPosts(); }
-  });
+$("cultureForm").onsubmit=async e=>{e.preventDefault();if(!(await need("cultureMsg")))return;const cat=$("cultureCategory").value,title=$("cultureTitle").value.trim(),ts=new Date().toISOString(),rh=await hash([location.origin,ts,cat,title].join("|"));const {data,error}=await db.from("posts").insert({author_id:user.id,category:cat,title,content:$("cultureContent").value.trim(),record_hash:rh,status:"등록"}).select("id").single();if(error)return show("cultureMsg",error.message,false);await db.rpc("award_activity",{p_user_id:user.id,p_action:"culture_register",p_reference_id:data.id,p_property_address:cat});show("cultureMsg","등록되었습니다.");e.target.reset();loadCulture()};
+async function loadCulture(){const cats=["거주문화","집수리","인테리어","정원","지역생활정보"],{data,error}=await db.from("posts").select("*").in("category",cats).order("created_at",{ascending:false});if(error)return $("cultureList").textContent=error.message;$("cultureList").innerHTML=(data||[]).map(x=>`<div class="item"><b>${esc(x.category)} · ${esc(x.title)}</b><div>${esc(x.content)}</div></div>`).join("")||"등록된 정보가 없습니다."}
 
-  async function loadPosts(){
-    if(!client || !$("postList")) return;
-    const {data,error}=await client.from("posts").select("*")
-      .in("category",["건축","매매","전세","월세","렌트","바꿔살기"])
-      .order("created_at",{ascending:false});
-    $("postList").innerHTML = error ? esc(error.message) :
-      (data?.length ? data.map(p=>`<div class="item"><b>${esc(p.category)} · ${esc(p.title)}</b><div class="meta">${esc(p.region||"")} · ${new Date(p.created_at).toLocaleString("ko-KR")}</div><div>${esc(p.content)}</div><div class="hash">${esc(p.record_hash)}</div></div>`).join("") : "등록된 정보가 없습니다.");
-  }
+async function loadRewards(){await session();await loadRules();if(!user){$("rewardList").textContent="로그인 후 확인할 수 있습니다.";return}const {data,error}=await db.from("rewards").select("*").eq("user_id",user.id).order("created_at",{ascending:false});if(error)return $("rewardList").textContent=error.message;const t=(data||[]).reduce((s,x)=>s+Number(x.token_amount||0),0),c=(data||[]).reduce((s,x)=>s+Number(x.coin_amount||0),0);$("rewardToken").textContent=t.toLocaleString();$("rewardCoin").textContent=c.toLocaleString();$("rewardValue").textContent=(c*Number(rules.coin_display_value||0)).toLocaleString()+"원";$("rewardList").innerHTML=(data||[]).map(x=>`<div class="item"><b>${esc(x.action)}</b><div>TOKEN ${x.token_amount||0} / COIN ${x.coin_amount||0}</div><div class="meta">${new Date(x.created_at).toLocaleString("ko-KR")}</div><div class="hash">${esc(x.issue_hash||"")}</div></div>`).join("")||"지급 내역이 없습니다."}
 
-  const virtualForm=$("virtualForm");
-  if(virtualForm) virtualForm.addEventListener("submit", async e=>{
-    e.preventDefault();
-    if(!client) return msg("virtualMsg","데이터베이스 연결을 확인해 주세요.");
-    await session();
-    if(!user) return msg("virtualMsg","먼저 로그인해 주세요.");
-    const now=new Date().toISOString(), title=$("virtualTitle").value.trim(), content=$("virtualContent").value.trim();
-    const record_hash=await sha256([location.origin,"가상건축",title,user.id,now].join("|"));
-    const {error}=await client.from("posts").insert({author_id:user.id,category:"가상건축",title,content,record_hash,status:"등록"});
-    msg("virtualMsg", error ? error.message : "가상건축 제안이 등록되었습니다.");
-    if(!error){ e.target.reset(); loadVirtual(); }
-  });
+async function loadMy(){await session();await loadRules();if(!user){$("profileBox").textContent="로그인 후 이용할 수 있습니다.";return}$("profileBox").innerHTML=`<b>${esc(profile?.display_name||user.user_metadata?.display_name||user.email)}</b><br>${esc(user.email)}`;const [{data:r},{data:p}]=await Promise.all([db.from("rewards").select("*").eq("user_id",user.id).order("created_at",{ascending:false}),db.from("posts").select("category,title,created_at").eq("author_id",user.id).order("created_at",{ascending:false})]);const t=(r||[]).reduce((s,x)=>s+Number(x.token_amount||0),0),c=(r||[]).reduce((s,x)=>s+Number(x.coin_amount||0),0);$("myToken").textContent=t.toLocaleString();$("myCoin").textContent=c.toLocaleString();$("myValue").textContent=(c*Number(rules.coin_display_value||0)).toLocaleString()+"원";$("myActivity").innerHTML=[...(p||[]).map(x=>({t:`${x.category} · ${x.title}`,d:x.created_at})),...(r||[]).map(x=>({t:`보상 ${x.action} / TOKEN ${x.token_amount||0} / COIN ${x.coin_amount||0}`,d:x.created_at}))].sort((a,b)=>new Date(b.d)-new Date(a.d)).map(x=>`<div class="item"><b>${esc(x.t)}</b><div class="meta">${new Date(x.d).toLocaleString("ko-KR")}</div></div>`).join("")}
 
-  async function loadVirtual(){
-    if(!client || !$("virtualList")) return;
-    const {data}=await client.from("posts").select("*").eq("category","가상건축").order("created_at",{ascending:false});
-    $("virtualList").innerHTML=data?.length?data.map(p=>`<div class="item"><b>${esc(p.title)}</b><div>${esc(p.content)}</div></div>`).join(""):"등록된 제안이 없습니다.";
-  }
+async function loadAdmin(){await session();await loadRules();$("ruleTrade").value=rules.trade_token;$("ruleVirtual").value=rules.virtual_token;$("ruleVirtualJoin").value=rules.virtual_join_token;$("ruleCulture").value=rules.culture_token;$("ruleVerify").value=rules.verify_token;$("ruleConversion").value=rules.token_per_coin;$("ruleCoinValue").value=rules.coin_display_value;const {data}=await db.from("reward_rule_history").select("*").order("changed_at",{ascending:false}).limit(100);$("ruleHistory").innerHTML=(data||[]).map(x=>`<div class="item"><b>${esc(x.field_name)}</b><div>${esc(x.old_value)} → ${esc(x.new_value)}</div><div class="meta">${new Date(x.changed_at).toLocaleString("ko-KR")}</div></div>`).join("")||"변경 이력이 없습니다."}
+$("rewardRuleForm").onsubmit=async e=>{e.preventDefault();await session();if(!user)return show("adminMsg","로그인이 필요합니다.",false);const payload={trade_token:Number($("ruleTrade").value),virtual_token:Number($("ruleVirtual").value),virtual_join_token:Number($("ruleVirtualJoin").value),culture_token:Number($("ruleCulture").value),verify_token:Number($("ruleVerify").value),token_per_coin:Number($("ruleConversion").value),coin_display_value:Number($("ruleCoinValue").value)};const {error}=await db.rpc("update_reward_rules",{p_rules:payload});show("adminMsg",error?error.message:"지급 기준이 저장되고 변경 이력이 기록되었습니다.",!error);if(!error)loadAdmin()};
 
-  const cultureForm=$("cultureForm");
-  if(cultureForm) cultureForm.addEventListener("submit", async e=>{
-    e.preventDefault();
-    if(!client) return msg("cultureMsg","데이터베이스 연결을 확인해 주세요.");
-    await session();
-    if(!user) return msg("cultureMsg","먼저 로그인해 주세요.");
-    const now=new Date().toISOString(), category=$("cultureCategory").value, title=$("cultureTitle").value.trim(), content=$("cultureContent").value.trim();
-    const record_hash=await sha256([location.origin,category,title,user.id,now].join("|"));
-    const {error}=await client.from("posts").insert({author_id:user.id,category,title,content,record_hash,status:"등록"});
-    msg("cultureMsg", error ? error.message : "생활 정보가 등록되었습니다.");
-    if(!error){ e.target.reset(); loadCulture(); }
-  });
-
-  async function loadCulture(){
-    if(!client || !$("cultureList")) return;
-    const cats=["집수리","인테리어","정원","주거문화","지역생활정보"];
-    const {data}=await client.from("posts").select("*").in("category",cats).order("created_at",{ascending:false});
-    $("cultureList").innerHTML=data?.length?data.map(p=>`<div class="item"><b>${esc(p.category)} · ${esc(p.title)}</b><div>${esc(p.content)}</div></div>`).join(""):"등록된 정보가 없습니다.";
-  }
-
-  async function loadMyPage(){
-    if(!$("profileInfo")) return;
-    if(!client){ $("profileInfo").textContent="데이터베이스 연결을 확인해 주세요."; return; }
-    await session();
-    if(!user){ $("profileInfo").textContent="로그인 후 이용할 수 있습니다."; return; }
-    $("profileInfo").innerHTML=`<b>${esc(profile?.display_name||user.email)}</b><br>${esc(user.email)}`;
-    const [{count:p},{count:v},{data:r},{data:my}] = await Promise.all([
-      client.from("posts").select("*",{count:"exact",head:true}).eq("author_id",user.id),
-      client.from("verifications").select("*",{count:"exact",head:true}).eq("verifier_id",user.id),
-      client.from("rewards").select("points,action,created_at").eq("user_id",user.id).order("created_at",{ascending:false}),
-      client.from("posts").select("title,category,created_at").eq("author_id",user.id).order("created_at",{ascending:false}).limit(20)
-    ]);
-    $("myPosts").textContent=p||0; $("myVerifications").textContent=v||0;
-    $("myPoints").textContent=(r||[]).reduce((s,x)=>s+(Number(x.points)||0),0);
-    $("myActivity").innerHTML=(my||[]).map(x=>`<div class="item"><b>${esc(x.category)} · ${esc(x.title)}</b><div class="meta">${new Date(x.created_at).toLocaleString("ko-KR")}</div></div>`).join("");
-  }
-
-  const saveAdmin=$("saveAdmin");
-  if(saveAdmin) saveAdmin.addEventListener("click",()=>{
-    msg("adminMsg","관리 기준이 화면에 저장되었습니다. 실제 암호자산 발행 기능은 비활성화 상태입니다.");
-  });
-
-  start();
+session();loadRules();
 })();
