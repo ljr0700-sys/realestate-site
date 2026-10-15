@@ -21,7 +21,6 @@
     <button data-page="mypage">마이페이지</button>
   </nav>
 </header>
-
 <main>
 <section id="home" class="page active">
   <div class="hero panel">
@@ -30,7 +29,6 @@
     <p>건축·매매·임대·바꿔살기·펜션·가상건축·거주문화 등 부동산에 관한 정보를 회원들이 등록하고 서로 확인하며 의견을 나누는 참여형 디지털 플랫폼입니다. 가치 있는 정보와 기여를 기록하고 함께 성장하는 것을 목표로 합니다.</p>
     <div class="hero-actions"><button class="primary go" data-go="trade">정보 등록하기</button><button class="secondary go" data-go="homeAuth">회원가입·로그인</button><button class="secondary go" data-go="rewards">보상 기준 보기</button></div>
   </div>
-
   <div class="panel">
     <h2>페이지 사용 안내</h2>
     <div class="guide-grid">
@@ -40,6 +38,17 @@
       <article><b>거주문화</b><span>집수리·인테리어·정원·건축기술 등 생활정보를 공유하고 다른 회원이 의견과 자료로 동참합니다.</span></article>
       <article><b>마이페이지</b><span>나의 활동, 코인·토큰, 발행 해시를 확인합니다. 관리자는 같은 화면의 관리자 영역에서 지급기준을 관리합니다.</span></article>
     </div>
+  </div>
+
+  <div id="passwordResetPanel" class="panel hidden">
+    <h2>새 비밀번호 설정</h2>
+    <p class="note">비밀번호 재설정 메일의 링크를 눌러 들어온 경우 새 비밀번호를 두 번 입력해 주세요.</p>
+    <form id="passwordResetForm">
+      <label>새 비밀번호<input id="newPassword" type="password" minlength="8" autocomplete="new-password" required></label>
+      <label>새 비밀번호 확인<input id="newPassword2" type="password" minlength="8" autocomplete="new-password" required></label>
+      <button class="primary" type="submit">비밀번호 변경</button>
+    </form>
+    <div id="passwordResetMsg" class="msg"></div>
   </div>
 
   <div id="homeAuth" class="cols">
@@ -68,7 +77,6 @@
     </div>
   </div>
 </section>
-
 <section id="rewards" class="page">
   <div class="panel">
     <h2>블록체인 · 코인 · 토큰</h2>
@@ -83,7 +91,6 @@
   <div class="panel"><button id="convertBtn" class="primary">보유 토큰을 코인으로 전환</button><div id="convertMsg" class="msg"></div></div>
   <div class="panel"><h3>내 지급 내역</h3><div id="rewardList" class="list"></div></div>
 </section>
-
 <section id="trade" class="page">
   <div class="panel">
     <h2>부동산 거래 · 희망조건 등록</h2>
@@ -118,7 +125,6 @@
     </div>
   </div>
 </section>
-
 <section id="virtual" class="page">
   <div class="panel">
     <h2>가상건축 제안 · 참여</h2>
@@ -144,7 +150,6 @@
     <div class="panel"><h3>가상건축 상세 리스트</h3><div id="virtualList" class="list"></div></div>
   </div>
 </section>
-
 <section id="culture" class="page">
   <div class="panel">
     <h2>거주문화 · 생활기술 공유</h2>
@@ -165,7 +170,6 @@
     <div class="panel"><h3>등록된 정보와 참여</h3><div id="cultureList" class="list"></div></div>
   </div>
 </section>
-
 <section id="mypage" class="page">
   <div class="panel"><h2>마이페이지</h2><p>로그인한 회원은 자신의 정보·활동·보상·발행 해시만 확인할 수 있습니다.</p></div>
   <div class="cols">
@@ -176,7 +180,6 @@
     </div>
   </div>
   <div class="panel"><h3>내 활동·보상·해시</h3><div id="myActivity" class="list"></div></div>
-
   <div id="adminArea" class="hidden">
     <div class="panel admin-title"><h2>관리자 설정</h2><p>이 영역은 관리자에게만 표시됩니다. 지급수량·전환율·소유확인 보상기준을 설정하고 변경이력을 확인합니다.</p></div>
     <div class="cols">
@@ -202,7 +205,6 @@
   </div>
 </section>
 </main>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./supabase-config.js"></script>
 <script src="./app.js"></script>
