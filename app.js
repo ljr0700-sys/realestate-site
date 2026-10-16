@@ -1,4 +1,4 @@
-function isAdminUser(){return profile?.role==="admin" || (user?.email||"").toLowerCase()==="ljr0700@naver.com"}
+
 (() => {
 const cfg=window.REAL8_CONFIG, db=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY), $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
@@ -6,7 +6,10 @@ const show=(id,t,ok=true)=>{const e=$(id);if(e){e.textContent=t;e.className="msg
 const TRADE_TYPES=["건축","매매","전세","월세","렌트","바꿔살기","펜션"];
 const parties={"건축":["건축주","시공·설계 참여자"],"매매":["매도 희망","매수 희망"],"전세":["임대 희망","임차 희망"],"월세":["임대 희망","임차 희망"],"렌트":["대여 희망","이용 희망"],"바꿔살기":["교환 제안자","교환 상대"],"펜션":["운영·임대 제안","이용·인수 희망"]};
 let user=null,profile=null,rules={trade_rules:{},virtual_proposal_token:10,virtual_join_token:5,culture_register_token:10,culture_join_token:5,opinion_token:3,token_per_coin:100,coin_display_value:0,property_coin_per_100m:1};
-
+function isAdminUser(){
+  return profile?.role==="admin" ||
+    (user?.email||"").toLowerCase()==="ljr0700@naver.com";
+}
 async function session(){
   const {data:{session}}=await db.auth.getSession();
   user=session?.user||null;
