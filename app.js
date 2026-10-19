@@ -284,7 +284,7 @@ async function loadMatches(){
     const d=x.details_json||{};
     const side=x.transaction_side||"갑";
     const cond=side==="갑"?x.condition_a:x.condition_b;
-    return `<div class="item">
+ return `<div class="item" onclick="alert(${JSON.stringify(x.content || cond || '등록된 상세 설명이 없습니다.')})" style="cursor:pointer">
       <b>${esc(x.category)} · ${esc(side==="갑"?x.party_a_label:x.party_b_label)}</b>
       ${statusBadge(x)}
       <div>${esc(cond||x.content||"-")}</div>
