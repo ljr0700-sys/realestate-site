@@ -284,12 +284,14 @@ async function loadMatches(){
     const d=x.details_json||{};
     const side=x.transaction_side||"갑";
     const cond=side==="갑"?x.condition_a:x.condition_b;
- return `<div class="item" onclick="alert(${JSON.stringify(x.content || cond || '등록된 상세 설명이 없습니다.')})" style="cursor:pointer">
+    return `<details class="item">
+<summary style="cursor:pointer;color:#d4af37;font-weight:bold;">상세 내용 보기 ▼</summary>
       <b>${esc(x.category)} · ${esc(side==="갑"?x.party_a_label:x.party_b_label)}</b>
       ${statusBadge(x)}
       <div>${esc(cond||x.content||"-")}</div>
       <div class="meta">지역 ${esc(x.region||"-")} / 금액 ${Number(x.price||0).toLocaleString()}원 / 면적 ${esc(d.area||"-")}</div>
-    </div>`;
+ </div>
+</details>  
   }).join("")||"조건에 가까운 등록정보가 없습니다.";
 }
 
